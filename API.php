@@ -17,30 +17,13 @@ ORM::configure('username', $USERNAME);
 ORM::configure('password', $PASSWORD);
 
 // Our code
+// @TODO: move functionality to the authentication controller
 require_once './scripts/sessions.php';
-
 
 
 function redirect( $destination ){
 	$GLOBALS['app']->redirect($GLOBALS['web_root'] . $destination);
 }
-
-
-// Authentication Check example
-// $authCheck = function() use ($app) {
-// 	if( ! isLoggedIn() ) {
-// 		redirect('/login');
-// 	} else {
-// 		// Do something cool?
-// 	}
-// 	return true;
-// };
-// $app->get('/', $authCheck, function() use ($app) {
-// 	echo "Options:";
-// });
-
-//require_once 'models/Evaluation.php';
-
 
 /** System Home */
 $app->get('/', function() use ($app) {
