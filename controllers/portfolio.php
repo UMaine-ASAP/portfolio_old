@@ -182,7 +182,7 @@ function deletePortfolio($id)
  		-> find_one($child);
 
     //check to make sure that both portfolios were found
- 	if ($parentPortfolio == false || $childPorfolio == false)
+ 	if ($parentPortfolio == false || $childPortfolio == false)
  	{
  		return false;
  	}
@@ -200,7 +200,21 @@ function deletePortfolio($id)
  *********************************************************************************************/
  function addProjectToPortfolio($parent, $child)
  {
-	 return false;
+ 	$project = ProjectController::getProject($child);
+ 	$parentPort = getPortfolio($parent);
+
+ 	if (!$project || !$parentPort)
+ 	{
+ 		return false;
+ 	}
+
+ 	$collectionMap = Model::factory('collection_project_map')->create();
+ 	$collectionMap->collect_id = $parentPort->collect_id;
+ 	$collectionMap->proj_id = $project->proj_id;
+
+ 	$collectionMap->save();
+
+	 return true;
  }
 
 
@@ -245,7 +259,7 @@ function deletePortfolio($id)
  *	Returns: true if successful, false otherwise.
  *
  *********************************************************************************************/
- function addPortfolioPermissiosnForGroup($portfolio, $group, $permission)
+ function addPortfolioPermissionsForGroup($portfolio, $group, $permission)
  {
 	return false;
  }
