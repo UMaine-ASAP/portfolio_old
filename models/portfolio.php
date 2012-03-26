@@ -16,4 +16,15 @@
  *
  *********************************************************************************************/
 
+/**
+* Portfolio object used by Paris/Idiorm. $_table specifies which database table a
+* Portfolio object maps to (it'll automatically generate one, but it'll look for
+* a table named 'portfolios', so it's overridden here)
+*/
+
+class Portfolio extends Model
+{
+	public static $_table = 'REPO_Portfolios';
+}
+
 ?>

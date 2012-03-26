@@ -35,7 +35,13 @@ require_once('libraries/Paris/paris.php');
  *********************************************************************************************/
 function createPortfolio(title, description, private)
 {
-	return false;
+	$port = Model::factory('Portfolio') -> create();
+	$port->title = $title;
+	$port->description = $description;
+	$port->private = $private;
+
+	$port->save();
+	return true;
 }
 
 
@@ -52,7 +58,20 @@ function createPortfolio(title, description, private)
  *********************************************************************************************/
 function editPortfolio(id, title, description, private)
 {
-	return false;
+	$port = Model::factory('Portfolio')
+		-> find_one($id);
+
+	if (!$port)
+	{
+		return false;
+	}
+
+	$port->title = $title;
+	$port->description = $description;
+	$port->private = $private;
+	$port->save();
+
+	return true;
 }
 
 
@@ -65,7 +84,16 @@ function editPortfolio(id, title, description, private)
  *********************************************************************************************/
 function deletePortfolio(id)
 {
-	return false;
+	$port = Model::factory('Portfolio')
+		-> find_one($id);
+
+	if (!port)
+	{
+		return false;
+	}
+
+	$port->delete();
+	return true;
 }
 
 
@@ -77,7 +105,8 @@ function deletePortfolio(id)
  *********************************************************************************************/
  function getPortfolio(id)
  {
-	return false;
+ 	return Model::factory('Portfolio')
+ 		-> find_one($id);
  }
 
 
@@ -140,7 +169,17 @@ function deletePortfolio(id)
  *********************************************************************************************/
  function addSubPortfolio(parent, child)
  {
-	 return false;
+ 	$parentPortfolio = Model::factory('Portfolio')
+ 		-> find_one($parent);
+
+ 	$childPortfolio = Model::factory('Portfolio')
+ 		-> find_one($child);
+
+
+ 	if ($parentPortfolio->id == $childPortfolio->id)
+ 	{
+ 		return false;
+ 	}
  }
 
 
