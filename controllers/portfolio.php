@@ -33,7 +33,7 @@ require_once('libraries/Paris/paris.php');
  *	Returns: the created Portfolio object if successful, false otherwise.
  *
  *********************************************************************************************/
-function createPortfolio(title, description, private)
+function createPortfolio($title, $description, $private)
 {
 	$port = Model::factory('Portfolio') -> create();
 	$port->title = $title;
@@ -56,7 +56,7 @@ function createPortfolio(title, description, private)
  *	Returns: true if successfully edited, false otherwise.
  *
  *********************************************************************************************/
-function editPortfolio(id, title, description, private)
+function editPortfolio($id, $title, $description, $private)
 {
 	$port = Model::factory('Portfolio')
 		-> find_one($id);
@@ -82,7 +82,7 @@ function editPortfolio(id, title, description, private)
  *	Returns: true if successfully deleted, false otherwise.
  *
  *********************************************************************************************/
-function deletePortfolio(id)
+function deletePortfolio($id)
 {
 	$port = Model::factory('Portfolio')
 		-> find_one($id);
@@ -103,7 +103,7 @@ function deletePortfolio(id)
  *	Returns: the Portfolio object requested if successful, false otherwise.
  *
  *********************************************************************************************/
- function getPortfolio(id)
+ function getPortfolio($id)
  {
  	return Model::factory('Portfolio')
  		-> find_one($id);
@@ -121,7 +121,7 @@ function deletePortfolio(id)
  *	Returns: an array of Portfolio objects if successful, false otherwise.
  *
  *********************************************************************************************/
- function getMemberPortfolios(count, order_by, pos)
+ function getMemberPortfolios($count, $order_by, $pos)
  {
 	 return false;
  }
@@ -138,7 +138,7 @@ function deletePortfolio(id)
  *	Returns: an array of Portfolio objects if successful, false otherwise.
  *
  *********************************************************************************************/
- function getIncludedPortfolios(count, order_by, ,pos)
+ function getIncludedPortfolios($count, $order_by, $pos)
  {
 	 return false;
  }
@@ -153,7 +153,7 @@ function deletePortfolio(id)
  *	Returns: an array of Portfolio objects if successful, false otherwise.
  *
  *********************************************************************************************/
- function getPublicPortfolios(count, order_by, pos)
+ function getPublicPortfolios($count, $order_by, $pos)
  {
 	 return false;
  }
@@ -167,7 +167,7 @@ function deletePortfolio(id)
  *	Returns: true if successful, false otherwise.
  *
  *********************************************************************************************/
- function addSubPortfolio(parent, child)
+ function addSubPortfolio($parent, $child)
  {
  	if ($parent == $child)
  	{
@@ -185,6 +185,8 @@ function deletePortfolio(id)
  	{
  		return false;
  	}
+
+
  }
 
 
@@ -195,7 +197,7 @@ function deletePortfolio(id)
  *	Returns: true if successful, false otherwise.
  *
  *********************************************************************************************/
- function addProjectToPortfolio(parent, child)
+ function addProjectToPortfolio($parent, $child)
  {
 	 return false;
  }
@@ -210,7 +212,7 @@ function deletePortfolio(id)
  *	Returns: true if successful, false otherwise.
  *
  *********************************************************************************************/
- function removeChildFromPortfolio(parent, child, isSubPortfolio)
+ function removeChildFromPortfolio($parent, $child, $isSubPortfolio)
  {
 	 return false;
  }
@@ -224,7 +226,7 @@ function deletePortfolio(id)
  *	Portfolio object, as specified in 'constants.php'. If no permissions, returns empty array.
  *
  *********************************************************************************************/
- function getPortfolioPermissionsForGroup(portfolio, group)
+ function getPortfolioPermissionsForGroup($portfolio, $group)
  {
 	 return array();
  }
@@ -242,7 +244,7 @@ function deletePortfolio(id)
  *	Returns: true if successful, false otherwise.
  *
  *********************************************************************************************/
- function addPortfolioPermissiosnForGroup(portfolio, group, permission)
+ function addPortfolioPermissiosnForGroup($portfolio, $group, $permission)
  {
 	return false;
  }
@@ -260,7 +262,7 @@ function deletePortfolio(id)
  *	Returns: true if successful, false otherwise.
  *
  *********************************************************************************************/
- function removePortfolioPermissionsForGroup(portfolio, group, permission)
+ function removePortfolioPermissionsForGroup($portfolio, $group, $permission)
  {
 	 return false;
  }
