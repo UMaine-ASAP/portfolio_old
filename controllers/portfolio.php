@@ -58,6 +58,7 @@ function createPortfolio($title, $description, $private)
  *********************************************************************************************/
 function editPortfolio($id, $title, $description, $private)
 {
+	//TODO: check privileges here
 	$port = Model::factory('Portfolio')
 		-> find_one($id);
 

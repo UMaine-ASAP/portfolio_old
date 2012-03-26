@@ -2,7 +2,6 @@
 
 /*
 * A User class represents a single row in the REPO_Users table.
-*
 */
 
 class User extends Model
