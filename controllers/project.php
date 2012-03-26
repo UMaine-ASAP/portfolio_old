@@ -13,7 +13,7 @@ class ProjectController
 	 *		-'$description' is the description of the project
 	 *		-'$privacy' is the privacy of the project
 	 *
-	 *	Returns: the created Portfolio object if successful, false otherwise.
+	 *	Returns: the created Project object if successful, false otherwise.
 	 */
 	static function createProject($creator_id, $name, $abstract, $description, $privacy)
 	{
@@ -24,7 +24,10 @@ class ProjectController
 		$project->description = $description;
 		$project->private = $privacy;
 
-		$project->save();
+		if (!$project->save())
+		{
+			return false;
+		}
 
 		return $project;
 	}
@@ -135,9 +138,7 @@ class ProjectController
 			return false;
 		}
 
-		$contentMediaMap = Model::factory('project_media_map')->find_one($project->proj_id);
-
-		return $contentMediaMap;
+		return Model::factory('project_media_map')->find_one($project->proj_id);
 	}
 
 	/**
@@ -155,7 +156,7 @@ class ProjectController
 			return false;
 		}
 
-		$contentMediaMap = getProjectContentMediaMap($project->proj_id);
+		$contentMediaMap = self::getProjectContentMediaMap($project->proj_id);
 
 		if (!$contentMediaMap)
 		{
