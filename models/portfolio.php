@@ -25,6 +25,7 @@
 class Portfolio extends Model
 {
 	public static $_table = 'REPO_Portfolios';
+	public static $_id_column = 'port_id';
 }
 
 ?>

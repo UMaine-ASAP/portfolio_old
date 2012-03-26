@@ -169,14 +169,19 @@ function deletePortfolio(id)
  *********************************************************************************************/
  function addSubPortfolio(parent, child)
  {
+ 	if ($parent == $child)
+ 	{
+ 		return false; //can't make a portfolio its own sub-portfolio
+ 	}
+
  	$parentPortfolio = Model::factory('Portfolio')
  		-> find_one($parent);
 
  	$childPortfolio = Model::factory('Portfolio')
  		-> find_one($child);
 
-
- 	if ($parentPortfolio->id == $childPortfolio->id)
+    //check to make sure that both portfolios were found
+ 	if ($parentPortfolio == false || $childPorfolio == false)
  	{
  		return false;
  	}
