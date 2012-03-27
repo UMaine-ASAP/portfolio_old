@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project version="2.0.0a1" title="">
+  <file path="portfolio.php" hash="b95ee290d0a85025c02b8cfddca164fb" package="Controllers">
+    <docblock line="9">
+      <description><![CDATA[Controller handling all aspects of Portfolio objects within the system.]]></description>
+      <long-description><![CDATA[]]></long-description>
+      <tag line="9" name="package" description="Controllers"/>
+    </docblock>
+    <markers>
+      <todo line="31">check privileges here</todo>
+      <todo line="58">check privileges here</todo>
+    </markers>
+    <parse_markers>
+      <error line="76" code="50015">Argument $id is missing from the Docblock of deletePortfolio()</error>
+    </parse_markers>
+    <class final="false" abstract="false" namespace="default" line="14" package="Controllers">
+      <name>PortfolioController</name>
+      <full_name>\PortfolioController</full_name>
+      <extends/>
+      <docblock line="9">
+        <description><![CDATA[Controller handling all aspects of Portfolio objects within the system.]]></description>
+        <long-description><![CDATA[]]></long-description>
+        <tag line="9" name="package" description="Controllers"/>
+      </docblock>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="default" line="29" package="">
+        <name>createPortfolio</name>
+        <type>function</type>
+        <docblock line="16">
+          <description><![CDATA[Create a new Portfolio object.]]></description>
+          <long-description><![CDATA[<p>Creates a new Portfolio object in the system with the specified parameters. The currently
+    logged in user is given 'owner' level permissions.</p>]]></long-description>
+          <tag line="16" name="param" description="Specifies the title of the new Portfolio in plain-text (255 char max)." type="string" variable="$title">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="16" name="param" description="Describes the new Portfolio in plain-text (2^16 char max)." type="string" variable="$description">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="16" name="param" description="Specifies whether or not the Portfolio is considered private (true = private, false = public)." type="bool" variable="$private">
+            <type by_reference="false">bool</type>
+          </tag>
+          <tag line="16" name="return" description="The created Portfolio object if successful, false otherwise." type="object|bool">
+            <type by_reference="false">object</type>
+            <type by_reference="false">bool</type>
+          </tag>
+        </docblock>
+        <argument line="29">
+          <name>$title</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="29">
+          <name>$description</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="29">
+          <name>$private</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="default" line="56" package="">
+        <name>editPortfolio</name>
+        <type>function</type>
+        <docblock line="42">
+          <description><![CDATA[Edit a specific Portfolio object.]]></description>
+          <long-description><![CDATA[<p>Edits paramaters of a Portfolio object in the system that the current user has 'editing' (atleast)
+    privileges for.</p>]]></long-description>
+          <tag line="42" name="param" description="The unique identifier of the Portfolio object being edited." type="int" variable="$id">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="42" name="param" description="The title of the Portfolio to be set, in plain-text (255 char max)." type="string" variable="$title">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="42" name="param" description="The description of the Portfolio to be set, in plain-text (2^16 char max)." type="string" variable="$description">
+            <type by_reference="false">string</type>
+          </tag>
+          <tag line="42" name="param" description="Specifies whether or not the Portfolio is considered private (true = private, false = public)." type="bool" variable="$private">
+            <type by_reference="false">bool</type>
+          </tag>
+          <tag line="42" name="return" description="True if successfully edited, false otherwise." type="bool">
+            <type by_reference="false">bool</type>
+          </tag>
+        </docblock>
+        <argument line="56">
+          <name>$id</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="56">
+          <name>$title</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="56">
+          <name>$description</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="56">
+          <name>$private</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="default" line="86" package="">
+        <name>deletePortfolio</name>
+        <type>function</type>
+        <docblock line="76">
+          <description><![CDATA[Delete a specific Portfolio object.]]></description>
+          <long-description><![CDATA[<p>Deletes a Portfolio object in the system that the current user owns.
+    Does <em>not</em> delete Projects or sub-Portfolios.</p>]]></long-description>
+          <tag line="76" name="parm" description="int&#9;&#9;$id&#9;&#9;&#9;&#9;The unique identifier of the Portfolio to be deleted."/>
+          <tag line="76" name="return" description="True if successfully deleted, false otherwise." type="bool">
+            <type by_reference="false">bool</type>
+          </tag>
+        </docblock>
+        <argument line="86">
+          <name>$id</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="default" line="110" package="">
+        <name>getPortfolio</name>
+        <type>function</type>
+        <docblock line="101">
+          <description><![CDATA[Retrieve a specific Portfolio object.]]></description>
+          <long-description><![CDATA[<p>Retrieves a Portfolio object, constructed as specified within the Portfolio model object description.</p>]]></long-description>
+          <tag line="101" name="param" description="The specified identifier of the Portfolio to be retrieved." type="int" variable="$id">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="101" name="return" description="The Portfolio object requested if successful, false otherwise." type="object|bool">
+            <type by_reference="false">object</type>
+            <type by_reference="false">bool</type>
+          </tag>
+        </docblock>
+        <argument line="110">
+          <name>$id</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="default" line="130" package="">
+        <name>getMemberPortfolios</name>
+        <type>function</type>
+        <docblock line="117">
+          <description><![CDATA[Retrieve a number of Portfolio objects the current user is a member of.]]></description>
+          <long-description><![CDATA[<p>Retrieves a specified number of Portfolio objects. A User is a 'member' of a Portfolio if they
+    have any privileges specific to them (i.e. higher than public-level access).</p>]]></long-description>
+          <tag line="117" name="param" description="The number of Portfolio objects desired." type="int" variable="$count">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="117" name="param" description="The field that the Portfolios should be ordered by (ex: date_descending), as specified in 'constants.php'." type="int" variable="$order_by">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="117" name="param" description="The index of the first Portfolio to return in the set 'order_by' specifies." type="int" variable="$pos">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="117" name="return" description="An array of Portfolio objects if successful, false otherwise." type="array|bool">
+            <type by_reference="false">array</type>
+            <type by_reference="false">bool</type>
+          </tag>
+        </docblock>
+        <argument line="130">
+          <name>$count</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="130">
+          <name>$order_by</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="130">
+          <name>$pos</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="default" line="149" package="">
+        <name>getIncludedPortfolios</name>
+        <type>function</type>
+        <docblock line="136">
+          <description><![CDATA[Retrieve a number of Portfolio objects the current User is included in.]]></description>
+          <long-description><![CDATA[<p>Retrieves a specified number of Portfolio objects. A User is 'included in' a Portfolio if they
+    have any Projects they are a 'member' of included in the Portfolio or its sub-Portfolios.</p>]]></long-description>
+          <tag line="136" name="param" description="The number of Portfolio objects desired (0 = return all such Portfolios)." type="int" variable="$count">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="136" name="param" description="The field that the Portfolios should be ordered by (ex: date_descending), as specified in 'constants.php'." type="int" variable="$order_by">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="136" name="param" description="The index of the first Portfolio to return in the set 'order_by' specifies." type="int" variable="$pos">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="136" name="return" description="An array of Portfolio objects if successful, false otherwise." type="array|bool">
+            <type by_reference="false">array</type>
+            <type by_reference="false">bool</type>
+          </tag>
+        </docblock>
+        <argument line="149">
+          <name>$count</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="149">
+          <name>$order_by</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="149">
+          <name>$pos</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="default" line="168" package="">
+        <name>getPublicPortfolios</name>
+        <type>function</type>
+        <docblock line="155">
+          <description><![CDATA[Retrieve a number of public Portfolio objects.]]></description>
+          <long-description><![CDATA[<p>Retrieves a specified number of Portfolio objects. Public Portfolios are Portfolio objects
+    with their 'private' property set to false.</p>]]></long-description>
+          <tag line="155" name="param" description="The number of Portfolio objects desired (0 = return all such Portfolios)." type="int" variable="$count">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="155" name="param" description="The field that the Portfolios should be ordered by (ex: date_descending), as specified in 'constants.php'." type="int" variable="$order_by">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="155" name="param" description="The index of the first Portfolio to return in the set 'order_by' specifies." type="int" variable="$pos">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="155" name="return" description="An array of Portfolio objects if successful, false otherwise." type="array|bool">
+            <type by_reference="false">array</type>
+            <type by_reference="false">bool</type>
+          </tag>
+        </docblock>
+        <argument line="168">
+          <name>$count</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="168">
+          <name>$order_by</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="168">
+          <name>$pos</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="default" line="185" package="">
+        <name>addSubPortfolio</name>
+        <type>function</type>
+        <docblock line="174">
+          <description><![CDATA[Add a Portfolio as a sub-Porfolio of another Portfolio.]]></description>
+          <long-description><![CDATA[<p>Adds a specific Portfolio as a 'child' to another Portfolio as its 'parent'.
+    In the event of an attempt at a circular reference, the method will return false.</p>]]></long-description>
+          <tag line="174" name="param" description="The identifier of the parent Portfolio object." type="int" variable="$parent">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="174" name="param" description="The identifier of the child sub-Portfolio object." type="int" variable="$child">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="174" name="return" description="True if successful, false otherwise." type="bool">
+            <type by_reference="false">bool</type>
+          </tag>
+        </docblock>
+        <argument line="185">
+          <name>$parent</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="185">
+          <name>$child</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="default" line="218" package="">
+        <name>addProjectToPortfolio</name>
+        <type>function</type>
+        <docblock line="208">
+          <description><![CDATA[Add a Project object to a Portfolio object.]]></description>
+          <long-description><![CDATA[<p>Adds a specific Project object as a 'child' to a Portfolio object as its 'parent'.</p>]]></long-description>
+          <tag line="208" name="param" description="The identifier of the parent Portfolio object." type="int" variable="$parent">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="208" name="param" description="The identifier of the child Project object." type="int" variable="$child">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="208" name="return" description="True if successful, false otherwise." type="bool">
+            <type by_reference="false">bool</type>
+          </tag>
+        </docblock>
+        <argument line="218">
+          <name>$parent</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="218">
+          <name>$child</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="default" line="250" package="">
+        <name>removeChildFromPortfolio</name>
+        <type>function</type>
+        <docblock line="238">
+          <description><![CDATA[Remove a 'child' object from a Portfolio object.]]></description>
+          <long-description><![CDATA[<p>Removes a 'child' object (a Project or sub-Portfolio) from its 'parent' object (a Portfolio).</p>]]></long-description>
+          <tag line="238" name="param" description="The identifier of the parent Portfolio object." type="int" variable="$parent">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="238" name="param" description="The identifier of the child object." type="int" variable="$child">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="238" name="param" description="A bool indicating whether a child is a sub-Portfolio or not (true = child is sub-Portfolio, false = child is not sub-Portfolio)." type="bool" variable="$isSubPortfolio">
+            <type by_reference="false">bool</type>
+          </tag>
+          <tag line="238" name="return" description="True if successful, false otherwise." type="bool">
+            <type by_reference="false">bool</type>
+          </tag>
+        </docblock>
+        <argument line="250">
+          <name>$parent</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="250">
+          <name>$child</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="250">
+          <name>$isSubPortfolio</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="default" line="268" package="">
+        <name>getPortfolioPermissionsForGroup</name>
+        <type>function</type>
+        <docblock line="256">
+          <description><![CDATA[Retrieve permissions for a Group object in regards to a Portfolio object.]]></description>
+          <long-description><![CDATA[<p>Gets all permissions set for a Portfolio object for a specific Group.</p>]]></long-description>
+          <tag line="256" name="param" description="The identifier of the Portfolio the Group is being assigned to." type="int" variable="$portfolio">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="256" name="param" description="The identifier of the Group object recieving permissions for the Portfolio." type="int" variable="$group">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="256" name="return" description="An array of all permissions the specific Group object has on the specific Portfolio object, as specified in 'constants.php'. If no permissions, returns empty array." type="array">
+            <type by_reference="false">array</type>
+          </tag>
+        </docblock>
+        <argument line="268">
+          <name>$portfolio</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="268">
+          <name>$group</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="default" line="288" package="">
+        <name>addPortfolioPermissionsForGroup</name>
+        <type>function</type>
+        <docblock line="274">
+          <description><![CDATA[Add a permission level to a Group in regards to a Portfolio.]]></description>
+          <long-description><![CDATA[<p>Appends a specified permission level to the Group's current list of permissions.
+    The appended permission cascades down the Portfolio tree (i.e., the Group will have permission for
+    all sub-Portfolios as well).</p>]]></long-description>
+          <tag line="274" name="param" description="The identifier of the Portfolio the Group is being assigned to." type="int" variable="$portfolio">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="274" name="param" description="The identifier of the Group object recieving permissions for the Portfolio." type="int" variable="$group">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="274" name="param" description="The type of permission being granted to the Group object, as specified in 'constants.php'." type="int" variable="$permission">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="274" name="return" description="True if successful, false otherwise." type="bool">
+            <type by_reference="false">bool</type>
+          </tag>
+        </docblock>
+        <argument line="288">
+          <name>$portfolio</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="288">
+          <name>$group</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="288">
+          <name>$permission</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+      <method final="false" abstract="false" static="true" visibility="public" namespace="default" line="307" package="">
+        <name>removePortfolioPermissionsForGroup</name>
+        <type>function</type>
+        <docblock line="294">
+          <description><![CDATA[Remove a permission from a Group in regards to a Porfolio object.]]></description>
+          <long-description><![CDATA[<p>Removes a permission from a Group object associated with a Portfolio. The permission cascades
+    down the Portfolio tree (i.e., the Group will have the permission revoked for all sub-Portfolios as well).</p>]]></long-description>
+          <tag line="294" name="param" description="The identifier of the Portfolio the Group's permissions are revoked from." type="int" variable="$portfolio">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="294" name="param" description="The identifier of the Group object losing permissions for the Portfolio." type="int" variable="$group">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="294" name="param" description="The type of permission being removed from the Group object, as specified in 'constants.php'." type="int" variable="$permission">
+            <type by_reference="false">int</type>
+          </tag>
+          <tag line="294" name="return" description="True if successful, false otherwise." type="bool">
+            <type by_reference="false">bool</type>
+          </tag>
+        </docblock>
+        <argument line="307">
+          <name>$portfolio</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="307">
+          <name>$group</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+        <argument line="307">
+          <name>$permission</name>
+          <default><![CDATA[]]></default>
+          <type/>
+        </argument>
+      </method>
+    </class>
+  </file>
+  <package name="" full_name=""/>
+  <package name="Controllers" full_name="Controllers"/>
+  <namespace name="default" full_name="default"/>
+  <marker>todo</marker>
+  <marker>fixme</marker>
+</project>

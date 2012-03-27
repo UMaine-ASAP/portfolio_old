@@ -1,0 +1,377 @@
+<!DOCTYPE html><html xmlns:date="http://exslt.org/dates-and-times" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+<meta charset="utf-8">
+<title>phpDocumentor » \PortfolioController</title>
+<meta name="author" content="Mike van Riel">
+<meta name="description" content="">
+<link href="../css/template.css" rel="stylesheet" media="all">
+<script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script><script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script><script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script><script src="../js/bootstrap.js" type="text/javascript"></script><script src="../js/template.js" type="text/javascript"></script><script src="../js/prettify/prettify.min.js" type="text/javascript"></script><link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png">
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+<div class="navbar-inner"><div class="container">
+<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><a class="brand" href="../index.html">phpDocumentor</a><div class="nav-collapse"><ul class="nav">
+<li class="dropdown">
+<a href="#api" class="dropdown-toggle" data-toggle="dropdown">
+                                    API Documentation <b class="caret"></b></a><ul class="dropdown-menu"></ul>
+</li>
+<li class="dropdown" id="charts-menu">
+<a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
+                                    Charts <b class="caret"></b></a><ul class="dropdown-menu"><li><a href="../graph_class.html"><i class="icon-list-alt"></i> Class hierarchy diagram</a></li></ul>
+</li>
+<li class="dropdown" id="reports-menu">
+<a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
+                                    Reports <b class="caret"></b></a><ul class="dropdown-menu">
+<li><a href="../errors.html"><i class="icon-remove-sign"></i> Errors</a></li>
+<li><a href="../markers.html"><i class="icon-map-marker"></i> Markers (TODO/FIXME)</a></li>
+<li><a href="../deprecated.html"><i class="icon-stop"></i> Deprecated elements</a></li>
+</ul>
+</li>
+</ul></div>
+</div></div>
+<div class="go_to_top"><a href="#___" style="color: inherit">Back to top  <i class="icon-upload icon-white"></i></a></div>
+</div>
+<div id="___" class="container">
+<noscript><div class="alert alert-warning">
+                            Javascript is disabled; several features are only available
+                            if Javascript is enabled.
+                        </div></noscript>
+<div class="row">
+<div class="span4">
+<span class="btn-group visibility" data-toggle="buttons-checkbox"><button class="btn public active" title="Show public elements">Public</button><button class="btn protected" title="Show protected elements">Protected</button><button class="btn private" title="Show private elements">Private</button><button class="btn inherited active" title="Show inherited elements">Inherited</button></span><div class="btn-group view pull-right" data-toggle="buttons-radio">
+<button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button><button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
+</div>
+<ul class="side-nav nav nav-list">
+<li class="nav-header">
+<i class="icon-custom icon-method"></i> Methods</li>
+<li class="method public "><a href="#addPortfolioPermissionsForGroup" title="addPortfolioPermissionsForGroup :: Add a permission level to a Group in regards to a Portfolio."><span class="description">Add a permission level to a Group in regards to a Portfolio.</span><pre>addPortfolioPermissionsForGroup()</pre></a></li>
+<li class="method public "><a href="#addProjectToPortfolio" title="addProjectToPortfolio :: Add a Project object to a Portfolio object."><span class="description">Add a Project object to a Portfolio object.</span><pre>addProjectToPortfolio()</pre></a></li>
+<li class="method public "><a href="#addSubPortfolio" title="addSubPortfolio :: Add a Portfolio as a sub-Porfolio of another Portfolio."><span class="description">Add a Portfolio as a sub-Porfolio of another Portfolio.</span><pre>addSubPortfolio()</pre></a></li>
+<li class="method public "><a href="#createPortfolio" title="createPortfolio :: Create a new Portfolio object."><span class="description">Create a new Portfolio object.</span><pre>createPortfolio()</pre></a></li>
+<li class="method public "><a href="#deletePortfolio" title="deletePortfolio :: Delete a specific Portfolio object."><span class="description">Delete a specific Portfolio object.</span><pre>deletePortfolio()</pre></a></li>
+<li class="method public "><a href="#editPortfolio" title="editPortfolio :: Edit a specific Portfolio object."><span class="description">Edit a specific Portfolio object.</span><pre>editPortfolio()</pre></a></li>
+<li class="method public "><a href="#getIncludedPortfolios" title="getIncludedPortfolios :: Retrieve a number of Portfolio objects the current User is included in."><span class="description">Retrieve a number of Portfolio objects the current User is included in.</span><pre>getIncludedPortfolios()</pre></a></li>
+<li class="method public "><a href="#getMemberPortfolios" title="getMemberPortfolios :: Retrieve a number of Portfolio objects the current user is a member of."><span class="description">Retrieve a number of Portfolio objects the current user is a member of.</span><pre>getMemberPortfolios()</pre></a></li>
+<li class="method public "><a href="#getPortfolio" title="getPortfolio :: Retrieve a specific Portfolio object."><span class="description">Retrieve a specific Portfolio object.</span><pre>getPortfolio()</pre></a></li>
+<li class="method public "><a href="#getPortfolioPermissionsForGroup" title="getPortfolioPermissionsForGroup :: Retrieve permissions for a Group object in regards to a Portfolio object."><span class="description">Retrieve permissions for a Group object in regards to a Portfolio object.</span><pre>getPortfolioPermissionsForGroup()</pre></a></li>
+<li class="method public "><a href="#getPublicPortfolios" title="getPublicPortfolios :: Retrieve a number of public Portfolio objects."><span class="description">Retrieve a number of public Portfolio objects.</span><pre>getPublicPortfolios()</pre></a></li>
+<li class="method public "><a href="#removeChildFromPortfolio" title="removeChildFromPortfolio :: Remove a 'child' object from a Portfolio object."><span class="description">Remove a 'child' object from a Portfolio object.</span><pre>removeChildFromPortfolio()</pre></a></li>
+<li class="method public "><a href="#removePortfolioPermissionsForGroup" title="removePortfolioPermissionsForGroup :: Remove a permission from a Group in regards to a Porfolio object."><span class="description">Remove a permission from a Group in regards to a Porfolio object.</span><pre>removePortfolioPermissionsForGroup()</pre></a></li>
+</ul>
+</div>
+<div class="span8">
+<a name="%5CPortfolioController" id="\PortfolioController"></a><div href="../classes/db_%5CPortfolioController.html" class="element class">
+<p class="short_description">Controller handling all aspects of Portfolio objects within the system.</p>
+<div class="details">
+<p class="long_description"></p>
+<table class="table table-bordered"><tr>
+<th>package</th>
+<td><a href="..//packages/db_Controllers.html">Controllers</a></td>
+</tr></table>
+<h3>
+<i class="icon-custom icon-method"></i> Methods</h3>
+<a name="addPortfolioPermissionsForGroup" id="addPortfolioPermissionsForGroup"></a><div class="element clickable method public addPortfolioPermissionsForGroup" data-toggle="collapse" data-target=".addPortfolioPermissionsForGroup .collapse">
+<h2>Add a permission level to a Group in regards to a Portfolio.</h2>
+<pre>addPortfolioPermissionsForGroup(int $portfolio, int $group, int $permission) : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"><p>Appends a specified permission level to the Group's current list of permissions.
+    The appended permission cascades down the Portfolio tree (i.e., the Group will have permission for
+    all sub-Portfolios as well).</p></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$portfolio</h4>
+<code>int</code><p>The identifier of the Portfolio the Group is being assigned to.</p></div>
+<div class="subelement argument">
+<h4>$group</h4>
+<code>int</code><p>The identifier of the Group object recieving permissions for the Portfolio.</p></div>
+<div class="subelement argument">
+<h4>$permission</h4>
+<code>int</code><p>The type of permission being granted to the Group object, as specified in 'constants.php'.</p>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>bool</code>True if successful, false otherwise.</div>
+</div></div>
+</div>
+<a name="addProjectToPortfolio" id="addProjectToPortfolio"></a><div class="element clickable method public addProjectToPortfolio" data-toggle="collapse" data-target=".addProjectToPortfolio .collapse">
+<h2>Add a Project object to a Portfolio object.</h2>
+<pre>addProjectToPortfolio(int $parent, int $child) : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"><p>Adds a specific Project object as a 'child' to a Portfolio object as its 'parent'.</p></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$parent</h4>
+<code>int</code><p>The identifier of the parent Portfolio object.</p></div>
+<div class="subelement argument">
+<h4>$child</h4>
+<code>int</code><p>The identifier of the child Project object.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>bool</code>True if successful, false otherwise.</div>
+</div></div>
+</div>
+<a name="addSubPortfolio" id="addSubPortfolio"></a><div class="element clickable method public addSubPortfolio" data-toggle="collapse" data-target=".addSubPortfolio .collapse">
+<h2>Add a Portfolio as a sub-Porfolio of another Portfolio.</h2>
+<pre>addSubPortfolio(int $parent, int $child) : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"><p>Adds a specific Portfolio as a 'child' to another Portfolio as its 'parent'.
+    In the event of an attempt at a circular reference, the method will return false.</p></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$parent</h4>
+<code>int</code><p>The identifier of the parent Portfolio object.</p></div>
+<div class="subelement argument">
+<h4>$child</h4>
+<code>int</code><p>The identifier of the child sub-Portfolio object.</p>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>bool</code>True if successful, false otherwise.</div>
+</div></div>
+</div>
+<a name="createPortfolio" id="createPortfolio"></a><div class="element clickable method public createPortfolio" data-toggle="collapse" data-target=".createPortfolio .collapse">
+<h2>Create a new Portfolio object.</h2>
+<pre>createPortfolio(string $title, string $description, bool $private) : object | bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"><p>Creates a new Portfolio object in the system with the specified parameters. The currently
+    logged in user is given 'owner' level permissions.</p></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$title</h4>
+<code>string</code><p>Specifies the title of the new Portfolio in plain-text (255 char max).</p>
+</div>
+<div class="subelement argument">
+<h4>$description</h4>
+<code>string</code><p>Describes the new Portfolio in plain-text (2^16 char max).</p>
+</div>
+<div class="subelement argument">
+<h4>$private</h4>
+<code>bool</code><p>Specifies whether or not the Portfolio is considered private (true = private, false = public).</p>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>object</code><code>bool</code>The created Portfolio object if successful, false otherwise.</div>
+</div></div>
+</div>
+<a name="deletePortfolio" id="deletePortfolio"></a><div class="element clickable method public deletePortfolio" data-toggle="collapse" data-target=".deletePortfolio .collapse">
+<h2>Delete a specific Portfolio object.</h2>
+<pre>deletePortfolio($id) : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"><p>Deletes a Portfolio object in the system that the current user owns.
+    Does <em>not</em> delete Projects or sub-Portfolios.</p></p>
+<table class="table table-bordered"><tr>
+<th>parm</th>
+<td>int		$id				The unique identifier of the Portfolio to be deleted.</td>
+</tr></table>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$id</h4>
+<code></code>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>bool</code>True if successfully deleted, false otherwise.</div>
+</div></div>
+</div>
+<a name="editPortfolio" id="editPortfolio"></a><div class="element clickable method public editPortfolio" data-toggle="collapse" data-target=".editPortfolio .collapse">
+<h2>Edit a specific Portfolio object.</h2>
+<pre>editPortfolio(int $id, string $title, string $description, bool $private) : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"><p>Edits paramaters of a Portfolio object in the system that the current user has 'editing' (atleast)
+    privileges for.</p></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$id</h4>
+<code>int</code><p>The unique identifier of the Portfolio object being edited.</p></div>
+<div class="subelement argument">
+<h4>$title</h4>
+<code>string</code><p>The title of the Portfolio to be set, in plain-text (255 char max).</p>
+</div>
+<div class="subelement argument">
+<h4>$description</h4>
+<code>string</code><p>The description of the Portfolio to be set, in plain-text (2^16 char max).</p>
+</div>
+<div class="subelement argument">
+<h4>$private</h4>
+<code>bool</code><p>Specifies whether or not the Portfolio is considered private (true = private, false = public).</p>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>bool</code>True if successfully edited, false otherwise.</div>
+</div></div>
+</div>
+<a name="getIncludedPortfolios" id="getIncludedPortfolios"></a><div class="element clickable method public getIncludedPortfolios" data-toggle="collapse" data-target=".getIncludedPortfolios .collapse">
+<h2>Retrieve a number of Portfolio objects the current User is included in.</h2>
+<pre>getIncludedPortfolios(int $count, int $order_by, int $pos) : array | bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"><p>Retrieves a specified number of Portfolio objects. A User is 'included in' a Portfolio if they
+    have any Projects they are a 'member' of included in the Portfolio or its sub-Portfolios.</p></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$count</h4>
+<code>int</code><p>The number of Portfolio objects desired (0 = return all such Portfolios).</p>
+</div>
+<div class="subelement argument">
+<h4>$order_by</h4>
+<code>int</code><p>The field that the Portfolios should be ordered by (ex: date_descending), as specified in 'constants.php'.</p>
+</div>
+<div class="subelement argument">
+<h4>$pos</h4>
+<code>int</code><p>The index of the first Portfolio to return in the set 'order_by' specifies.</p>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code><code>bool</code>An array of Portfolio objects if successful, false otherwise.</div>
+</div></div>
+</div>
+<a name="getMemberPortfolios" id="getMemberPortfolios"></a><div class="element clickable method public getMemberPortfolios" data-toggle="collapse" data-target=".getMemberPortfolios .collapse">
+<h2>Retrieve a number of Portfolio objects the current user is a member of.</h2>
+<pre>getMemberPortfolios(int $count, int $order_by, int $pos) : array | bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"><p>Retrieves a specified number of Portfolio objects. A User is a 'member' of a Portfolio if they
+    have any privileges specific to them (i.e. higher than public-level access).</p></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$count</h4>
+<code>int</code><p>The number of Portfolio objects desired.</p></div>
+<div class="subelement argument">
+<h4>$order_by</h4>
+<code>int</code><p>The field that the Portfolios should be ordered by (ex: date_descending), as specified in 'constants.php'.</p>
+</div>
+<div class="subelement argument">
+<h4>$pos</h4>
+<code>int</code><p>The index of the first Portfolio to return in the set 'order_by' specifies.</p>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code><code>bool</code>An array of Portfolio objects if successful, false otherwise.</div>
+</div></div>
+</div>
+<a name="getPortfolio" id="getPortfolio"></a><div class="element clickable method public getPortfolio" data-toggle="collapse" data-target=".getPortfolio .collapse">
+<h2>Retrieve a specific Portfolio object.</h2>
+<pre>getPortfolio(int $id) : object | bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"><p>Retrieves a Portfolio object, constructed as specified within the Portfolio model object description.</p></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$id</h4>
+<code>int</code><p>The specified identifier of the Portfolio to be retrieved.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>object</code><code>bool</code>The Portfolio object requested if successful, false otherwise.</div>
+</div></div>
+</div>
+<a name="getPortfolioPermissionsForGroup" id="getPortfolioPermissionsForGroup"></a><div class="element clickable method public getPortfolioPermissionsForGroup" data-toggle="collapse" data-target=".getPortfolioPermissionsForGroup .collapse">
+<h2>Retrieve permissions for a Group object in regards to a Portfolio object.</h2>
+<pre>getPortfolioPermissionsForGroup(int $portfolio, int $group) : array</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"><p>Gets all permissions set for a Portfolio object for a specific Group.</p></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$portfolio</h4>
+<code>int</code><p>The identifier of the Portfolio the Group is being assigned to.</p></div>
+<div class="subelement argument">
+<h4>$group</h4>
+<code>int</code><p>The identifier of the Group object recieving permissions for the Portfolio.</p></div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code>An array of all permissions the specific Group object has on the specific Portfolio object, as specified in 'constants.php'. If no permissions, returns empty array.</div>
+</div></div>
+</div>
+<a name="getPublicPortfolios" id="getPublicPortfolios"></a><div class="element clickable method public getPublicPortfolios" data-toggle="collapse" data-target=".getPublicPortfolios .collapse">
+<h2>Retrieve a number of public Portfolio objects.</h2>
+<pre>getPublicPortfolios(int $count, int $order_by, int $pos) : array | bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"><p>Retrieves a specified number of Portfolio objects. Public Portfolios are Portfolio objects
+    with their 'private' property set to false.</p></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$count</h4>
+<code>int</code><p>The number of Portfolio objects desired (0 = return all such Portfolios).</p>
+</div>
+<div class="subelement argument">
+<h4>$order_by</h4>
+<code>int</code><p>The field that the Portfolios should be ordered by (ex: date_descending), as specified in 'constants.php'.</p>
+</div>
+<div class="subelement argument">
+<h4>$pos</h4>
+<code>int</code><p>The index of the first Portfolio to return in the set 'order_by' specifies.</p>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>array</code><code>bool</code>An array of Portfolio objects if successful, false otherwise.</div>
+</div></div>
+</div>
+<a name="removeChildFromPortfolio" id="removeChildFromPortfolio"></a><div class="element clickable method public removeChildFromPortfolio" data-toggle="collapse" data-target=".removeChildFromPortfolio .collapse">
+<h2>Remove a 'child' object from a Portfolio object.</h2>
+<pre>removeChildFromPortfolio(int $parent, int $child, bool $isSubPortfolio) : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"><p>Removes a 'child' object (a Project or sub-Portfolio) from its 'parent' object (a Portfolio).</p></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$parent</h4>
+<code>int</code><p>The identifier of the parent Portfolio object.</p></div>
+<div class="subelement argument">
+<h4>$child</h4>
+<code>int</code><p>The identifier of the child object.</p></div>
+<div class="subelement argument">
+<h4>$isSubPortfolio</h4>
+<code>bool</code><p>A bool indicating whether a child is a sub-Portfolio or not (true = child is sub-Portfolio, false = child is not sub-Portfolio).</p>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>bool</code>True if successful, false otherwise.</div>
+</div></div>
+</div>
+<a name="removePortfolioPermissionsForGroup" id="removePortfolioPermissionsForGroup"></a><div class="element clickable method public removePortfolioPermissionsForGroup" data-toggle="collapse" data-target=".removePortfolioPermissionsForGroup .collapse">
+<h2>Remove a permission from a Group in regards to a Porfolio object.</h2>
+<pre>removePortfolioPermissionsForGroup(int $portfolio, int $group, int $permission) : bool</pre>
+<div class="labels"></div>
+<div class="row collapse"><div class="span8">
+<p class="long_description"><p>Removes a permission from a Group object associated with a Portfolio. The permission cascades
+    down the Portfolio tree (i.e., the Group will have the permission revoked for all sub-Portfolios as well).</p></p>
+<h3>Parameters</h3>
+<div class="subelement argument">
+<h4>$portfolio</h4>
+<code>int</code><p>The identifier of the Portfolio the Group's permissions are revoked from.</p>
+</div>
+<div class="subelement argument">
+<h4>$group</h4>
+<code>int</code><p>The identifier of the Group object losing permissions for the Portfolio.</p></div>
+<div class="subelement argument">
+<h4>$permission</h4>
+<code>int</code><p>The type of permission being removed from the Group object, as specified in 'constants.php'.</p>
+</div>
+<h3>Returns</h3>
+<div class="subelement response">
+<code>bool</code>True if successful, false otherwise.</div>
+</div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="row"><footer class="span12">
+            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by <a href="http://glyphicons.com/">Glyphicons</a>.<br>
+            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor 2.0.0a1</a> and<br>
+            generated on 2012-03-27T14:13:34-04:00.<br></footer></div>
+</div>
+</body>
+</html>
