@@ -1,7 +1,9 @@
 <?php
-//require_once('libraries/Idiorm/idiorm.php');
-//require_once('libraries/Paris/paris.php');
 
+/**
+ * Group controller.
+ * @package Controllers
+ */
 class GroupController
 {
 	/**
