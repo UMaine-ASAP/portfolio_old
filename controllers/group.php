@@ -76,7 +76,7 @@ class GroupController
 	 */
 	static function updateGroup($id, $name, $description, $global, $owner, $type)
 	{
-		$groupToUpdate = Model::factory('Group')->find_one($id);
+		$groupToUpdate = self::getGroup($id);
 
 		if(!$groupToUpdate)
 		{
