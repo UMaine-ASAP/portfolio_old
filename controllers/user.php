@@ -36,7 +36,7 @@ class UserController
 
 	static function editUser($userID, $username, $pass, $first, $middle, $last, $email, $email_priv, $addn_contact, $bio, $user_pic, $majidor, $minor, $grad_year, $type_id)
 	{
-		$user = Model::factory('User')->find_one($userID);
+		$user = self::getUser($userID);
 
 		if (!$user)
 		{
@@ -77,61 +77,5 @@ class UserController
 
 		$user->delete();
 		return true;
-	}
-
-	static function getUserPortfolios($userID)
-	{
-		$user = self::getUser($userID);
-
-		if (!$user)
-		{
-			return false;
-		}
-
-		return Model::factory('Portfolio')
-					-> where('creator_id', $user->user_id)
-					-> find_many();
-	}
-
-	static function getUserProjects($userID)
-	{
-		$user = self::getUser($userID);
-
-		if (!$user)
-		{
-			return false;
-		}
-
-		return Model::factory('Project')
-					-> where('creator_id', $user->user_id)
-					-> find_many();
-	}
-
-	static function getUserSectionsInstructed($userID)
-	{
-		$user = self::getUser($userID);
-
-		if(!$user)
-		{
-			return false;
-		}
-
-		return Model::factory('Section')
-					-> where('instruct_id', $user->user_id)
-					-> find_many();
-	}
-
-	static function getUserSectionsOwned($userId)
-	{
-		$user = self::getUser($userID);
-
-		if (!$user)
-		{
-			return false;
-		}
-
-		return Model::factory('Section')
-					-> where('instruct_id', $user->user_id)
-					-> find_many();
 	}
 }
