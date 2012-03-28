@@ -7,12 +7,12 @@ class AssignmentController
 {
 	/**
 	 * Creates a new Assignment object, then adds it to the DB.
-	 *		-'section_id' is the ID of the section the assignment belongs to
-	 *		-'group_id' is the ID of the group the assignment belongs to
-	 *		-'owner_id' is the ID of the group that owns the assignment (?)
-	 *		-'collect_id' is the ID of the assignment's collection_project_map
-	 *		-'name' is the name of the assignment
-	 *		-'description' is the description of the assignment
+	 *		@param int section_id is the ID of the section the assignment belongs to
+	 *		@param int group_id is the ID of the group the assignment belongs to
+	 *		@param int owner_id is the ID of the group that owns the assignment (?)
+	 *		@param int collect_id is the ID of the assignment's collection_project_map
+	 *		@param string name is the name of the assignment
+	 *		@param string description is the description of the assignment
 	 *
 	 *	Returns: the Assignment object if creation was successful, otherwise false
  	 */
@@ -38,7 +38,7 @@ class AssignmentController
 
 	/**
 	 *	Gets a specific Assignment object.
-	 *		-'$id' is the ID of the project to get
+	 *		@param int $id is the ID of the project to get
 	 *
 	 *	Returns: the Assignment object if found, false otherwise
 	 */
@@ -49,13 +49,13 @@ class AssignmentController
 
 	/**
 	 * Edit a specific Assigment object that the current user has (at least) editing privileges for
-	 *		-'$id' is the ID of the assignment to edit
-	 *		-'$section_id' is the new section ID of the assignment
-	 *		-'$group_id' is the new group ID of the assignment
-	 *		-'$owner_id' is the new owner ID of the assignment
-	 *		-'$collect_id' is the new collection_project_map ID of the assignment
-	 *		-'$name' is the new name of the assignment
-	 *		-'$description' is the new description of the assignment
+	 *		@param int $id is the ID of the assignment to edit
+	 *		@param int section_id is the new section ID of the assignment
+	 *		@param int $group_id is the new group ID of the assignment
+	 *		@param int $owner_id is the new owner ID of the assignment
+	 *		@param int collect_id is the new collection_project_map ID of the assignment
+	 *		@param string name is the new name of the assignment
+	 *		@param string description is the new description of the assignment
 	 *
 	 */
 	static function editAssignment($id, $section_id, $group_id, $owner_id, $collect_id, $name, $description)
@@ -84,7 +84,7 @@ class AssignmentController
 
 	/**
 	 * Deletes an Assignment with the specified ID.
-	 *		-'$id' is the ID of the assignment to delete
+	 *		@param int id is the ID of the assignment to delete
 	 *
 	 *	Returns: true if deletion succeeded, otherwise false
 	 */
@@ -102,7 +102,7 @@ class AssignmentController
 
 	/**
 	 * Returns the group that owns a specified assignment.
-	 *		-'$id' is the ID of the assigment whose owning group will be returned
+	 *		@param int id is the ID of the assigment whose owning group will be returned
 	 *
 	 *	Returns: the Group object corresponding to the assignment's owning group if found, otherwise false
 	 */
