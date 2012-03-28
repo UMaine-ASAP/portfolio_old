@@ -43,16 +43,33 @@ class User extends Model
 				-> find_many();
 	}
 
-	public function sectionsOwned()
-	{
-		return Model::factory('Section')
-				-> where('instruct_id', $this->user_id)
-				-> find_many();
-	}
-
 	public function fullName()
 	{
 		return $this->first . " " . $this->last;
+	}
+
+	public function groups()
+	{
+		$maps = Model::factory('GroupUserMap')
+					-> where('user_id', $this->user_id)
+					-> find_many();
+
+		$groups = array();
+
+		foreach ($maps as $map)
+		{
+			$groups[] = Model::factory('Group')
+							-> where('group_id', $map->group_id)
+							-> find_many();
+		}
+
+		return $groups;
+	}
+
+	public function delete()
+	{
+		$this->deactivated = 1;
+		$this->save();
 	}
 }
 

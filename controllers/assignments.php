@@ -100,26 +100,6 @@ class AssignmentController
 
 		$assignment->delete();
 	}
-
-	/**
-	 * Returns the group that owns a specified assignment.
-	 *		@param int id is the ID of the assigment whose owning group will be returned
-	 *
-	 *	@return the Group object corresponding to the assignment's owning group if found, otherwise false
-	 */
-	static function getOwnerGroup($id)
-	{
-		$assignment = Model::factory('Assignment')->find_one($id);
-
-		if(!$assignment)
-		{
-			return false;
-		}
-
-		return Model::factory('Group')
-					-> where('group_id', $assignment->owner_id)
-					-> find_one();
-	}
 }
 
 ?>
