@@ -122,7 +122,7 @@ class PortfolioController
 	 *
 	 *	@param	int		$count			The number of Portfolio objects desired.
 	 *	@param	int		$order_by		The field that the Portfolios should be ordered by (ex: date_descending),
-	 *									as specified in 'constants.php'.
+	 *									as specified in 'constant.php'.
 	 *	@param	int		$pos			The index of the first Portfolio to return in the set 'order_by' specifies.
 	 *
 	 *	@return	array|bool				An array of Portfolio objects if successful, false otherwise.
@@ -141,7 +141,7 @@ class PortfolioController
 	 *
 	 *	@param	int		$count			The number of Portfolio objects desired (0 = return all such Portfolios).
 	 *	@param	int		$order_by		The field that the Portfolios should be ordered by (ex: date_descending),
-	 *									as specified in 'constants.php'.
+	 *									as specified in 'constant.php'.
 	 *	@param	int		$pos			The index of the first Portfolio to return in the set 'order_by' specifies.
 	 *
 	 *	@return	array|bool				An array of Portfolio objects if successful, false otherwise.
@@ -160,7 +160,7 @@ class PortfolioController
 	 *
 	 *	@param	int		$count			The number of Portfolio objects desired (0 = return all such Portfolios).
 	 *	@param	int		$order_by		The field that the Portfolios should be ordered by (ex: date_descending),
-	 *									as specified in 'constants.php'.
+	 *									as specified in 'constant.php'.
 	 *	@param	int		$pos			The index of the first Portfolio to return in the set 'order_by' specifies.
 	 *
 	 *	@return	array|bool				An array of Portfolio objects if successful, false otherwise.
@@ -262,7 +262,7 @@ class PortfolioController
 	 *	@param	int		$group			The identifier of the Group object recieving permissions for the Portfolio.
 	 *
 	 *	@return	array					An array of all permissions the specific Group object has on the specific
-	 *									Portfolio object, as specified in 'constants.php'. 
+	 *									Portfolio object, as specified in 'constant.php'. 
 	 *									If no permissions, returns empty array.
 	 */
 	 static function getPortfolioPermissionsForGroup($portfolio, $group)
@@ -281,7 +281,7 @@ class PortfolioController
 	 *	@param	int		$portfolio		The identifier of the Portfolio the Group is being assigned to.
 	 *	@param	int		$group			The identifier of the Group object recieving permissions for the Portfolio.
 	 *	@param	int		$permission		The type of permission being granted to the Group object,
-	 *	  								as specified in 'constants.php'.
+	 *	  								as specified in 'constant.php'.
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */
@@ -300,7 +300,7 @@ class PortfolioController
 	 *	@param	int		$portfolio		The identifier of the Portfolio the Group's permissions are revoked from.
 	 *	@param	int		$group			The identifier of the Group object losing permissions for the Portfolio.
 	 *	@param	int		$permission		The type of permission being removed from the Group object,
-	 *									as specified in 'constants.php'.
+	 *									as specified in 'constant.php'.
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */
