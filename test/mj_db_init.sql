@@ -196,6 +196,7 @@ CREATE TABLE `AUTH_Users` (
   `minor` INTEGER NULL DEFAULT NULL,
   `grad_year` INTEGER NULL DEFAULT NULL,
   `type_id` INTEGER NOT NULL,
+  `deactivated` bit(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`user_id`)
 ) COMMENT='All registered users of the system';
 
@@ -241,7 +242,7 @@ DROP TABLE IF EXISTS `AUTH_Groups`;
 		
 CREATE TABLE `AUTH_Groups` (
   `group_id` INTEGER NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NOT NULL,
+  `name` TEXT NOT NULL,	-- TEXT to accomodate long Portfolio/Proj/etc. titles
   `description` TEXT NULL DEFAULT NULL,
   `private` bit(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`group_id`)
