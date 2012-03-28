@@ -39,15 +39,15 @@ class User extends Model
 	public function sectionsInstructed()
 	{
 		return Model::factory('Section')
-			-> where('instruct_id', $this->user_id)
-			-> find_many();
+				-> where('instruct_id', $this->user_id)
+				-> find_many();
 	}
 
 	public function sectionsOwned()
 	{
 		return Model::factory('Section')
-			-> where('instruct_id', $this->user_id)
-			-> find_many();
+				-> where('instruct_id', $this->user_id)
+				-> find_many();
 	}
 
 	public function fullName()
