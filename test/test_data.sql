@@ -32,7 +32,7 @@ INSERT INTO `AUTH_User_types` (name, description) VALUES
 -- ACCESS LEVELS
 INSERT INTO `REPO_Access_levels` (name, description) VALUES 
 ('owner', 'Owner of the resource, can do anything they want'),
-('write', 'Can only write to resource, cannot view')
+('write', 'Can only write to resource, cannot view'),
 ('edit', 'Can only edit the existing resource, cannot add sub-Resources'),
 ('read', 'Can only view the resource, make no changes');
 
