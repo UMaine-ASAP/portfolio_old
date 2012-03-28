@@ -1,10 +1,7 @@
 <?php
-//require_once('libraries/Idiorm/idiorm.php');
-//require_once('libraries/Paris/paris.php');
 
-//ORM::configure('mysql:host=kenai.asap.um.maine.edu;dbname=mainejournal_dev');
-//ORM::configure('username', 'root');
-
+require_once('libraries/Idiorm/idiorm.php');
+require_once('libraries/Paris/paris.php');
 
 /**
  * Controller handling all aspects of Portfolio objects within the system.
@@ -34,8 +31,15 @@ class PortfolioController
 		$port->description = $description;
 		$port->private = $private;
 
+		//TODO: Add owner privileges
+		//$group = Model::factory('Group') -> create();
+		//$group->name = $port->title . " owners";
+		//$group->description = "Portfolio owners";
+		//$group->private = 1;
+		//$group->save();
+
 		$port->save();
-		return true;
+		return $port;
 	}
 
 
@@ -45,17 +49,19 @@ class PortfolioController
 	 *	Edits paramaters of a Portfolio object in the system that the current user has 'editing' (atleast)
 	 *	privileges for.
 	 *
-	 *	@param	int		$id				The unique identifier of the Portfolio object being edited.
-	 *	@param	string	$title			The title of the Portfolio to be set, in plain-text (255 char max).
-	 *	@param	string	$description	The description of the Portfolio to be set, in plain-text (2^16 char max).
-	 *	@param	bool	$private	 	Specifies whether or not the Portfolio is considered private
-	 *									(true = private, false = public).
+	 *	@param	int|null		$id				The unique identifier of the Portfolio object being edited, 
+	 *											or null to leave untouched.
+	 *	@param	string|null		$title			The title of the Portfolio to be set, in plain-text (255 char max),
+	 *											or null to leave untouched.
+	 *	@param	string|null		$description	The description of the Portfolio to be set, in plain-text (2^16 char max),
+	 *											or null to leave untouched.
+	 *	@param	bool|null		$private	 	Specifies whether or not the Portfolio is considered private
+	 *											(true = private, false = public).
 	 *
 	 *	@return	bool					True if successfully edited, false otherwise.
 	 */
 	static function editPortfolio($id, $title, $description, $private)
 	{
-		//TODO: check privileges here
 		$port = Model::factory('Portfolio')
 			-> find_one($id);
 
@@ -64,9 +70,11 @@ class PortfolioController
 			return false;
 		}
 
-		$port->title = $title;
-		$port->description = $description;
-		$port->private = $private;
+		//TODO: check privileges here
+
+		if ($title) 		{ $port->title = $title; }
+		if ($description) 	{ $port->description = $description; }
+		if ($private) { $port->private = $private; }
 		$port->save();
 
 		return true;
@@ -93,6 +101,7 @@ class PortfolioController
 			return false;
 		}
 
+		// TODO: Clean up permissions
 		$port->delete();
 		return true;
 	}
@@ -107,11 +116,20 @@ class PortfolioController
 	 *
 	 *	@return	object|bool				The Portfolio object requested if successful, false otherwise.
 	 */
-	 static function getPortfolio($id)
-	 {
-	 	return Model::factory('Portfolio')
-			-> find_one($id);
-	 }
+	static function getPortfolio($id)
+	{
+		$return = Model::factory('Portfolio')
+			->find_one($id);
+
+		if ($return)
+		{
+			return $return;
+		}
+		else
+		{
+			return false;
+		}
+	}
 
 
 	/**
@@ -186,7 +204,7 @@ class PortfolioController
 	 {
 	 	if ($parent == $child)
 	 	{
-	 		return false; //can't make a portfolio its own sub-portfolio
+	 		return false; // Can't make a portfolio its own sub-portfolio
 	 	}
 
 	 	$parentPortfolio = Model::factory('Portfolio')
@@ -195,11 +213,14 @@ class PortfolioController
 	 	$childPortfolio = Model::factory('Portfolio')
 	 		-> find_one($child);
 
-	    //check to make sure that both portfolios were found
+	    // Check to make sure that both portfolios were found
 	 	if ($parentPortfolio == false || $childPortfolio == false)
 	 	{
 	 		return false;
-	 	}
+		}
+
+		// Check to make sure no circular references
+
 
 
 	 }
@@ -225,7 +246,7 @@ class PortfolioController
 	 		return false;
 	 	}
 
-	 	$collectionMap = Model::factory('collection_project_map')->create();
+	 	$collectionMap = Model::factory('CollectionProjectMap')->create();
 	 	$collectionMap->collect_id = $parentPort->collect_id;
 	 	$collectionMap->proj_id = $project->proj_id;
 
@@ -261,14 +282,25 @@ class PortfolioController
 	 *	@param	int		$portfolio		The identifier of the Portfolio the Group is being assigned to.
 	 *	@param	int		$group			The identifier of the Group object recieving permissions for the Portfolio.
 	 *
-	 *	@return	array					An array of all permissions the specific Group object has on the specific
+	 *	@return	array|bool				An array of all permissions the specific Group object has on the specific
 	 *									Portfolio object, as specified in 'constant.php'. 
 	 *									If no permissions, returns empty array.
+	 *									If no portfolio with the specified identifier
 	 */
-	 static function getPortfolioPermissionsForGroup($portfolio, $group)
-	 {
-		 return array();
-	 }
+	static function getPortfolioPermissionsForGroup($portfolio, $group)
+	{
+		$port = Model::factory('Portfolio')
+			->find_one($portfolio);
+		
+		if ($port)
+		{
+			return $port->getPortfolioPermissionsForGroup($group);
+		}
+		else
+		{
+			return false;
+		}
+	}
 
 
 	/**
