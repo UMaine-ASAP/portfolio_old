@@ -43,13 +43,6 @@ class User extends Model
 				-> find_many();
 	}
 
-	public function sectionsOwned()
-	{
-		return Model::factory('Section')
-				-> where('instruct_id', $this->user_id)
-				-> find_many();
-	}
-
 	public function fullName()
 	{
 		return $this->first . " " . $this->last;
