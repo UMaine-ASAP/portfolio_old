@@ -1,8 +1,9 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../libraries/Idiorm/idiorm.php');
-require_once(dirname(__FILE__) . '/../libraries/Paris/paris.php');
-include_once(dirname(__FILE__) . '/../libraries/constant.php');
+require_once(__DIR__ . '/../libraries/Idiorm/idiorm.php');
+require_once(__DIR__ . '/../libraries/Paris/paris.php');
+require_once(__DIR__ . '/../models/mappings.php');
+include_once(__DIR__ . '/../libraries/constant.php');
 
 DEFINE("USER_ID", 2);
 

@@ -1,5 +1,7 @@
 <?php
 
+require_once(__DIR__ . '/../libraries/Idiorm/idiorm.php');
+require_once(__DIR__ . '/../libraries/Paris/paris.php');
 
 class ConnectionProjectMap extends Model
 {
