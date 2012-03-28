@@ -7,7 +7,7 @@
 class GroupController
 {
 	/**
-	 * Creates a Group with the specified attributes.
+	 *	Creates a group and adds it to the database.
 	 *		@param string name is the name of the group
 	 *		@param string description is the description of the group
 	 *		@param bool global specifies whether or not the group is global
@@ -76,7 +76,7 @@ class GroupController
 	 */
 	static function updateGroup($id, $name, $description, $global, $owner, $type)
 	{
-		$groupToUpdate = Model::factory('Group')->find_one($id);
+		$groupToUpdate = self::getGroup($id);
 
 		if(!$groupToUpdate)
 		{

@@ -9,6 +9,9 @@ class User extends Model
 	public static $_table = "AUTH_Users";
 	public static $_id_column = "user_id";
 
+	/**
+	 * @return an array containing the user's major and minor departments.
+	 */
 	public function departments()
 	{
 		$majorDept = Model::factory('Department')
@@ -22,6 +25,9 @@ class User extends Model
 		return array("major" => $majorDept, "minor" => $minorDept);
 	}
 
+	/**
+	 * @return an array containing portfolios created by the user
+	 */
 	public function portfolios()
 	{
 		return Model::factory('Portfolio')
@@ -29,6 +35,9 @@ class User extends Model
 					-> find_many();
 	}
 
+	/**
+	 * @return the projects created by the user
+	 */
 	public function projects()
 	{
 		return Model::factory('Project')
@@ -36,6 +45,9 @@ class User extends Model
 					-> find_many();
 	}
 
+	/**
+	 * @return the sections that this user instructs
+	 */
 	public function sectionsInstructed()
 	{
 		return Model::factory('Section')
@@ -43,11 +55,17 @@ class User extends Model
 				-> find_many();
 	}
 
+	/**
+	 * @return the user's full name, determined by concantenating their first and last name
+	 */
 	public function fullName()
 	{
 		return $this->first . " " . $this->last;
 	}
 
+	/**
+	 * @return the groups that this user is a member of
+	 */
 	public function groups()
 	{
 		$maps = Model::factory('GroupUserMap')
@@ -66,6 +84,9 @@ class User extends Model
 		return $groups;
 	}
 
+	/**
+	 * Sets the user's deactivated flag to 1 in the database
+	 */
 	public function delete()
 	{
 		$this->deactivated = 1;
