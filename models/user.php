@@ -54,6 +54,30 @@ class User extends Model
 	{
 		return $this->first . " " . $this->last;
 	}
+
+	public function groups()
+	{
+		$maps = Model::factory('GroupUserMap')
+					-> where('user_id', $this->user_id)
+					-> find_many();
+
+		$groups = array();
+
+		foreach ($maps as $map)
+		{
+			$groups[] = Model::factory('Group')
+							-> where('group_id', $map->group_id)
+							-> find_many();
+		}
+
+		return $groups;
+	}
+
+	public function delete()
+	{
+		$this->deactivated = 1;
+		$this->save();
+	}
 }
 
 ?>
