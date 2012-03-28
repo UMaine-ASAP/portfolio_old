@@ -104,7 +104,7 @@ DROP TABLE IF EXISTS `REPO_Assignments`;
 CREATE TABLE `REPO_Assignments` (
   `assign_id` INTEGER NOT NULL AUTO_INCREMENT,
   `section_id` INTEGER NOT NULL,
-  `portfolio_id` INTEGER NOT NULL,
+  `portfolio_id` INTEGER NULL DEFAULT NULL,
   `creator_user_id` INTEGER NOT NULL,
   `title` VARCHAR(255) NOT NULL,
   `description` TEXT NULL DEFAULT NULL,
