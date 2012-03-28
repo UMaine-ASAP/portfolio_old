@@ -3,7 +3,8 @@
 require_once(__DIR__ . '/../libraries/Idiorm/idiorm.php');
 require_once(__DIR__ . '/../libraries/Paris/paris.php');
 require_once(__DIR__ . '/../models/mappings.php');
-include_once(__DIR__ . '/../libraries/constant.php');
+require_once(__DIR__ . '/../models/assignment.php');
+require_once(__DIR__ . '/../libraries/constant.php');
 
 DEFINE("USER_ID", 2);
 
@@ -95,20 +96,44 @@ class Portfolio extends Model
 	}
 
 	/**
-	 * Overridden delete function to handle the removal of all permissions for this Portfolio.
+	 * Overridden delete function to handle the removal of all hanging dependencies on this Portfolio.
 	 */
 	public function delete()
 	{
+		// Remove all references to this Portfolio by Assignments
+		$assignments = Model::factory('Assignment')
+			->where('portfolio_id', $this->id())
+			->find_many();
+		foreach ($assignments as $assign)
+		{
+			$assign->portfolio_id = NULL;
+			$assign->save();
+		}
+
+		// Remove all references to this Portfolio by Projects
+		$projects = Model::factory('PortfolioProjectMap')
+			->where('port_id', $this->id())
+			->find_many();
+		foreach ($projects as $proj)
+		{
+			$proj->delete();
+		}
+		
 		// Remove all Groups' permissions on this Portfolio
 		$groups = $this->groupsWithPermission();
 		foreach ($groups as $group=>$permissions)
 		{
 			foreach ($permissions as $perm)
 			{
-				// Delete
+				Model::factory('PortfolioAccessMap')
+					->where('port_id', $this->id())
+					->where('group_id', $group)
+					->where('access_type', $perm)
+					->find_one()
+					->delete();
 			}
 		}
-		
+
 		parent::delete();
 	}
 
