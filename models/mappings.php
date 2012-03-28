@@ -23,7 +23,25 @@ class PortfolioProjectMap extends Model
 class AssignmentAccessMap extends Model
 {
 	public static $_table = 'REPO_Assignment_access_map';
-	public static $_id_column = 'assign_id';
+	public static $_id_column = 'id';
+}
+
+class PortfolioAccessMap extends Model
+{
+	public static $_table = 'REPO_Portfolio_access_map';
+	public static $_id_column = 'id';
+}
+
+class MediaAccessMap extends Model
+{
+	public static $_table = 'REPO_Media_access_map';
+	public static $_id_column = 'id';
+}
+
+class ProjectAccessMap extends Model
+{
+	public static $_table = 'REPO_Project_access_map';
+	public static $_id_column = 'id';
 }
 
 class GroupUserRoleMap extends Model
