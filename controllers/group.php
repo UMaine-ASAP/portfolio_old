@@ -12,7 +12,7 @@ class GroupController
 	 *		@param int owner is the owner of the group (not sure what this corresponds to)
 	 *		@param int type is the type of the group
 	 *
-	 *	Returns: the Group object if creation was successful, otherwise false
+	 *	@return the Group object if creation was successful, otherwise false
 	 */
 	static function createGroup($name, $description, $global, $owner, $type)
 	{
@@ -36,7 +36,7 @@ class GroupController
 	 *	Deletes a group with the specified ID.
 	 *		@param int id is the ID of the group to delete
 	 *
-	 *	Returns: true if deletion was successful, otherwise false
+	 *	@return true if deletion was successful, otherwise false
 	 */
 	static function deleteGroup($id)
 	{
@@ -55,7 +55,7 @@ class GroupController
 	 * Gets a Group object with the specified ID.
 	 *		@param int id is the ID of the group to look for
 	 *	
-	 *	Returns: the Group object if one was found, otherwise false
+	 *	@return the Group object if one was found, otherwise false
 	 */
 	static function getGroup($id)
 	{
@@ -70,7 +70,7 @@ class GroupController
 	 *		@param int owner is the owner of the group (still not sure what this corresponds to)
 	 *		@param int type is the new type of the group
 	 *
-	 *	Returns: true if the update was successful, otherwise false
+	 *	@return true if the update was successful, otherwise false
 	 */
 	static function updateGroup($id, $name, $description, $global, $owner, $type)
 	{

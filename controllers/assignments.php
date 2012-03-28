@@ -116,7 +116,7 @@ class AssignmentController
 			return false;
 		}
 
-		return = Model::factory('Group')
+		return Model::factory('Group')
 					-> where('group_id', $assignment->owner_id)
 					-> find_one();
 	}
