@@ -5,6 +5,9 @@ class Section extends Model
 	public static $_table = 'REPO_Sections';
 	public static $_id_column = 'section_id';
 
+	/**
+	 * @return the group that owns this section
+	 */
 	public function owner()
 	{
 		return Model::factory('Group')
@@ -12,6 +15,9 @@ class Section extends Model
 					-> find_one();
 	}
 
+	/**
+	 * @return the user who instructs this section
+	 */
 	public function instructor()
 	{
 		return Model::factory('User')
@@ -19,6 +25,9 @@ class Section extends Model
 					-> find_many();
 	}
 
+	/**
+	 * @return the classes in this section
+	 */
 	public function classes()
 	{
 		return Model::factory('ClassModel')

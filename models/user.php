@@ -85,7 +85,7 @@ class User extends Model
 	}
 
 	/**
-	 * sets the user's deactivated flag to 1 in the database
+	 * Sets the user's deactivated flag to 1 in the database
 	 */
 	public function delete()
 	{
