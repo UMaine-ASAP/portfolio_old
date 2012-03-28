@@ -14,7 +14,7 @@ class AssignmentController
 	 *		@param string name is the name of the assignment
 	 *		@param string description is the description of the assignment
 	 *
-	 *	Returns: the Assignment object if creation was successful, otherwise false
+	 *	@return the Assignment object if creation was successful, otherwise false
  	 */
 
 	static function createAssignment($section_id, $group_id, $owner_id, $collect_id, $name, $description)
@@ -40,7 +40,7 @@ class AssignmentController
 	 *	Gets a specific Assignment object.
 	 *		@param int $id is the ID of the project to get
 	 *
-	 *	Returns: the Assignment object if found, false otherwise
+	 *	@return the Assignment object if found, false otherwise
 	 */
 	static function getAssignment($id)
 	{
@@ -57,6 +57,7 @@ class AssignmentController
 	 *		@param string name is the new name of the assignment
 	 *		@param string description is the new description of the assignment
 	 *
+	 *	@return true if the edit was successful, false otherwise
 	 */
 	static function editAssignment($id, $section_id, $group_id, $owner_id, $collect_id, $name, $description)
 	{
@@ -86,7 +87,7 @@ class AssignmentController
 	 * Deletes an Assignment with the specified ID.
 	 *		@param int id is the ID of the assignment to delete
 	 *
-	 *	Returns: true if deletion succeeded, otherwise false
+	 *	@return true if deletion succeeded, otherwise false
 	 */
 	static function deleteAssignment($id)
 	{
@@ -104,7 +105,7 @@ class AssignmentController
 	 * Returns the group that owns a specified assignment.
 	 *		@param int id is the ID of the assigment whose owning group will be returned
 	 *
-	 *	Returns: the Group object corresponding to the assignment's owning group if found, otherwise false
+	 *	@return the Group object corresponding to the assignment's owning group if found, otherwise false
 	 */
 	static function getOwnerGroup($id)
 	{
