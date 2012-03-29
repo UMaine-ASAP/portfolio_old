@@ -3,6 +3,10 @@
 //require_once('libraries/Paris/paris.php');
 
 
+/**
+ * Assignment controller.
+ * @package Controllers
+ */
 class AssignmentController
 {
 	/**
