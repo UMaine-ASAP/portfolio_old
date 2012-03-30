@@ -1,16 +1,9 @@
--- GROUPS
-INSERT INTO `AUTH_Groups` (name, description, private) VALUES 
-('asap', 'ASAP Media Services', 0),
-('NMD302 Group 4', 'Developing a touch wall', 1),
-('CUGR Showcase', 'Yearly showcase of undergraduate research', 0),
-('MAT258 Group 2', 'Studying something related to mathematics', 1);
-
 -- ROLES
-INSERT INTO `AUTH_Roles` (name, description) VALUES 
-('coder', 'Programmer in the group'),
-('artist', 'In charge of visual design'),
-('scribe', 'Handles documentation of project, meeting nots, etc.'),
-('manager', 'Handles managerial logistics');
+-- INSERT INTO `AUTH_Roles` (name, description) VALUES 
+-- ('coder', 'Programmer in the group'),
+-- ('artist', 'In charge of visual design'),
+-- ('scribe', 'Handles documentation of project, meeting nots, etc.'),
+-- ('manager', 'Handles managerial logistics');
 
 -- USER TYPES
 INSERT INTO `AUTH_User_types` (name, description) VALUES 
@@ -34,12 +27,20 @@ INSERT INTO `REPO_Access_levels` (name, description) VALUES
 ('owner', 'Owner of the resource, can do anything they want'),
 ('write', 'Can only write to resource, cannot view'),
 ('edit', 'Can only edit the existing resource, cannot add sub-Resources'),
-('read', 'Can only view the resource, make no changes');
+('read', 'Can only view the resource, make no changes'),
+('submit', 'User can only submit new material to resource for approval');
 
 -- USERS (NO MAJORS/MINORS)
 INSERT INTO `AUTH_Users` (username, pass, first, middle, last, email, email_priv, bio, type_id) VALUES 
 ('fergie', 'password1', 'President', 'Paul', 'Ferguson', 'fergaliciousDef@maine.edu', 0, '', 1),
 ('asap', 'asap4u', 'ASAP', '', 'Media Services', 'ASAP@maine.edu', 0, '', 1);
+
+-- GROUPS
+INSERT INTO `AUTH_Groups` (name, description, owner_user_id, private) VALUES 
+('asap', 'ASAP Media Services', 1, 0),
+('NMD302 Group 4', 'Developing a touch wall', 1, 1),
+('CUGR Showcase', 'Yearly showcase of undergraduate research', 1, 0),
+('MAT258 Group 2', 'Studying something related to mathematics', 1, 1);
 
 -- GROUP USER MAP
 INSERT INTO `AUTH_Group_user_map` (group_id, user_id) VALUES 
@@ -49,21 +50,21 @@ INSERT INTO `AUTH_Group_user_map` (group_id, user_id) VALUES
 (4, 2);
 
 -- GROUP USER ROLE MAP
-INSERT INTO `AUTH_Group_user_role_map` (group_id, user_id, role_id) VALUES 
-(1, 2, 1),
-(1, 2, 2),
-(1, 2, 3),
-(1, 2, 4),
-(3, 1, 2);
+-- INSERT INTO `AUTH_Group_user_role_map` (group_id, user_id, role_id) VALUES 
+-- (1, 2, 1),
+-- (1, 2, 2),
+-- (1, 2, 3),
+-- (1, 2, 4),
+-- (3, 1, 2);
 
 -- COLLEGES
-INSERT INTO `REPO_Colleges` (name, description, owner_group_id) VALUES 
+INSERT INTO `REPO_Colleges` (name, description, owner_user_id) VALUES 
 ('Liberal Arts & Sciences', 'College of Liberal Arts and Sciences', 1),
 ('Engineering', 'College of Engineering', 1),
 ('Business', 'College of Business', 1);
 
 -- DEPARTMENTS
-INSERT INTO `REPO_Departments` (college_id, name, description, owner_group_id) VALUES 
+INSERT INTO `REPO_Departments` (college_id, name, description, owner_user_id) VALUES 
 (1, 'Computer Science', 'The best department on campus', 1),
 (1, 'New Media', 'Meh', 1),
 (1, 'Mathematics', '++', 1),
@@ -75,7 +76,7 @@ INSERT INTO `REPO_Departments` (college_id, name, description, owner_group_id) V
 (3, 'Finance', 'Kind of like economics', 1);
 
 -- CLASSES
-INSERT INTO `REPO_Classes` (dept_id, number, title, description, owner_group_id) VALUES 
+INSERT INTO `REPO_Classes` (dept_id, number, title, description, owner_user_id) VALUES 
 (1, 125, 'Intro To Programming', 'Python taught the hard way', 2),
 (1, 250, 'Discrete Math', 'Farely.', 1),
 (2, 302, 'Interaction Design', 'Building a touch wall', 2),
@@ -102,9 +103,16 @@ INSERT INTO `REPO_Day_schedules` (days_of_week) VALUES
 ('Online');
 
 -- SECTIONS
-INSERT INTO `REPO_Sections` (class_id, group_id, section_number, day_sched, time, owner_group_id, instructor_user_id, semester, year, designator, description) VALUES 
-(3, 2, '0001', 4, '6:00 PM', 1, 1, 'Spring', 2012, 'NMD', 'Interaction Design'),
-(5, 4, '0001', 8, '', 4, 1, 'Spring', 2012, 'MAT', 'Diff Eqs. & Lin Alg.');
+INSERT INTO `REPO_Sections` (class_id, section_number, day_sched, time, instructor_user_id, semester, year, designator, description) VALUES 
+(3, '0001', 4, '6:00 PM', 1, 'Spring', 2012, 'NMD', 'Interaction Design'),
+(5, '0001', 8, '', 1, 'Spring', 2012, 'MAT', 'Diff Eqs. & Lin Alg.');
+
+-- SECTION ACCESS_LEVEL MAP
+INSERT INTO `REPO_Section_access_map` (section_id, group_id, access_type) VALUES 
+(1, 1, 5),
+(1, 2, 5),
+(2, 1, 5),
+(2, 2, 5);
 
 -- PORTFOLIOS
 INSERT INTO `REPO_Portfolios` (owner_user_id, title, description, private) VALUES 
@@ -117,9 +125,7 @@ INSERT INTO `REPO_Portfolios` (owner_user_id, title, description, private) VALUE
 INSERT INTO `REPO_Portfolio_access_map` (port_id, group_id, access_type) VALUES 
 (1, 1, 1),
 (1, 1, 2),
-(2, 4, 1),
-(3, 2, 1),
-(4, 3, 1);
+(3, 2, 1);
 
 -- ASSIGNMENTS
 INSERT INTO `REPO_Assignments` (section_id, portfolio_id, creator_user_id, title, description, requirements, due_date) VALUES 
@@ -138,22 +144,19 @@ INSERT INTO `REPO_Media_types` (name, description) VALUES
 ('video', 'Video file');
 
 -- MEDIA
-INSERT INTO `REPO_Media` (type, title, description, created, edited, creator_user_id, owner_group_id, filename) VALUES 
-(1, 'NMD302 Touch Wall Tangible', 'Tangible describing the development and implementation of a large-scale multi-touch wall display', '2012-2-3', NULL, 1, 2, '/path/to/file.txt'),
-(2, 'NMD302 Touch Wall Illustration', 'Illustration of conceptualized touch wall', '2012-2-3', NULL, 1, 2, '/path/to/file.png'),
-(1, 'NMD302 Scratch Sensor Tangible', 'Tangible describing the research and development of sensors to detech scrathing as input to applications', '2012-2-3', '2012-2-5', 1, 2, '/short/path/to/crazy/intense/file.txt'),
-(2, 'MAT258 Homework 5', 'Submission', '2012-1-1', NULL, 2, 4, '/math/file.png'),
-(2, 'MAT258 Homework 5', 'Submission', '2012-2-1', NULL, 2, 4, '/math/file2.svg'),
-(3, 'Crazy Video of Research', 'CUGR 2012 Submission', '2012-3-2', NULL, 2, 3, '/cugr/sub1.mpeg');
+INSERT INTO `REPO_Media` (type, title, description, created, edited, creator_user_id, filename) VALUES 
+(1, 'NMD302 Touch Wall Tangible', 'Tangible describing the development and implementation of a large-scale multi-touch wall display', '2012-2-3', NULL, 1, '/path/to/file.txt'),
+(2, 'NMD302 Touch Wall Illustration', 'Illustration of conceptualized touch wall', '2012-2-3', NULL, 1, '/path/to/file.png'),
+(1, 'NMD302 Scratch Sensor Tangible', 'Tangible describing the research and development of sensors to detech scrathing as input to applications', '2012-2-3', '2012-2-5', 1, '/short/path/to/crazy/intense/file.txt'),
+(2, 'MAT258 Homework 5', 'Submission', '2012-1-1', NULL, 2, '/math/file.png'),
+(2, 'MAT258 Homework 5', 'Submission', '2012-2-1', NULL, 2, '/math/file2.svg'),
+(3, 'Crazy Video of Research', 'CUGR 2012 Submission', '2012-3-2', NULL, 2, '/cugr/sub1.mpeg');
 
 -- MEDIA ACCESS_LEVEL MAP
 INSERT INTO `REPO_Media_access_map` (media_id, group_id, access_type) VALUES 
 (1, 2, 1),
 (2, 2, 1),
-(3, 2, 1),
-(4, 4, 1),
-(5, 4, 1),
-(6, 3, 1);
+(3, 2, 1);
 
 -- PROJECT TYPES
 INSERT INTO `REPO_Project_types` (name, description) VALUES 
