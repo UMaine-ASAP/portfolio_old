@@ -188,6 +188,24 @@ class Portfolio extends Model
 		}
 		return $return;
 	}
+
+	/**
+	 * Add a permission level for a Group in regards to this Portfolio.
+	 *
+	 * @param	int		$group		The identifier of the Group objects we seek to add permissions to.
+	 * @param	int		$perm		The permission level as specified in 'constant.php' for the Group.
+	 *
+	 * @return	bool				True if successful, false otherwise.
+	 */
+	public function addPermissionForGroup($group, $perm)
+	{
+		$map = Model::factory('PortfolioAccessMap')->create();
+		$map->port_id = $this->id();
+		$map->group_id = $group;
+		$map->access_type = $perm;
+
+		$map->save();
+	}
 }
 
 ?>

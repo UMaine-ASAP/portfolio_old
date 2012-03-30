@@ -15,6 +15,12 @@ class ProjectMediaMap extends Model
 	public static $_id_column = 'proj_id';
 }
 
+class SectionAccessMap extends Model
+{
+	public static $_table = 'REPO_Section_access_map';
+	public static $_id_column = 'id';
+}
+
 class PortfolioProjectMap extends Model
 {
 	public static $_table = 'REPO_Portfolio_project_map';

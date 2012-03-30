@@ -2,6 +2,7 @@
 
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
+require_once('controllers/group.php');
 
 /**
  * Controller handling all aspects of Portfolio objects within the system.
@@ -31,14 +32,21 @@ class PortfolioController
 		$port->description = $description;
 		$port->private = $private;
 
-		//TODO: Add owner privileges
-		//$group = Model::factory('Group') -> create();
-		//$group->name = $port->title . " owners";
-		//$group->description = "Portfolio owners";
-		//$group->private = 1;
-		//$group->save();
+		// Create owner of the new Portfolio
+		$group = createGroup(
+			
+			$group->name = $port->title . " owners";
+		$group->description = "Portfolio owners";
+		$group->private = 1;
+		$group->save();
+		
+		$port->addPermissionForGroup($group->id(), OWNER);
 
-		$port->save();
+		if (!$port->save())
+		{
+			return false;
+		}
+		
 		return $port;
 	}
 
@@ -74,8 +82,12 @@ class PortfolioController
 
 		if ($title) 		{ $port->title = $title; }
 		if ($description) 	{ $port->description = $description; }
-		if ($private) { $port->private = $private; }
-		$port->save();
+		if ($private) 		{ $port->private = $private; }
+			
+		if (!$port->save())
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -101,7 +113,6 @@ class PortfolioController
 			return false;
 		}
 
-		// TODO: Clean up permissions
 		$port->delete();
 		return true;
 	}
@@ -118,12 +129,12 @@ class PortfolioController
 	 */
 	static function getPortfolio($id)
 	{
-		$return = Model::factory('Portfolio')
+		$port = Model::factory('Portfolio')
 			->find_one($id);
 
-		if ($return)
+		if ($port)
 		{
-			return $return;
+			return $port;
 		}
 		else
 		{
@@ -287,14 +298,14 @@ class PortfolioController
 	 *									If no permissions, returns empty array.
 	 *									If no portfolio with the specified identifier
 	 */
-	static function getPortfolioPermissionsForGroup($portfolio, $group)
+	static function getPortfolioPermissionsForUser($portfolio, $user)
 	{
 		$port = Model::factory('Portfolio')
 			->find_one($portfolio);
 		
 		if ($port)
 		{
-			return $port->getPortfolioPermissionsForGroup($group);
+			return $port->getPortfolioPermissionsForUser($user);
 		}
 		else
 		{
