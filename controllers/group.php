@@ -16,7 +16,10 @@ class GroupController
 	 */
 	static function createGroup($title, $description, $private)
 	{
-		$newGroup = Model::factory('Group')->create();
+		if (!$newGroup = Model::factory('Group')->create())
+		{
+			return false;
+		}
 
 		$newGroup->title = $title;
 		$newGroup->description = $description;
@@ -26,6 +29,7 @@ class GroupController
 
 		if (!$newGroup->save())
 		{
+			$newGroup->delete();	// we assume this succeeds, else garbage collects in DB
 			return false;
 		}
 
@@ -40,15 +44,12 @@ class GroupController
 	 */
 	static function deleteGroup($id)
 	{
-		$toDelete = Model::factory('Group')->find_one($id);
-
-		if(!toDelete)
+		if (!$toDelete = Model::factory('Group')->find_one($id))
 		{
 			return false;
 		}
 
-		$toDelete->delete();
-		return true;
+		return $toDelete->delete();
 	}
 
 	/**
@@ -74,21 +75,18 @@ class GroupController
 	 */
 	static function updateGroup($id, $title = NULL, $description = NULL, $global = NULL, $owner = NULL, $type = NULL)
 	{
-		$groupToUpdate = self::getGroup($id);
-
-		if(!$groupToUpdate)
+		if (!$groupToUpdate = self::getGroup($id))
 		{
 			return false;
 		}
 
-		if (isset($title) { $groupToUpdate->title = $title; }
-		if (isset($description) { $groupToUpdate->description = $description; }
-		if (isset($global) { $groupToUpdate->global = $global; }
-		if (isset($owner) { $groupToUpdate->owner = $owner; }
-		if (isset($type) { $groupToUpdate->type = $type; }
+		if (isset($title)		{ $groupToUpdate->title = $title; }
+		if (isset($description)	{ $groupToUpdate->description = $description; }
+		if (isset($global)		{ $groupToUpdate->global = $global; }
+		if (isset($owner)		{ $groupToUpdate->owner = $owner; }
+		if (isset($type)		{ $groupToUpdate->type = $type; }
 
-		$groupToUpdate->save();
-		return true;
+		return $groupToUpdate->save();
 	}
 }
 

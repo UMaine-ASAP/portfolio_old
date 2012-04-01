@@ -45,6 +45,7 @@ class Portfolio extends Model
 				->where('access.port_id', $this->id())
 				->where('AUTH_Group_user_map.user_id', USER_ID)
 				->find_many();
+			
 			$return = array();
 			foreach ($result as $perm)
 			{	// Results are returned as ORM objects, de-reference them
@@ -54,10 +55,10 @@ class Portfolio extends Model
 			break;
 		
 		case 'children':
-			$result = ORM::for_table('REPO_Portfolio_project_map')
-				->table_alias('map')
-				->where('map.port_id', $this->id())
+			$result = Model::factory('PortfolioProjectMap')
+				->where('port_id', $this->id())
 				->find_many();
+			
 			$return = array();
 			foreach ($result as $child)
 			{	// De-reference ORM object
@@ -101,7 +102,8 @@ class Portfolio extends Model
 	public function delete()
 	{
 		// Remove all references to this Portfolio by Assignments
-		$assignments = Model::factory('Assignment')
+		$assignments = getAssignmentsForPortoflio($this->id());
+			Model::factory('Assignment')
 			->where('portfolio_id', $this->id())
 			->find_many();
 		foreach ($assignments as $assign)
@@ -146,10 +148,10 @@ class Portfolio extends Model
 	 */
 	public function groupsWithPermission()
 	{
-		$result = ORM::for_table('REPO_Portfolio_access_map')
-			->table_alias('access')
-			->where('access.port_id', $this->id())
+		$result = Model::Factory('PortfolioAccessMap')
+			->where('port_id', $this->id())
 			->find_many();
+
 		$return = array();
 		foreach ($result as $perm)
 		{
@@ -175,15 +177,14 @@ class Portfolio extends Model
 	 */
 	public function permissionsForGroup($group)
 	{
-		$result = ORM::for_table('REPO_Portfolio_access_map')
-			->table_alias('access')
-			->select('access.access_type')
-			->where('access.port_id', $this->id())
-			->where('access.group_id', $group)
+		$result = Model::factory('PortfolioAccessMap')
+			->where('port_id', $this->id())
+			->where('group_id', $group)
 			->find_many();
+		
 		$return = array();
 		foreach($result as $perm)
-		{	// De-reference results into raw array
+		{	// De-reference ORM results into raw array
 			$return[] = $perm->access_type;
 		}
 		return $return;
@@ -199,12 +200,16 @@ class Portfolio extends Model
 	 */
 	public function addPermissionForGroup($group, $perm)
 	{
-		$map = Model::factory('PortfolioAccessMap')->create();
+		if (!$map = Model::factory('PortfolioAccessMap')->create())
+		{
+			return false;
+		}
+		
 		$map->port_id = $this->id();
 		$map->group_id = $group;
 		$map->access_type = $perm;
 
-		$map->save();
+		return $map->save();
 	}
 }
 

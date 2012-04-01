@@ -27,23 +27,22 @@ class PortfolioController
 	static function createPortfolio($title, $description, $private)
 	{
 		//TODO: check privileges here
-		$port = Model::factory('Portfolio') -> create();
+		if (!$port = Model::factory('Portfolio')->create())
+		{
+			return false;
+		}
+
 		$port->title = $title;
 		$port->description = $description;
 		$port->private = $private;
 
 		// Create owner of the new Portfolio
-		$group = createGroup(
-			
-			$group->name = $port->title . " owners";
-		$group->description = "Portfolio owners";
-		$group->private = 1;
-		$group->save();
-		
+		$group = createGroup($title . " owners", "Portfolio owners", 1);
 		$port->addPermissionForGroup($group->id(), OWNER);
 
 		if (!$port->save())
 		{
+			$port->delete();	// we assume this succeeds, else garbage collects in DB
 			return false;
 		}
 		
@@ -68,24 +67,22 @@ class PortfolioController
 	 *
 	 *	@return	bool					True if successfully edited, false otherwise.
 	 */
-	static function editPortfolio($id, $title, $description, $private)
+	static function editPortfolio($id, $title = NULL, $description = NULL, $private = NULL)
 	{
-		$port = Model::factory('Portfolio')
-			-> find_one($id);
-
-		if (!$port)
+		if (!$port = Model::factory('Portfolio')->find_one($id))
 		{
 			return false;
 		}
 
 		//TODO: check privileges here
 
-		if ($title) 		{ $port->title = $title; }
-		if ($description) 	{ $port->description = $description; }
-		if ($private) 		{ $port->private = $private; }
+		if (isset($title)) 			{ $port->title = $title; }
+		if (isset($description)) 	{ $port->description = $description; }
+		if (isset($private)) 		{ $port->private = $private; }
 			
 		if (!$port->save())
 		{
+			$port->delete();	// assume this succeeds (see above)
 			return false;
 		}
 
@@ -105,16 +102,14 @@ class PortfolioController
 	 */
 	static function deletePortfolio($id)
 	{
-		$port = Model::factory('Portfolio')
-			-> find_one($id);
-
-		if (!port)
+		if (!$port = Model::factory('Portfolio')->find_one($id))
 		{
 			return false;
 		}
 
-		$port->delete();
-		return true;
+		//TODO: check privileges here
+
+		return $port->delete();
 	}
 
 
@@ -129,17 +124,7 @@ class PortfolioController
 	 */
 	static function getPortfolio($id)
 	{
-		$port = Model::factory('Portfolio')
-			->find_one($id);
-
-		if ($port)
-		{
-			return $port;
-		}
-		else
-		{
-			return false;
-		}
+		return Model::factory('Portfolio')->find_one($id);
 	}
 
 

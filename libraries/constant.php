@@ -39,6 +39,10 @@ DEFINE("EDIT", 	2);
  * Has the ability to read an object's values only.
  */
 DEFINE("READ",	3);
-
+/**
+ * SUBMIT
+ * Has the ability to submit resources as sub-resources (i.e. submit a Project/Portfolio to a Portfolio)
+ */
+DEFINE("SUBMIT", 4);
 
 ?>
