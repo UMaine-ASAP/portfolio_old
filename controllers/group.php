@@ -1,31 +1,36 @@
 <?php
 
+require_once('libraries/Idiorm/idiorm.php');
+require_once('libraries/Paris/paris.php');
+require_once('libraries/constant.php');
+require_once('models/group.php');
+
 /**
  * Group controller.
+ *
  * @package Controllers
  */
 class GroupController
 {
 	/**
 	 *	Creates a group and adds it to the database.
-	 *		@param string title is the title of the group
+	 *		@param string name is the name of the group
 	 *		@param string description is the description of the group
 	 *		@param bool private is true if the group is not globally visible, false otherwise
 	 *
 	 *	@return the Group object if creation was successful, otherwise false
 	 */
-	static function createGroup($title, $description, $private)
+	static function createGroup($name, $description, $private)
 	{
 		if (!$newGroup = Model::factory('Group')->create())
 		{
 			return false;
 		}
 
-		$newGroup->title = $title;
+		$newGroup->name = $name;
 		$newGroup->description = $description;
 		$newGroup->private = $private;
-		// $newGroup->owner_user_id = USER_ID
-		$newGroup->owner_user_id = 1;	// should find auth'd user's ID
+		$newGroup->owner_user_id = USER_ID;	// should find auth'd user's ID
 
 		if (!$newGroup->save())
 		{
@@ -65,7 +70,7 @@ class GroupController
 
 	/**
 	 * Updates a Group object with the specified ID.
-	 *		@param string|null title is the new title of the group
+	 *		@param string|null name is the new name of the group
 	 *		@param string|null description is the description of the group
 	 *		@param bool|null global specifies whether or not the group is global
 	 *		@param int|null owner is the owner of the group (still not sure what this corresponds to)
@@ -73,18 +78,18 @@ class GroupController
 	 *
 	 *	@return true if the update was successful, otherwise false
 	 */
-	static function updateGroup($id, $title = NULL, $description = NULL, $global = NULL, $owner = NULL, $type = NULL)
+	static function updateGroup($id, $name = NULL, $description = NULL, $global = NULL, $owner = NULL, $type = NULL)
 	{
 		if (!$groupToUpdate = self::getGroup($id))
 		{
 			return false;
 		}
 
-		if (isset($title)		{ $groupToUpdate->title = $title; }
-		if (isset($description)	{ $groupToUpdate->description = $description; }
-		if (isset($global)		{ $groupToUpdate->global = $global; }
-		if (isset($owner)		{ $groupToUpdate->owner = $owner; }
-		if (isset($type)		{ $groupToUpdate->type = $type; }
+		if (isset($name))			{ $groupToUpdate->name = $name; }
+		if (isset($description))	{ $groupToUpdate->description = $description; }
+		if (isset($global))			{ $groupToUpdate->global = $global; }
+		if (isset($owner))			{ $groupToUpdate->owner = $owner; }
+		if (isset($type))			{ $groupToUpdate->type = $type; }
 
 		return $groupToUpdate->save();
 	}

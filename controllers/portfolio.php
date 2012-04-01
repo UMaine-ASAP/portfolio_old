@@ -35,16 +35,17 @@ class PortfolioController
 		$port->title = $title;
 		$port->description = $description;
 		$port->private = $private;
-
-		// Create owner of the new Portfolio
-		$group = createGroup($title . " owners", "Portfolio owners", 1);
-		$port->addPermissionForGroup($group->id(), OWNER);
-
+		$port->owner_user_id = USER_ID;	// check user credentials
+		
 		if (!$port->save())
 		{
 			$port->delete();	// we assume this succeeds, else garbage collects in DB
 			return false;
 		}
+
+		// Create owner of the new Portfolio
+		$group = GroupController::createGroup($title . " owners", "Portfolio owners", 1);
+		$port->addPermissionForGroup($group->id(), OWNER);
 		
 		return $port;
 	}
@@ -141,10 +142,10 @@ class PortfolioController
 	 *
 	 *	@return	array|bool				An array of Portfolio objects if successful, false otherwise.
 	 */
-	 static function getMemberPortfolios($count, $order_by, $pos)
-	 {
-		 return false;
-	 }
+	static function getMemberPortfolios($count, $order_by, $pos)
+	{
+	    return false;
+	}
 
 
 	/**
@@ -160,10 +161,10 @@ class PortfolioController
 	 *
 	 *	@return	array|bool				An array of Portfolio objects if successful, false otherwise.
 	 */
-	 static function getIncludedPortfolios($count, $order_by, $pos)
-	 {
-		 return false;
-	 }
+	static function getIncludedPortfolios($count, $order_by, $pos)
+	{
+	    return false;
+	}
 
 
 	/**
@@ -179,10 +180,10 @@ class PortfolioController
 	 *
 	 *	@return	array|bool				An array of Portfolio objects if successful, false otherwise.
 	 */
-	 static function getPublicPortfolios($count, $order_by, $pos)
-	 {
-		 return false;
-	 }
+	static function getPublicPortfolios($count, $order_by, $pos)
+	{
+	    return false;
+	}
 
 
 	/**
@@ -196,30 +197,74 @@ class PortfolioController
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */
-	 static function addSubPortfolio($parent, $child)
-	 {
-	 	if ($parent == $child)
-	 	{
-	 		return false; // Can't make a portfolio its own sub-portfolio
-	 	}
-
-	 	$parentPortfolio = Model::factory('Portfolio')
-	 		-> find_one($parent);
-
-	 	$childPortfolio = Model::factory('Portfolio')
-	 		-> find_one($child);
-
-	    // Check to make sure that both portfolios were found
-	 	if ($parentPortfolio == false || $childPortfolio == false)
-	 	{
-	 		return false;
+	static function addSubPortfolio($parent, $child)
+	{
+		if ($parent == $child)
+		{
+	   		return false; // Can't make a portfolio its own sub-portfolio
 		}
 
+		$parentPortfolio = Model::factory('Portfolio')
+			->find_one($parent);
+
+		$childPortfolio = Model::factory('Portfolio')
+			->find_one($child);
+
+		// Check to make sure that both portfolios were found
+		if (!$parentPortfolio || !$childPortfolio)
+		{
+			return false;
+		}
+
+		echo "Checking circular refs . . .\n";
 		// Check to make sure no circular references
+		if (PortfolioController::portfolioHasCircularRefs($parent, $child))
+		{
+			return false;
+		}
+		echo "Refs check out!\n";
+		$map = Model::factory('PortfolioProjectMap')->create();
+		$map->port_id = $parent;
+		$map->child_id = $child;
+		$map->child_is_portfolio = 1;
 
+		return $map->save();
+	}
 
+	/**
+	 * Checks the given Portfolio's children for references to the parent Portfolio.
+	 *	In order to do so, we recursively check all sub-Portfolios of the child
+	 *	for a reference to the parent. This assumes that until this point, there
+	 *	have been no circular reference created below the parent already.
+	 *
+	 * @param	int		$parent			The indentifier of the parent Portfolio for whom we are
+	 * 									cocnerns a circular reference might exist beneath.
+	 * @param	int		$portfolio		The Portfolio whose children are to be checked for 
+	 * 									circular backreferences.
+	 *
+	 * @return	bool					True if there is a circular reference below the parent
+	 * 									through the child, false otherwise.
+	 */
+	static function portfolioHasCircularRefs($parent, $portfolio)
+	{
+		$children = Model::factory('Portfolio')
+			->find_one($portfolio)
+			->children;
 
-	 }
+		foreach ($children as $id=>$isPortfolio)
+		{
+			if ($id == $parent)
+			{
+				return true;
+			}
+			elseif ($isPortfolio && PortfolioController::portfolioHasCircularRefs($parent, $id))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 
 	/**
@@ -232,24 +277,24 @@ class PortfolioController
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */
-	 static function addProjectToPortfolio($parent, $child)
-	 {
-	 	$project = ProjectController::getProject($child);
-	 	$parentPort = getPortfolio($parent);
+	static function addProjectToPortfolio($parent, $child)
+	{
+		$project = ProjectController::getProject($child);
+		$parentPort = getPortfolio($parent);
 
-	 	if (!$project || !$parentPort)
-	 	{
-	 		return false;
-	 	}
+		if (!$project || !$parentPort)
+		{
+			return false;
+		}
 
-	 	$collectionMap = Model::factory('CollectionProjectMap')->create();
-	 	$collectionMap->collect_id = $parentPort->collect_id;
-	 	$collectionMap->proj_id = $project->proj_id;
+		$collectionMap = Model::factory('CollectionProjectMap')->create();
+		$collectionMap->collect_id = $parentPort->collect_id;
+		$collectionMap->proj_id = $project->proj_id;
 
-	 	$collectionMap->save();
+		$collectionMap->save();
 
-		 return true;
-	 }
+	    return true;
+	}
 
 
 	/**
@@ -264,10 +309,10 @@ class PortfolioController
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */
-	 static function removeChildFromPortfolio($parent, $child, $isSubPortfolio)
-	 {
-		 return false;
-	 }
+	static function removeChildFromPortfolio($parent, $child, $isSubPortfolio)
+	{
+	    return false;
+	}
 
 
 	/**
@@ -313,10 +358,10 @@ class PortfolioController
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */
-	 static function addPortfolioPermissionsForGroup($portfolio, $group, $permission)
-	 {
-		return false;
-	 }
+	static function addPortfolioPermissionsForGroup($portfolio, $group, $permission)
+	{
+	   return false;
+	}
 
 
 	/**
@@ -332,10 +377,10 @@ class PortfolioController
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */
-	 static function removePortfolioPermissionsForGroup($portfolio, $group, $permission)
-	 {
-		 return false;
-	 }
+	static function removePortfolioPermissionsForGroup($portfolio, $group, $permission)
+	{
+	    return false;
+	}
 }
 
 

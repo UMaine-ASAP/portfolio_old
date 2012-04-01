@@ -1,12 +1,10 @@
 <?php
 
-require_once(__DIR__ . '/../libraries/Idiorm/idiorm.php');
-require_once(__DIR__ . '/../libraries/Paris/paris.php');
-require_once(__DIR__ . '/../models/mappings.php');
-require_once(__DIR__ . '/../models/assignment.php');
-require_once(__DIR__ . '/../libraries/constant.php');
-
-DEFINE("USER_ID", 2);
+require_once('libraries/Idiorm/idiorm.php');
+require_once('libraries/Paris/paris.php');
+require_once('models/mappings.php');
+require_once('models/assignment.php');
+require_once('libraries/constant.php');
 
 /**
  *	Portfolio model object
@@ -16,10 +14,10 @@ DEFINE("USER_ID", 2);
  *
  *	@property-read	array	$permissions	Array of permission levels specific to the requesting user.
  *											Each value corresponds to an enumerable value as specified in 'constants.php'.
- *	@property-read	array	$children		Array of tuples(arrays) specifying children Portfolio or Project objects underneath the current one.
- *											Tuples consist of:
- *												- Identifier of child Portfolio / Project object at index 0.
- *												- Boolean value specifying whether the child is a sub-Portfolio or Project
+ *	@property-read	array	$children		Associative array specifying children Portfolio or Project objects underneath the current one.
+ *											Each object in the array is structured as follows:
+ *												- Key = identifier of child Portfolio / Project object at index 0.
+ *												- Value = boolean value specifying whether the child is a sub-Portfolio or Project
  *												  (true = child is sub-Portfolio, false = child is not sub-Portfolio) at index 1.
  *
  * 	@package Models
@@ -43,7 +41,7 @@ class Portfolio extends Model
 				->select('access.access_type')
 				->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
 				->where('access.port_id', $this->id())
-				->where('AUTH_Group_user_map.user_id', USER_ID)
+				->where('AUTH_Group_user_map.user_id', USER_ID)	// add user credentials here
 				->find_many();
 			
 			$return = array();
@@ -62,7 +60,7 @@ class Portfolio extends Model
 			$return = array();
 			foreach ($result as $child)
 			{	// De-reference ORM object
-				$return[] = array($child->child_id, $child->child_is_portfolio);
+				$return[$child->child_id] = $child->child_is_portfolio;
 			}
 			return $return;
 			break;
@@ -102,8 +100,8 @@ class Portfolio extends Model
 	public function delete()
 	{
 		// Remove all references to this Portfolio by Assignments
-		$assignments = getAssignmentsForPortoflio($this->id());
-			Model::factory('Assignment')
+		//$assignments = getAssignmentsForPortoflio($this->id());
+		$assignments = Model::factory('Assignment')
 			->where('portfolio_id', $this->id())
 			->find_many();
 		foreach ($assignments as $assign)
