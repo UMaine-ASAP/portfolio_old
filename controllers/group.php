@@ -14,6 +14,8 @@ class GroupController
 {
 	/**
 	 *	Creates a group and adds it to the database.
+	 *	User must be logged in with correct privileges.
+	 *
 	 *		@param string name is the name of the group
 	 *		@param string description is the description of the group
 	 *		@param bool private is true if the group is not globally visible, false otherwise
@@ -22,6 +24,8 @@ class GroupController
 	 */
 	static function createGroup($name, $description, $private)
 	{
+		//TODO: Check user permissions
+
 		if (!$newGroup = Model::factory('Group')->create())
 		{
 			return false;
@@ -43,18 +47,44 @@ class GroupController
 
 	/**
 	 *	Deletes a group with the specified ID.
-	 *		@param int id is the ID of the group to delete
+	 *
+	 *	Calling user must have ownership permissions on the Group.
+	 *
+	 *	@param int id is the ID of the group to delete
 	 *
 	 *	@return true if deletion was successful, otherwise false
 	 */
 	static function deleteGroup($id)
 	{
-		if (!$toDelete = Model::factory('Group')->find_one($id))
+		if (!$toDelete = GroupController::getGroup($id))
 		{
 			return false;
 		}
 
+		//TODO: Check if user has ownership privileges on Group
+		// $toDelete->permissions
+
 		return $toDelete->delete();
+	}
+
+	/**
+	 * 	Gets a Group object for the purpose of viewing
+	 *
+	 * 	@param	int		$id		The identifier of the requested Group object.
+	 *
+	 * 	@return	object|bool		The Group object if successful, false otherwise.
+	 */
+	static function viewGroup($id)
+	{
+		if (!$group = GroupController::getGroup($id))
+		{
+			return false;
+		}
+
+		//TODO: Check for viewing permissions
+		// $group->permissions
+
+		return $group
 	}
 
 	/**
@@ -63,7 +93,7 @@ class GroupController
 	 *	
 	 *	@return the Group object if one was found, otherwise false
 	 */
-	static function getGroup($id)
+	private static function getGroup($id)
 	{
 		return Model::factory('Group')->find_one($id);
 	}
@@ -84,6 +114,9 @@ class GroupController
 		{
 			return false;
 		}
+
+		//TODO: Check for editing permissions
+		// $groupToUpdate->permissions
 
 		if (isset($name))			{ $groupToUpdate->name = $name; }
 		if (isset($description))	{ $groupToUpdate->description = $description; }
