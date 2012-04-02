@@ -206,7 +206,7 @@ class Portfolio extends Model
 	 */
 	public function addPermissionForGroup($group, $perm)
 	{
-		if (Model::factory('PortfolioAccessMao')
+		if (Model::factory('PortfolioAccessMap')
 			->where('port_id', $this->id())
 			->where('group_id', $group)
 			->where('access_type', $perm)

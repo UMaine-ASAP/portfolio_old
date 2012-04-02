@@ -28,7 +28,7 @@ class PortfolioController
 	static function createPortfolio($title, $description, $private)
 	{
 		//TODO: check creation privileges here
-		//
+
 		if (!$port = Model::factory('Portfolio')->create())
 		{
 			return false;
@@ -72,12 +72,13 @@ class PortfolioController
 	 */
 	static function editPortfolio($id, $title = NULL, $description = NULL, $private = NULL)
 	{
-		//TODO: check edit privileges here
-
 		if (!$port = PortfolioController::getPortfolio($id))
 		{
 			return false;
 		}
+
+		//TODO: check edit privileges here
+		// $port->permissions
 
 		if (isset($title)) 			{ $port->title = $title; }
 		if (isset($description)) 	{ $port->description = $description; }
@@ -106,12 +107,13 @@ class PortfolioController
 	 */
 	static function deletePortfolio($id)
 	{
-		//TODO: check delete privileges here
-
 		if (!$port = PortfolioController::getPortfolio($id))
 		{
 			return false;
 		}
+
+		//TODO: check delete privileges here
+		// $port->permissions
 
 		return $port->delete();
 	}
@@ -129,9 +131,15 @@ class PortfolioController
 	 */
 	static function viewPortfolio($id)
 	{
-		//TODO: check view privileges here
+		if (!$port = PortfolioController::getPortfolio($id))
+		{
+			return false;
+		}
 
-		return PortfolioController::getPortfolio($id);
+		//TODO: check view privileges here
+		// $port->permissions
+
+		return $port;
 	}
 
 	/**
@@ -143,7 +151,7 @@ class PortfolioController
 	 *
 	 * 	@return	object|bool				The Portfolio object requested if successful, false otherwise.
 	 */
-	private function getPortfolio($id)
+	private static function getPortfolio($id)
 	{
 		return Model::factory('Portfolio')->find_one($id);
 	}
@@ -225,8 +233,6 @@ class PortfolioController
 	 */
 	static function addSubPortfolio($parent, $child)
 	{
-		//TODO: check submission/ownership privileges here
-
 		if ($parent == $child)
 		{
 	   		return false; // Can't make a portfolio its own sub-portfolio
@@ -234,6 +240,10 @@ class PortfolioController
 
 		$parentPortfolio = PortfolioController::getPortfolio($parent);
 		$childPortfolio = PortfolioController::getPortfolio($child);
+
+		//TODO: check submission/ownership privileges here
+		// $parentPortfolio->permissions
+		// $childPortfolio->permissions
 
 		// Check to make sure that both portfolios were found
 		if (!$parentPortfolio || !$childPortfolio)
@@ -260,6 +270,7 @@ class PortfolioController
 	 *
 	 *	Recursively check all sub-Portfolios of the child for a reference to the parent.
 	 *	Assumes that until this point, there have been no circular reference created below the parent already.
+	 *	NOTE: PHP will smash the stack if there are 100-200 levels of recursion.
 	 *
 	 *	@param	int		$parent			The indentifier of the parent Portfolio for whom we are
 	 *									cocnerns a circular reference might exist beneath.
@@ -269,7 +280,7 @@ class PortfolioController
 	 *	@return	bool					True if there is a circular reference below the parent
 	 * 									through the child, false otherwise.
 	 */
-	private function portfolioHasCircularRefs($parent, $port)
+	private static function portfolioHasCircularRefs($parent, $port)
 	{
 		if ($portfolio = PortfolioController::getPortfolio($port))
 		{
@@ -306,15 +317,16 @@ class PortfolioController
 	 */
 	static function addProjectToPortfolio($parent, $child)
 	{
-		//TODO: check submission/ownership privileges here
-
-		$parentPort = PortfolioController::getPortfolio($parent);
-		$project = ProjectController::getProject($child);
-
-		if (!$project || !$parentPort)
+		
+		if (!$parentPort = PortfolioController::getPortfolio($parent) ||
+			!$project = ProjectController::getProject($child))
 		{
 			return false;
 		}
+
+		//TODO: check submission/ownership privileges here
+		// $parentPort->permissions
+		// $project->permissions
 
 		$map = Model::factory('PortfolioProjectMap')->create();
 		$map->port_id = $parentPort->id();
@@ -338,12 +350,21 @@ class PortfolioController
 	 */
 	static function removeChildFromPortfolio($parent, $child)
 	{
-		//TODO: check ownership privileges here
+		if (!$parent = PortfolioController::getPortfolio($parent))
+		{
+			return false;
+		}
 
-		$map = Model::factory('PortfolioProjectMap')
+		//TODO: check ownership privileges here
+		// $parent->permissions
+
+		if (!$map = Model::factory('PortfolioProjectMap')
 			->where('port_id', $parent)
 			->where('child_id', $child)
-			->find_one();
+			->find_one())
+		{
+			return false;
+		}
 
 	    return $map->delete();
 	}
@@ -358,22 +379,24 @@ class PortfolioController
 	 *	Calling user must have ownership privileges for the Portfolio object.
 	 *
 	 *	@param	int		$port			The identifier of the Portfolio the Group is being assigned to.
-	 *	@param	int		$group			The identifier of the Group object recieving permissions for the Portfolio.
+	 *	@param	int		$grp			The identifier of the Group object recieving permissions for the Portfolio.
 	 *	@param	int		$permission		The type of permission being granted to the Group object,
 	 *	  								as specified in 'constant.php'.
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */
-	static function addPortfolioPermissionsForGroup($port, $group, $permission)
+	static function addPortfolioPermissionsForGroup($port, $grp, $permission)
 	{
-		//TODO: check ownership privileges here
-
-		if (!$portfolio = PortfolioController::getPortfolio($port))
+		if (!$portfolio = PortfolioController::getPortfolio($port) ||
+			!$group = GroupController::getGroup($grp))
 		{
 			return false;
 		}
 
-		return $portfolio->addPermissionForGroup($group, $permission);
+		//TODO: check ownership privileges here
+		// $portfolio->permissions
+
+		return $portfolio->addPermissionForGroup($grp, $permission);
 	}
 
 
@@ -393,13 +416,14 @@ class PortfolioController
 	 */
 	static function removePortfolioPermissionsForGroup($port, $group, $permission)
 	{
-		//TODO: check ownership privileges here
-		
 		if (!$portfolio = PortfolioController::getPortfolio($port))
 		{
 			return false;
 		}
 
+		//TODO: check ownership privileges here
+		// $portfolio->permissions
+		
 		return $portfolio->removePermissionForGroup($group, $perm);
 	}
 }
