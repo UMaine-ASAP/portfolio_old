@@ -16,7 +16,7 @@ class Project extends Model
 	 */
 	public function mediaMap()
 	{
-		return Model::factory('project_media_map')->find_one($this->proj_id);
+		return Model::factory('ProjectMediaMap')->find_one($this->id());
 	}
 
 	/**
@@ -39,7 +39,7 @@ class Project extends Model
 	public function creator()
 	{
 		return Model::factory('User')
-					-> where ('user_id', $this->creator_id)
+					-> where ('user_id', $this->creator_user_id)
 					-> find_one();
 	}
 }

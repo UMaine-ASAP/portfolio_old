@@ -3,16 +3,10 @@
 require_once(__DIR__ . '/../libraries/Idiorm/idiorm.php');
 require_once(__DIR__ . '/../libraries/Paris/paris.php');
 
-class ConnectionProjectMap extends Model
-{
-	public static $_table = "REPO_Collection_project_map";
-	public static $_id_column = "collect_id";
-}
-
 class ProjectMediaMap extends Model
 {
 	public static $_table = 'REPO_Project_media_map';
-	public static $_id_column = 'proj_id';
+	public static $_id_column = 'id';
 }
 
 class SectionAccessMap extends Model
@@ -24,7 +18,7 @@ class SectionAccessMap extends Model
 class PortfolioProjectMap extends Model
 {
 	public static $_table = 'REPO_Portfolio_project_map';
-	public static $_id_column = 'port_id';
+	public static $_id_column = 'id';
 }
 
 class AssignmentAccessMap extends Model
@@ -51,16 +45,16 @@ class ProjectAccessMap extends Model
 	public static $_id_column = 'id';
 }
 
-class GroupUserRoleMap extends Model
-{
-	public static $_table = 'AUTH_Group_user_role_map';
-	public static $_id_column = 'group_id';
-}
+// class GroupUserRoleMap extends Model
+// {
+// 	public static $_table = 'AUTH_Group_user_role_map';
+// 	public static $_id_column = 'id';
+// }
 
 class GroupUserMap extends Model
 {
 	public static $_table = 'AUTH_Group_user_map';
-	public static $_id_column = 'user_id';
+	public static $_id_column = 'id';
 }
 
 ?>

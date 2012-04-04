@@ -7,16 +7,16 @@ require_once('libraries/constant.php');
 class ProjectController
 {
 	/**
-	 *	Create a new Project object with the specified creator_id, name, abstract, description, and privacy.
+	 *	Create a new Project object with the specified creator_id, title, abstract, description, and privacy.
 	 *		@param int creator_user_id is the ID of the user creating the project
-	 *		@param string name is the name of the project
+	 *		@param string title is the title of the project
 	 *		@param string abstract is the abstract of the project
 	 *		@param string description is the description of the project
 	 *		@param bool privacy is the privacy of the project
 	 *
 	 *	@return the created Project object if successful, false otherwise.
 	 */
-	static function createProject($name, $abstract, $description, $privacy)
+	static function createProject($title, $description, $type, $privacy)
 	{
 		// Check for creation privileges
 
@@ -26,9 +26,9 @@ class ProjectController
 		}
 
 		$project->creator_user_id = USER_ID;	// Check for calling USER ID
-		$project->name = $name;
-		$project->abstract = $abstract;
+		$project->title = $title;
 		$project->description = $description;
+		$project->type = $type;
 		$project->private = $privacy;
 
 		if (!$project->save())
@@ -49,7 +49,7 @@ class ProjectController
 	 *
 	 *	@return true if the project was successfully edited, false otherwise
 	 */
-	static function editProject($id, $abstract, $description, $privacy)
+	static function editProject($id, $title, $description, $type, $privacy)
 	{
 		$project = self::getProject($id);
 
@@ -60,8 +60,9 @@ class ProjectController
 
 		// Check for editing permissions
 
-		if (!is_null($abstract))	{ $project->abstract = $abstract; }
+		if (!is_null($title))		{ $project->title = $title; }
 		if (!is_null($description))	{ $project->description = $description;	}
+		if (!is_null($type))		{ $project->type = $type; }
 		if (!is_null($privacy))		{ $project->privacy = $privacy; }
 
 		return $project->save();

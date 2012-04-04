@@ -2,7 +2,9 @@
 
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
+require_once('libraries/constant.php');
 require_once('controllers/group.php');
+require_once('models/mappings.php');
 
 /**
  * Controller handling all aspects of Portfolio objects within the system.
@@ -82,7 +84,7 @@ class PortfolioController
 
 		if (!is_null($title)) 		{ $port->title = $title; }
 		if (!is_null($description)) { $port->description = $description; }
-		if (!is_null($private)		{ $port->private = $private; }
+		if (!is_null($private))		{ $port->private = $private; }
 			
 		if (!$port->save())
 		{
@@ -225,40 +227,40 @@ class PortfolioController
 	 *	Calling user must have submission privileges on the parent Portfolio, as well as
 	 *	ownership privieges on the child Portfolio.
 	 *
-	 *	@param	int		$parent			The identifier of the parent Portfolio object.
-	 *	@param	int		$child			The identifier of the child sub-Portfolio object.
+	 *	@param	int		$parentId		The identifier of the parent Portfolio object.
+	 *	@param	int		$childId		The identifier of the child sub-Portfolio object.
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */
-	static function addSubPortfolio($parent, $child)
+	static function addSubPortfolio($parentId, $childId)
 	{
-		if ($parent == $child)
+		if ($parentId == $childId)
 		{
 	   		return false; // Can't make a portfolio its own sub-portfolio
 		}
 
-		$parentPortfolio = self::getPortfolio($parent);
-		$childPortfolio = self::getPortfolio($child);
+		$parent = self::getPortfolio($parentId);
+		$child = self::getPortfolio($childId);
 
 		//TODO: check submission/ownership privileges here
 		// $parentPortfolio->permissions
 		// $childPortfolio->permissions
 
 		// Check to make sure that both portfolios were found
-		if (!$parentPortfolio || !$childPortfolio)
+		if (!$parent || !$child)
 		{
 			return false;
 		}
 
 		// Check to make sure no circular references
-		if (self::portfolioHasCircularRefs($parent, $child))
+		if (self::portfolioHasCircularRefs($parentId, $childId))
 		{
 			return false;
 		}
 
 		$map = Model::factory('PortfolioProjectMap')->create();
-		$map->port_id = $parent;
-		$map->child_id = $child;
+		$map->port_id = $parentId;
+		$map->child_id = $childId;
 		$map->child_is_portfolio = 1;
 
 		return $map->save();
@@ -271,28 +273,25 @@ class PortfolioController
 	 *	Assumes that until this point, there have been no circular reference created below the parent already.
 	 *	NOTE: PHP will smash the stack if there are 100-200 levels of recursion.
 	 *
-	 *	@param	int		$parent			The indentifier of the parent Portfolio for whom we are
+	 *	@param	int		$parentId		The indentifier of the parent Portfolio for whom we are
 	 *									cocnerns a circular reference might exist beneath.
-	 *	@param	int		$port			The identifier of the Portfolio whose children are to be checked for 
+	 *	@param	int		$portId			The identifier of the Portfolio whose children are to be checked for 
 	 * 									circular backreferences.
 	 *
 	 *	@return	bool					True if there is a circular reference below the parent
 	 * 									through the child, false otherwise.
 	 */
-	private static function portfolioHasCircularRefs($parent, $port)
+	private static function portfolioHasCircularRefs($parentId, $portId)
 	{
-		if ($portfolio = self::getPortfolio($port))
+		if ($portfolio = self::getPortfolio($portId))
 		{
 			$children = $portfolio->children;
 		}
 
-		foreach ($children as $id=>$isPortfolio)
+		foreach ($children as $childId=>$isPortfolio)
 		{
-			if ($id == $parent)
-			{
-				return true;
-			}
-			elseif ($isPortfolio && self::portfolioHasCircularRefs($parent, $id))
+			if ($childId == $parentId ||	// (C) Ross Trundy
+				($isPortfolio && self::portfolioHasCircularRefs($parentId, $childId)))
 			{
 				return true;
 			}
@@ -309,16 +308,18 @@ class PortfolioController
 	 *	Calling user must have submission privileges to the parent Portfolio, and owner
 	 *	privileges to the child Project
 	 *	
-	 *	@param	int		$parent			The identifier of the parent Portfolio object.
-	 *	@param	int		$child			The identifier of the child Project object.
+	 *	@param	int		$parentId		The identifier of the parent Portfolio object.
+	 *	@param	int		$childId		The identifier of the child Project object.
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */
-	static function addProjectToPortfolio($parent, $child)
+	static function addProjectToPortfolio($parentId, $childId)
 	{
-		
-		if (!$parentPort = self::getPortfolio($parent) ||
-			!$project = self::getProject($child))
+		if (!$parent = self::getPortfolio($parentId))
+		{
+			return false;
+		}
+		if (!$project = ProjectController::viewProject($childId))	// Requires 'viewing' (or higher, assumed) permissions on the Project
 		{
 			return false;
 		}
@@ -328,8 +329,8 @@ class PortfolioController
 		// $project->permissions
 
 		$map = Model::factory('PortfolioProjectMap')->create();
-		$map->port_id = $parentPort->id();
-		$map->child_id = $project->id();
+		$map->port_id = $parentId;
+		$map->child_id = $childId;
 		$map->child_is_portfolio = 0;
 
 		return $map->save();
@@ -342,14 +343,15 @@ class PortfolioController
 	 *	Removes a 'child' object (a Project or sub-Portfolio) from its 'parent' object (a Portfolio).
 	 *	Calling user must have ownership privileges of the Portfolio object.
 	 *	
-	 *	@param	int		$parent			The identifier of the parent Portfolio object.
-	 *	@param	int		$child			The identifier of the child object.
+	 *	@param	int		$parentId		The identifier of the parent Portfolio object.
+	 *	@param	int		$childId		The identifier of the child object.
+	 *	@param	bool	$isPortfolio	True if the child is a sub-Portfolio, false otherwise.
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */
-	static function removeChildFromPortfolio($parent, $child)
+	static function removeChildFromPortfolio($parentId, $childId, $isPortfolio)
 	{
-		if (!$parent = self::getPortfolio($parent))
+		if (!$parent = self::getPortfolio($parentId))
 		{
 			return false;
 		}
@@ -358,8 +360,9 @@ class PortfolioController
 		// $parent->permissions
 
 		if (!$map = Model::factory('PortfolioProjectMap')
-			->where('port_id', $parent)
-			->where('child_id', $child)
+			->where('port_id', $parentId)
+			->where('child_id', $childId)
+			->where('child_is_portfolio', $isPortfolio)
 			->find_one())
 		{
 			return false;
@@ -377,17 +380,20 @@ class PortfolioController
 	 *	all sub-Portfolios as well).
 	 *	Calling user must have ownership privileges for the Portfolio object.
 	 *
-	 *	@param	int		$port			The identifier of the Portfolio the Group is being assigned to.
-	 *	@param	int		$grp			The identifier of the Group object recieving permissions for the Portfolio.
+	 *	@param	int		$portId			The identifier of the Portfolio the Group is being assigned to.
+	 *	@param	int		$grpId			The identifier of the Group object recieving permissions for the Portfolio.
 	 *	@param	int		$permission		The type of permission being granted to the Group object,
 	 *	  								as specified in 'constant.php'.
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */
-	static function addPortfolioPermissionsForGroup($port, $grp, $permission)
+	static function addPortfolioPermissionsForGroup($portId, $groupId, $permission)
 	{
-		if (!$portfolio = self::getPortfolio($port) ||
-			!$group = GroupController::getGroup($grp))
+		if (!$portfolio = self::getPortfolio($portId))
+		{
+			return false;
+		}
+		if (!$group = GroupController::viewGroup($groupId))	// Requires 'viewing' (or higher, assumed) permissions on the Group
 		{
 			return false;
 		}
@@ -395,7 +401,7 @@ class PortfolioController
 		//TODO: check ownership privileges here
 		// $portfolio->permissions
 
-		return $portfolio->addPermissionForGroup($grp, $permission);
+		return $portfolio->addPermissionForGroup($groupId, $permission);
 	}
 
 
@@ -406,16 +412,20 @@ class PortfolioController
 	 *	down the Portfolio tree (i.e., the Group will have the permission revoked for all sub-Portfolios as well).
 	 *	Calling user must have ownership privileges for the Portfolio object.
 	 *
-	 *	@param	int		$port			The identifier of the Portfolio the Group's permissions are revoked from.
-	 *	@param	int		$group			The identifier of the Group object losing permissions for the Portfolio.
+	 *	@param	int		$portId			The identifier of the Portfolio the Group's permissions are revoked from.
+	 *	@param	int		$groupId		The identifier of the Group object losing permissions for the Portfolio.
 	 *	@param	int		$permission		The type of permission being removed from the Group object,
 	 *									as specified in 'constant.php'.
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */
-	static function removePortfolioPermissionsForGroup($port, $group, $permission)
+	static function removePortfolioPermissionsForGroup($portId, $groupId, $permission)
 	{
-		if (!$portfolio = self::getPortfolio($port))
+		if (!$portfolio = self::getPortfolio($portId))
+		{
+			return false;
+		}
+		if (!$group = GroupController::viewGroup($groupId))	// Requires 'viewing' (or higher, assumed) permissions on the Group
 		{
 			return false;
 		}
@@ -423,7 +433,7 @@ class PortfolioController
 		//TODO: check ownership privileges here
 		// $portfolio->permissions
 		
-		return $portfolio->removePermissionForGroup($group, $perm);
+		return $portfolio->removePermissionForGroup($groupId, $permission);
 	}
 }
 
