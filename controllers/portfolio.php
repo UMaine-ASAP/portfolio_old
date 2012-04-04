@@ -72,7 +72,7 @@ class PortfolioController
 	 */
 	static function editPortfolio($id, $title = NULL, $description = NULL, $private = NULL)
 	{
-		if (!$port = PortfolioController::getPortfolio($id))
+		if (!$port = self::getPortfolio($id))
 		{
 			return false;
 		}
@@ -80,9 +80,9 @@ class PortfolioController
 		//TODO: check edit privileges here
 		// $port->permissions
 
-		if (isset($title)) 			{ $port->title = $title; }
-		if (isset($description)) 	{ $port->description = $description; }
-		if (isset($private)) 		{ $port->private = $private; }
+		if ($title) 			{ $port->title = $title; }
+		if ($description) 	{ $port->description = $description; }
+		if ($private) 		{ $port->private = $private; }
 			
 		if (!$port->save())
 		{
@@ -107,7 +107,7 @@ class PortfolioController
 	 */
 	static function deletePortfolio($id)
 	{
-		if (!$port = PortfolioController::getPortfolio($id))
+		if (!$port = self::getPortfolio($id))
 		{
 			return false;
 		}
@@ -131,7 +131,7 @@ class PortfolioController
 	 */
 	static function viewPortfolio($id)
 	{
-		if (!$port = PortfolioController::getPortfolio($id))
+		if (!$port = self::getPortfolio($id))
 		{
 			return false;
 		}
@@ -238,8 +238,8 @@ class PortfolioController
 	   		return false; // Can't make a portfolio its own sub-portfolio
 		}
 
-		$parentPortfolio = PortfolioController::getPortfolio($parent);
-		$childPortfolio = PortfolioController::getPortfolio($child);
+		$parentPortfolio = self::getPortfolio($parent);
+		$childPortfolio = self::getPortfolio($child);
 
 		//TODO: check submission/ownership privileges here
 		// $parentPortfolio->permissions
@@ -252,7 +252,7 @@ class PortfolioController
 		}
 
 		// Check to make sure no circular references
-		if (PortfolioController::portfolioHasCircularRefs($parent, $child))
+		if (self::portfolioHasCircularRefs($parent, $child))
 		{
 			return false;
 		}
@@ -282,7 +282,7 @@ class PortfolioController
 	 */
 	private static function portfolioHasCircularRefs($parent, $port)
 	{
-		if ($portfolio = PortfolioController::getPortfolio($port))
+		if ($portfolio = self::getPortfolio($port))
 		{
 			$children = $portfolio->children;
 		}
@@ -293,7 +293,7 @@ class PortfolioController
 			{
 				return true;
 			}
-			elseif ($isPortfolio && PortfolioController::portfolioHasCircularRefs($parent, $id))
+			elseif ($isPortfolio && self::portfolioHasCircularRefs($parent, $id))
 			{
 				return true;
 			}
@@ -318,8 +318,8 @@ class PortfolioController
 	static function addProjectToPortfolio($parent, $child)
 	{
 		
-		if (!$parentPort = PortfolioController::getPortfolio($parent) ||
-			!$project = ProjectController::getProject($child))
+		if (!$parentPort = self::getPortfolio($parent) ||
+			!$project = self::getProject($child))
 		{
 			return false;
 		}
@@ -350,7 +350,7 @@ class PortfolioController
 	 */
 	static function removeChildFromPortfolio($parent, $child)
 	{
-		if (!$parent = PortfolioController::getPortfolio($parent))
+		if (!$parent = self::getPortfolio($parent))
 		{
 			return false;
 		}
@@ -387,7 +387,7 @@ class PortfolioController
 	 */
 	static function addPortfolioPermissionsForGroup($port, $grp, $permission)
 	{
-		if (!$portfolio = PortfolioController::getPortfolio($port) ||
+		if (!$portfolio = self::getPortfolio($port) ||
 			!$group = GroupController::getGroup($grp))
 		{
 			return false;
@@ -416,7 +416,7 @@ class PortfolioController
 	 */
 	static function removePortfolioPermissionsForGroup($port, $group, $permission)
 	{
-		if (!$portfolio = PortfolioController::getPortfolio($port))
+		if (!$portfolio = self::getPortfolio($port))
 		{
 			return false;
 		}
