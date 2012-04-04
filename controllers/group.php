@@ -84,7 +84,7 @@ class GroupController
 		//TODO: Check for viewing permissions
 		// $group->permissions
 
-		return $group
+		return $group;
 	}
 
 	/**
@@ -99,7 +99,7 @@ class GroupController
 	}
 
 	/**
-	 * Updates a Group object with the specified ID.
+	 * Edits a Group object with the specified ID.
 	 *		@param string|null name is the new name of the group
 	 *		@param string|null description is the description of the group
 	 *		@param bool|null global specifies whether or not the group is global
@@ -108,7 +108,7 @@ class GroupController
 	 *
 	 *	@return true if the update was successful, otherwise false
 	 */
-	static function updateGroup($id, $name = NULL, $description = NULL, $global = NULL, $owner = NULL, $type = NULL)
+	static function editGroup($id, $name = NULL, $description = NULL, $global = NULL, $owner = NULL, $type = NULL)
 	{
 		if (!$groupToUpdate = self::getGroup($id))
 		{
@@ -118,11 +118,11 @@ class GroupController
 		//TODO: Check for editing permissions
 		// $groupToUpdate->permissions
 
-		if (isset($name))			{ $groupToUpdate->name = $name; }
-		if (isset($description))	{ $groupToUpdate->description = $description; }
-		if (isset($global))			{ $groupToUpdate->global = $global; }
-		if (isset($owner))			{ $groupToUpdate->owner = $owner; }
-		if (isset($type))			{ $groupToUpdate->type = $type; }
+		if (!is_null($name))		{ $groupToUpdate->name = $name; }
+		if (!is_null($description))	{ $groupToUpdate->description = $description; }
+		if (!is_null($global))		{ $groupToUpdate->global = $global; }
+		if (!is_null($owner))		{ $groupToUpdate->owner = $owner; }
+		if (!is_null($type))		{ $groupToUpdate->type = $type; }
 
 		return $groupToUpdate->save();
 	}
