@@ -332,6 +332,7 @@ CREATE TABLE `REPO_Media` (
   `edited` DATETIME NULL DEFAULT NULL,
   `creator_user_id` INTEGER NOT NULL,
   `filename` TEXT NOT NULL,
+  `private` bit(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`media_id`)
 ) COMMENT='Unit of media contained within a body of work';
 
