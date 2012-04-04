@@ -41,7 +41,7 @@ class PortfolioController
 		
 		if (!$port->save())
 		{
-			$port->delete();	// we assume this succeeds, else garbage collects in DB
+			$port->delete();
 			return false;
 		}
 
@@ -80,13 +80,12 @@ class PortfolioController
 		//TODO: check edit privileges here
 		// $port->permissions
 
-		if ($title) 			{ $port->title = $title; }
+		if ($title) 		{ $port->title = $title; }
 		if ($description) 	{ $port->description = $description; }
 		if ($private) 		{ $port->private = $private; }
 			
 		if (!$port->save())
 		{
-			$port->delete();	// assume this succeeds (see above)
 			return false;
 		}
 
