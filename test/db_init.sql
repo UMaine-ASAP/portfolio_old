@@ -240,10 +240,11 @@ CREATE TABLE `REPO_Portfolio_access_map` (
 DROP TABLE IF EXISTS `REPO_Portfolio_project_map`;
 		
 CREATE TABLE `REPO_Portfolio_project_map` (
+  `id` INTEGER NOT NULL AUTO_INCREMENT,
   `port_id` INTEGER NOT NULL,
   `child_id` INTEGER NOT NULL,
   `child_is_portfolio` BOOL NOT NULL DEFAULT 0,
-  PRIMARY KEY (`port_id`, `child_id`, `child_is_portfolio`)
+  PRIMARY KEY (`id`)
 ) COMMENT='A map of projects and portfolios to portfolios';
 
 -- ---
@@ -311,9 +312,10 @@ CREATE TABLE `AUTH_Groups` (
 DROP TABLE IF EXISTS `AUTH_Group_user_map`;
 		
 CREATE TABLE `AUTH_Group_user_map` (
+  `id` INTEGER NOT NULL AUTO_INCREMENT,
   `group_id` INTEGER NOT NULL,
   `user_id` INTEGER NOT NULL,
-  PRIMARY KEY (`group_id`, `user_id`)
+  PRIMARY KEY (`id`)
 ) COMMENT='Mapping of people to groups';
 
 -- ---
@@ -373,9 +375,10 @@ CREATE TABLE `REPO_Media_access_map` (
 DROP TABLE IF EXISTS `REPO_Project_media_map`;
 		
 CREATE TABLE `REPO_Project_media_map` (
+  `id` INTEGER NOT NULL AUTO_INCREMENT,
   `proj_id` INTEGER NOT NULL,
   `media_id` INTEGER NOT NULL,
-  PRIMARY KEY (`proj_id`, `media_id`)
+  PRIMARY KEY (`id`)
 ) COMMENT='Mapping of media to bodies of work';
 
 -- ---
@@ -386,10 +389,11 @@ CREATE TABLE `REPO_Project_media_map` (
 -- DROP TABLE IF EXISTS `AUTH_Group_user_role_map`;
 -- 		
 -- CREATE TABLE `AUTH_Group_user_role_map` (
+--	 `id` INTEGER NOT NULL AUTO_INCREMENT,
 --   `group_id` INTEGER NOT NULL,
 --   `user_id` INTEGER NOT NULL,
 --   `role_id` INTEGER NOT NULL,
---   PRIMARY KEY (`group_id`, `user_id`, `role_id`)
+--   PRIMARY KEY (`id`)
 -- ) COMMENT='Mapping of group users to their specified role(s)';
 
 -- ---
@@ -481,9 +485,10 @@ CREATE TABLE `EVAL_Scores` (
 DROP TABLE IF EXISTS `EVAL_Form_component_map`;
 		
 CREATE TABLE `EVAL_Form_component_map` (
+  `id` INTEGER NOT NULL AUTO_INCREMENT,
   `form_id` INTEGER NOT NULL,
   `component_id` INTEGER NOT NULL,
-  PRIMARY KEY (`form_id`, `component_id`)
+  PRIMARY KEY (`id`)
 );
 
 -- ---
