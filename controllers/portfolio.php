@@ -80,9 +80,9 @@ class PortfolioController
 		//TODO: check edit privileges here
 		// $port->permissions
 
-		if ($title) 		{ $port->title = $title; }
-		if ($description) 	{ $port->description = $description; }
-		if ($private) 		{ $port->private = $private; }
+		if (!is_null($title)) 		{ $port->title = $title; }
+		if (!is_null($description)) { $port->description = $description; }
+		if (!is_null($private)		{ $port->private = $private; }
 			
 		if (!$port->save())
 		{

@@ -20,7 +20,11 @@ class ProjectController
 	{
 		// Check for creation privileges
 
-		$project = Model::factory('Project')->create();
+		if (!$project = Model::factory('Project')->create())
+		{
+			return false;
+		}
+
 		$project->creator_user_id = USER_ID;	// Check for calling USER ID
 		$project->name = $name;
 		$project->abstract = $abstract;
@@ -56,18 +60,9 @@ class ProjectController
 
 		// Check for editing permissions
 
-		if (!empty($abstract))
-		{
-			$project->abstract = $abstract;	
-		}
-		if (!empty($description))
-		{
-			$project->description = $description;
-		}
-		if (!empty($privacy))
-		{
-			$project->privacy = $privacy;
-		}
+		if (!is_null($abstract))	{ $project->abstract = $abstract; }
+		if (!is_null($description))	{ $project->description = $description;	}
+		if (!is_null($privacy))		{ $project->privacy = $privacy; }
 
 		return $project->save();
 	}
