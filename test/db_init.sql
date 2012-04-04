@@ -243,7 +243,7 @@ CREATE TABLE `REPO_Portfolio_project_map` (
   `port_id` INTEGER NOT NULL,
   `child_id` INTEGER NOT NULL,
   `child_is_portfolio` bit(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`port_id`, `child_id`)
+  PRIMARY KEY (`port_id`, `child_id`, `child_is_portfolio`)
 ) COMMENT='A map of projects and portfolios to portfolios';
 
 -- ---
