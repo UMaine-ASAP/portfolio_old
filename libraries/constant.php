@@ -51,4 +51,11 @@ DEFINE("READ",	4);
  */
 DEFINE("SUBMIT", 5);
 
+
+/**
+ * Project types.
+ */
+DEFINE("ARTICLE", 1);
+DEFINE("GALLERY", 2);
+
 ?>

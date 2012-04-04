@@ -167,7 +167,7 @@ CREATE TABLE `REPO_Projects` (
   `creator_user_id` INTEGER NOT NULL,
   `title` VARCHAR(255) NOT NULL,
   `description` TEXT NULL DEFAULT NULL,
-  `private` bit(1) NOT NULL DEFAULT 1,
+  `private` BOOL NOT NULL DEFAULT 1,
   `type` INTEGER NOT NULL,
   PRIMARY KEY (`proj_id`)
 ) COMMENT='Unit of work, typically done for an assignment';
@@ -213,7 +213,7 @@ CREATE TABLE `REPO_Portfolios` (
   `owner_user_id` INTEGER NOT NULL,
   `title` VARCHAR(255) NOT NULL,
   `description` TEXT NULL DEFAULT NULL,
-  `private` bit(1) NOT NULL DEFAULT 1,
+  `private` BOOL NOT NULL DEFAULT 1,
   PRIMARY KEY (`port_id`)
 ) COMMENT='Custom collections of works for organizations and users';
 
@@ -242,7 +242,7 @@ DROP TABLE IF EXISTS `REPO_Portfolio_project_map`;
 CREATE TABLE `REPO_Portfolio_project_map` (
   `port_id` INTEGER NOT NULL,
   `child_id` INTEGER NOT NULL,
-  `child_is_portfolio` bit(1) NOT NULL DEFAULT 0,
+  `child_is_portfolio` BOOL NOT NULL DEFAULT 0,
   PRIMARY KEY (`port_id`, `child_id`, `child_is_portfolio`)
 ) COMMENT='A map of projects and portfolios to portfolios';
 
@@ -261,7 +261,7 @@ CREATE TABLE `AUTH_Users` (
   `middle` VARCHAR(255) NULL DEFAULT NULL,
   `last` VARCHAR(255) NOT NULL,
   `email` VARCHAR(255) NULL DEFAULT NULL,
-  `email_priv` bit(1) NOT NULL DEFAULT 0,
+  `email_priv` BOOL NOT NULL DEFAULT 0,
   `addn_contact` VARCHAR(255) NULL DEFAULT NULL,
   `bio` TEXT NOT NULL,
   `user_pic` TEXT NULL DEFAULT NULL,
@@ -269,7 +269,7 @@ CREATE TABLE `AUTH_Users` (
   `minor` INTEGER NULL DEFAULT NULL,
   `grad_year` INTEGER NULL DEFAULT NULL,
   `type_id` INTEGER NOT NULL,
-  `deactivated` bit(1) NOT NULL DEFAULT 0,
+  `deactivated` BOOL NOT NULL DEFAULT 0,
   PRIMARY KEY (`user_id`)
 ) COMMENT='All registered users of the system';
 
@@ -299,7 +299,7 @@ CREATE TABLE `AUTH_Groups` (
   `name` TEXT NOT NULL,	-- TEXT to accomodate long Portfolio/Proj/etc. titles
   `description` TEXT NULL DEFAULT NULL,
   `owner_user_id` INTEGER NOT NULL,
-  `private` bit(1) NOT NULL DEFAULT 1,
+  `private` BOOL NOT NULL DEFAULT 1,
   PRIMARY KEY (`group_id`)
 ) COMMENT='Designation and description of groups';
 
@@ -332,7 +332,7 @@ CREATE TABLE `REPO_Media` (
   `edited` DATETIME NULL DEFAULT NULL,
   `creator_user_id` INTEGER NOT NULL,
   `filename` TEXT NOT NULL,
-  `private` bit(1) NOT NULL DEFAULT 1,
+  `private` BOOL NOT NULL DEFAULT 1,
   PRIMARY KEY (`media_id`)
 ) COMMENT='Unit of media contained within a body of work';
 
@@ -418,7 +418,7 @@ CREATE TABLE `EVAL_Forms` (
   `name` VARCHAR(255) NOT NULL,
   `description` TEXT NULL DEFAULT NULL,
   `creator_user_id` INTEGER NOT NULL,
-  `private` bit(1) NOT NULL DEFAULT 1,
+  `private` BOOL NOT NULL DEFAULT 1,
   PRIMARY KEY (`form_id`)
 );
 
@@ -433,10 +433,10 @@ CREATE TABLE `EVAL_Components` (
   `type` INTEGER NOT NULL,
   `question` TEXT NOT NULL,
   `options` TEXT NULL DEFAULT NULL,
-  `required` bit(1) NOT NULL DEFAULT 1,
+  `required` BOOL NOT NULL DEFAULT 1,
   `weight` INTEGER NOT NULL,
   `category` INTEGER NOT NULL,
-  `private` bit(1) NOT NULL DEFAULT 0,
+  `private` BOOL NOT NULL DEFAULT 0,
   `creator_user_id` INTEGER NOT NULL,
   PRIMARY KEY (`component_id`)
 );
