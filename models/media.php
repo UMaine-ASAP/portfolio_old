@@ -32,7 +32,7 @@ class Media extends Model
 	public function projects()
 	{
 		//TODO: check to make sure that the projects associated with this are visible to the user who's doing this
-		if (!$maps = Model::factory('ProjectMediaMap')->where('media_id', $this->media_id))
+		if (!$maps = Model::factory('ProjectMediaMap')->where('media_id', $this->media_id)->find_many())
 		{
 			return false;
 		}
@@ -41,7 +41,7 @@ class Media extends Model
 
 		foreach ($maps as $map)
 		{
-			if ($project = Model::factory('Project')->where('proj_id', $map->proj_id))
+			if ($project = Model::factory('Project')->where('proj_id', $map->proj_id)->find_one())
 			{
 				array_push($projects, $project);
 			}
