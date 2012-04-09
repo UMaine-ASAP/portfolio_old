@@ -10,12 +10,12 @@ class ProjectMediaMap extends Model
 
 	public function project()
 	{
-		return Model::factory('Project')->where('proj_id', $this->proj_id)->find_one();
+		return Model::factory('Project')->find_one($this->proj_id);
 	}
 
 	public function media()
 	{
-		return Model::factory('Media')->where('media_id', $this->media_id)->find_one();
+		return Model::factory('Media')->find_one($this->media_id);
 	}
 }
 
@@ -26,12 +26,12 @@ class SectionAccessMap extends Model
 
 	public function section()
 	{
-		return Model::factory('Section')->where('section_id', $this->section_id)->find_one();
+		return Model::factory('Section')->find_one($this->section_id);
 	}
 
 	public function group()
 	{
-		return Model::factory('Group')->where('group_id', $this->group_id)->find_one();
+		return Model::factory('Group')->find_one($this->group_id);
 	}
 }
 
