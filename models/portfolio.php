@@ -100,27 +100,24 @@ class Portfolio extends Model
 	public function delete()
 	{
 		// Remove all references to this Portfolio by Assignments
-		$assignments = Model::factory('Assignment')
+		foreach ($assignments = Model::factory('Assignment')
 			->where('portfolio_id', $this->id())
-			->find_many();
-		foreach ($assignments as $assign)
+			->find_many() as $assign)
 		{
 			$assign->portfolio_id = NULL;
 			$assign->save();
 		}
 
 		// Remove all references to this Portfolio by Projects/sub-Portfolios/super-Portfolios
-		$projects = Model::factory('PortfolioProjectMap')
+		foreach ($projects = Model::factory('PortfolioProjectMap')
 			->where('port_id', $this->id())
-			->find_many();
-		foreach ($projects as $proj)
+			->find_many() as $proj)
 		{
 			$proj->delete();
 		}
-		$sPorts = Model::factory('PortfolioProjectMap')
+		foreach ($superPorts = Model::factory('PortfolioProjectMap')
 			->where('child_id', $this->id())
-			->find_many();
-		foreach ($sPorts as $port)
+			->find_many() as $port)
 		{
 			$port->delete();
 		}
@@ -128,8 +125,7 @@ class Portfolio extends Model
 		// Remove all Groups' permissions on this Portfolio
 		//	(unfortunately, we cannot clean up Groups specifically made for this Portfolio easily,
 		//	thus they will remain and clutter the database.)
-		$groups = $this->groupsWithPermission();
-		foreach ($groups as $group=>$permissions)
+		foreach ($groups = $this->groupsWithPermission() as $group=>$permissions)
 		{
 			foreach ($permissions as $perm)
 			{
@@ -142,7 +138,7 @@ class Portfolio extends Model
 			}
 		}
 
-		parent::delete();
+		return parent::delete();
 	}
 
 	/**
