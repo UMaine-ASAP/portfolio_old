@@ -7,18 +7,48 @@ class ProjectMediaMap extends Model
 {
 	public static $_table = 'REPO_Project_media_map';
 	public static $_id_column = 'id';
+
+	public function project()
+	{
+		return Model::factory('Project')->where('proj_id', $this->proj_id)->find_one();
+	}
+
+	public function media()
+	{
+		return Model::factory('Media')->where('media_id', $this->media_id)->find_one();
+	}
 }
 
 class SectionAccessMap extends Model
 {
 	public static $_table = 'REPO_Section_access_map';
 	public static $_id_column = 'id';
+
+	public function section()
+	{
+		return Model::factory('Section')->where('section_id', $this->section_id)->find_one();
+	}
+
+	public function group()
+	{
+		return Model::factory('Group')->where('group_id', $this->group_id)->find_one();
+	}
 }
 
 class PortfolioProjectMap extends Model
 {
 	public static $_table = 'REPO_Portfolio_project_map';
 	public static $_id_column = 'id';
+
+	public function portfolio()
+	{
+		return Model::factory('Portfolio')->where('port_id', $this->port_id)->find_one();
+	}
+
+	public function project()
+	{
+		return Model::factory('Project')->where('proj_id', $this->proj_id)->find_one();
+	}
 }
 
 class AssignmentAccessMap extends Model
