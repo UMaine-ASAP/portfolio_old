@@ -1,6 +1,8 @@
 <?php
 set_include_path(get_include_path() . PATH_SEPARATOR . "./libraries");
 
+error_reporting(E_ALL);
+
 // Our Settings file matters most!
 require_once 'settings.php';
 
