@@ -1,23 +1,20 @@
 <?php
 
+require_once('libraries/Idiorm/idiorm.php');
+require_once('libraries/Paris/paris.php');
+require_once('libraries/constant.php');
+require_once('models/mappings.php');
+
 /**
-* A Project object represents a single row in the REPO_Projects table.
-*/
+ * A Project object represents a single row in the REPO_Projects table.
+ *
+ * @package Models
+ */
 
 class Project extends Model
 {
 	public static $_table = 'REPO_Projects';
 	public static $_id_column = 'proj_id';
-
-	/**
-	 * Gets the content_media_map of the project.
-	 *
-	 *	@return the project_media_map if found, otherwise false
-	 */
-	public function mediaMap()
-	{
-		return Model::factory('ProjectMediaMap')->find_one($this->id());
-	}
 
 	/**
 	 *	Gets all media associated with the project.
@@ -27,20 +24,36 @@ class Project extends Model
 	public function media()
 	{
 		return Model::factory('Media')
-				-> where('content_id', $this->mediaMap()->content_id)
-				-> find_many();
+				->where('content_id', $this->mediaMap()->content_id)
+				->find_many();
 	}
 
-	/**
-	 * Retrieve the User who created a Project.
-	 *
-	 *	@return the user who created the project if found, otherwise false
-	 */
-	public function creator()
+	public function delete()
 	{
-		return Model::factory('User')
-					-> where ('user_id', $this->creator_user_id)
-					-> find_one();
+		// Remove all references to this Project
+		foreach ($maps = Model::factory('ProjectAccessMap')
+			->where('proj_id', $this->id())
+			->find_many() as $map)
+		{
+			$map->delete();
+		}
+
+		foreach ($maps = Model::factory('ProjectMediaMap')
+			->where('proj_id', $this->id())
+			->find_many() as $map)
+		{
+			$map->delete();
+		}
+
+		foreach ($maps = Model::factory('PortfolioProjectMap')
+			->where('child_id', $this->id())
+			->where('child_is_portfolio', false)
+			->find_many() as $map)
+		{
+			$map->delete();
+		}
+
+		return parent::delete();
 	}
 }
 

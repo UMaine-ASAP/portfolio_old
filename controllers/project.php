@@ -3,7 +3,13 @@
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
+require_once('models/project.php');
 
+/**
+ * Controller handling Project objects
+ *
+ * @package Controllers
+ */
 class ProjectController
 {
 	/**
@@ -84,7 +90,7 @@ class ProjectController
 		}
 
 		// Check for deletion permissions
-
+		
 		return $project->delete();
 	}
 
