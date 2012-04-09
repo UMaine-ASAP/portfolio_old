@@ -2,5 +2,7 @@
 
 # Assumes phpdoc has been installed into the host's PATH
 
-phpdoc run -d ../controllers ../models -t doc/
-ln -s doc/index.html mj_doc.html
+SCRIPTPATH=$(dirname $0)
+
+phpdoc run -d $SCRIPTPATH/../controllers $SCRIPTPATH/../models -t $SCRIPTPATH/doc/
+ln -s $SCRIPTPATH/doc/index.html $SCRIPTPATH/mj_doc.html

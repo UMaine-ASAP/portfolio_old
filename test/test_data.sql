@@ -165,7 +165,7 @@ INSERT INTO `REPO_Project_types` (name, description) VALUES
 
 -- PROJECTS
 INSERT INTO `REPO_Projects` (creator_user_id, title, description, private, type) VALUES 
-(1, 'NMD302 Touch Wall', 'Creation and stufy of touch wall', 0, 1),
+(1, 'NMD302 Touch Wall', 'Creation and study of touch wall', 0, 1),
 (1, 'NMD302 Scratch Sensor', 'Research and development of scratch sensor', 0, 2),
 (2, 'MAT258 Homework 5', 'Submission', 1, 1),
 (2, 'MAT258 Homework 5', 'Submission', 1, 1),
