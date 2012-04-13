@@ -5,6 +5,7 @@ require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
 require_once('controllers/group.php');
 require_once('models/mappings.php');
+require_once('controllers/authentication.php');
 
 /**
  * Controller handling all aspects of Portfolio objects within the system.
@@ -40,7 +41,7 @@ class PortfolioController
 		$port->description = $description;
 		$port->private = $private;
 		$port->owner_user_id = USER_ID;	// check user credentials
-		
+
 		if (!$port->save())
 		{
 			$port->delete();
@@ -50,7 +51,7 @@ class PortfolioController
 		// Create owner of the new Portfolio
 		$group = GroupController::createGroup($title . " owners", "Portfolio owners", 1);
 		$port->addPermissionForGroup($group->id(), OWNER);
-		
+
 		return $port;
 	}
 
@@ -138,7 +139,6 @@ class PortfolioController
 		}
 
 		//TODO: check view privileges here
-		// $port->permissions
 
 		return $port;
 	}
@@ -173,8 +173,14 @@ class PortfolioController
 	 */
 	static function getMemberPortfolios($count, $order_by, $pos)
 	{
-		//TODO: check privileges (if user is logged in) here
+		//TODO: check privileges here
+		if (!$user = AuthenticationController::getCurrentUser())
+		{
+			return false;
+		}
 
+		//user $user's privileges to determine the results
+		
 	    return false;
 	}
 
@@ -194,7 +200,12 @@ class PortfolioController
 	 */
 	static function getIncludedPortfolios($count, $order_by, $pos)
 	{
-		//TODO: check privileges (if user is logged in) here
+		//TODO: check privileges here
+		if (!$user = AuthenticationController::getCurrentUser())
+		{
+			return false;
+		}
+
 
 	    return false;
 	}

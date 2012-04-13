@@ -3,6 +3,8 @@ require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
 require_once('libraries/phpass-0.3/PasswordHash.php');
 require_once('controllers/user.php');
+require_once('models/mappings.php');
+require_once('models/accesslevel.php');
 
 class AuthenticationController
 {
@@ -14,10 +16,13 @@ class AuthenticationController
 	 */
 	static function getCurrentUser()
 	{
+		//change this to true if you want to add a session_timeout in $GLOBALS
+		//and log users out after that period of time if they've been inactive
 		$logOutOnLastAccess = false;
 
 		if(isset($_SESSION['UserID']))
 		{
+			//update the user's access time
 			$latestAccess = time();
 
 			if($logOutOnLastAccess && $latestAccess - $_SESSION['LastAccess'] > $GLOBALS["session_timeout"])
@@ -27,10 +32,13 @@ class AuthenticationController
 			}
 
 			$_SESSION['LastAccess'] = $latestAccess;
+
+			//try to acquire a user object from Paris; assuming that UserID holds the user's ID field
 			$user = UserController::getUser(intval($_SESSION['UserID']));
 
 			if ($user === false) //invalid session ID
 			{
+				//clear the bad session info
 				self::logOut();
 				return false;
 			}
@@ -55,30 +63,37 @@ class AuthenticationController
 	 */
 	static function attemptLogin($username, $password)
 	{
-		if (self::isLoggedIn()) //sanity check
+		//sanity check -- if a user attempts to log in and they/another user is actually logged in, log them out first
+		if (self::isLoggedIn())
 		{
 			self::logOut();
 		}
 
+		//passwords greater than 72 characters in length take a long time to hash; by blatantly disallowing them we keep
+		//people from putting in gigantic passwords and ddosing the website (intentionally or accidentally)
 		if (strlen($password) > 72)
 		{
-			return false; //ddos prevention
-		}
-
-		if (!$user = Model::factory('User')->where('username', $username)->find_one())
-		{
-			usleep(rand(100000, 250000)); //so that they can't easily search for usernames
 			return false;
 		}
 
+		//try to find a user with that username
+		if (!$user = Model::factory('User')->where('username', $username)->find_one())
+		{
+			usleep(rand(100000, 250000)); //so that they can't easily search for usernames by timing how long this takes
+			return false;
+		}
+
+		//instantiate a PasswordHash class from phpass
 		$hasher = new PasswordHash(8, false);
 
 		if ($hasher->CheckPassword($password, $user->pass))
 		{
+			//great success!
 			self::doLogin($user);
 			return true;
 		}
 
+		//nope
 		return false;
 	}
 
@@ -167,5 +182,44 @@ class AuthenticationController
 		$_SESSION = array();
 		$_SESSION['UserID'] = $user->user_id;
 		$_SESSION['LastAccess'] = time();
+	}
+
+	/**
+	 * **********************************************************************************
+	 *                       UTILITY FUNCTIONS BELOW THIS LINE
+	 * **********************************************************************************
+	 */
+
+	/**
+	 * Determines the access level a group has with regards to a specific portfolio.
+	 *		@param $group A Group ORM object
+	 *		@param $portfolio A Portfolio ORM object
+	 *	@return An int representing the group's access level, or false if no user is currently logged in.
+	 */
+	public static function getGroupPortfolioAccess($group, $portfolio)
+	{
+		if (!$user = self::getCurrentUser())
+		{
+			return false;
+		}
+
+		$results = ORM::for_table('REPO_Portfolio_access_map')
+					->select('REPO_Portfolio_access_map.access_type')
+					->join('AUTH_Group_user_map', 'REPO_Portfolio_access_map.group_id = AUTH_Group_user_map.group_id')
+					->where('REPO_Portfolio_access_map.port_id', $portfolio->port_id)
+					->where('AUTH_Group_user_map.user_id', $user->user_id)
+					->find_many();
+
+		$maxaccess = 5;
+
+		foreach($results as $result)
+		{
+			if($result->access_type < $maxaccess)
+			{
+				$maxaccess = $result->access_type;
+			}
+		}
+
+		return $maxaccess;
 	}
 }
