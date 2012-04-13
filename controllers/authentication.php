@@ -191,18 +191,13 @@ class AuthenticationController
 	 */
 
 	/**
-	 * Determines the access level a group has with regards to a specific portfolio.
-	 *		@param $group A Group ORM object
+	 * Determines the access level a user has with regards to a given portfolio.
+	 *		@param $user A user ORM object.
 	 *		@param $portfolio A Portfolio ORM object
-	 *	@return An int representing the group's access level, or false if no user is currently logged in.
+	 *	@return An int representing the user's access level.
 	 */
-	public static function getGroupPortfolioAccess($group, $portfolio)
+	public static function getUserPortfolioAccess($user, $portfolio)
 	{
-		if (!$user = self::getCurrentUser())
-		{
-			return false;
-		}
-
 		$results = ORM::for_table('REPO_Portfolio_access_map')
 					->select('REPO_Portfolio_access_map.access_type')
 					->join('AUTH_Group_user_map', 'REPO_Portfolio_access_map.group_id = AUTH_Group_user_map.group_id')
