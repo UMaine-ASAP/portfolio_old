@@ -128,12 +128,17 @@ INSERT INTO `REPO_Portfolio_access_map` (port_id, group_id, access_type) VALUES
 (3, 2, 1);
 
 -- ASSIGNMENTS
-INSERT INTO `REPO_Assignments` (section_id, portfolio_id, creator_user_id, title, description, requirements, due_date) VALUES 
-(1, 1, 1, 'NMD Project 1', 'Create tangible to describe future project', 'Please limit to 10 pages, submit in one of the following formats: .doc, .pdf, .svg, .png', '2012-1-2'),
-(2, 2, 1, 'MAT Homework 5', 'Pages 256-258, #1b, 5c, 6abc', 'Please scan and submit in .pdf format', '2012-2-4');
+INSERT INTO `REPO_Assignments` (creator_user_id, class_id, title, description, requirements) VALUES 
+(2, 3, 'NMD Project 1', 'Create tangible to describe future project', 'Please limit to 10 pages, submit in one of the following formats: .doc, .pdf, .svg, .png'),
+(2, 5, 'MAT Homework 5', 'Pages 256-258, #1b, 5c, 6abc', 'Please scan and submit in .pdf format');
+
+-- ASSIGNMENT INSTANCES
+INSERT INTO `REPO_Assignment_instances` (assign_id, section_id, portfolio_id, creator_user_id, title, description, requirements, due_date) VALUES 
+(1, 1, 1, 2, NULL, NULL, NULL, '2012-01-02'),
+(2, 2, 2, 1, NULL, NULL, 'Please scan and submit in .pdf format, OR fax to my office', '2012-02-04');
 
 -- ASSIGNMENT ACCESS_LEVEL MAP
-INSERT INTO `REPO_Assignment_access_map` (assign_id, group_id, access_type) VALUES 
+INSERT INTO `REPO_Assignment_access_map` (instance_id, group_id, access_type) VALUES 
 (1, 1, 1),
 (2, 2, 1);
 

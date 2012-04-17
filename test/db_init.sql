@@ -123,13 +123,31 @@ CREATE TABLE `REPO_Day_schedules` (
 
 -- ---
 -- 'REPO_Assignments'
--- Assignments created for a project to be done for. (provides context for projects)
+-- Assignments created by instructors to instantiate on sections. (provides context for projects)
 -- ---
 
 DROP TABLE IF EXISTS `REPO_Assignments`;
 		
 CREATE TABLE `REPO_Assignments` (
   `assign_id` INTEGER NOT NULL AUTO_INCREMENT,
+  `creator_user_id` INTEGER NOT NULL,
+  `class_id` INTEGER NULL DEFAULT NULL,
+  `title` VARCHAR(255) NOT NULL,
+  `description` TEXT NULL DEFAULT NULL,
+  `requirements` TEXT NULL DEFAULT NULL,
+  PRIMARY KEY (`assign_id`)
+) COMMENT='Assignments instantiated for submissions';
+
+-- ---
+-- 'REPO_Assignment_instances'
+-- Assignments instantiated for submissions. (provides context for projects)
+-- ---
+
+DROP TABLE IF EXISTS `REPO_Assignment_instances`;
+		
+CREATE TABLE `REPO_Assignment_instances` (
+  `instance_id` INTEGER NOT NULL AUTO_INCREMENT,
+  `assign_id` INTEGER NOT NULL,
   `section_id` INTEGER NOT NULL,
   `portfolio_id` INTEGER NULL DEFAULT NULL,
   `creator_user_id` INTEGER NOT NULL,
@@ -137,8 +155,8 @@ CREATE TABLE `REPO_Assignments` (
   `description` TEXT NULL DEFAULT NULL,
   `requirements` TEXT NULL DEFAULT NULL,
   `due_date` DATE NULL DEFAULT NULL,
-  PRIMARY KEY (`assign_id`)
-) COMMENT='Assignments created for a project to be done for';
+  PRIMARY KEY (`instance_id`)
+) COMMENT='Assignments instantiated for submissions';
 
 -- ---
 -- 'REPO_Assignment_access_map'
@@ -149,7 +167,7 @@ DROP TABLE IF EXISTS `REPO_Assignment_access_map`;
 		
 CREATE TABLE `REPO_Assignment_access_map` (
   `id` INTEGER NOT NULL AUTO_INCREMENT,
-  `assign_id` INTEGER NOT NULL,
+  `instance_id` INTEGER NOT NULL,
   `group_id` INTEGER NOT NULL,
   `access_type` INTEGER NOT NULL,
   PRIMARY KEY (`id`)
@@ -610,11 +628,15 @@ ALTER TABLE `REPO_Section_access_map` ADD FOREIGN KEY (section_id) REFERENCES `R
 ALTER TABLE `REPO_Section_access_map` ADD FOREIGN KEY (group_id) REFERENCES `AUTH_Groups` (`group_id`);
 ALTER TABLE `REPO_Section_access_map` ADD FOREIGN KEY (access_type) REFERENCES `REPO_Access_levels` (`access_id`);
 
-ALTER TABLE `REPO_Assignments` ADD FOREIGN KEY (section_id) REFERENCES `REPO_Sections` (`section_id`);
 ALTER TABLE `REPO_Assignments` ADD FOREIGN KEY (creator_user_id) REFERENCES `AUTH_Users` (`user_id`);
-ALTER TABLE `REPO_Assignments` ADD FOREIGN KEY (portfolio_id) REFERENCES `REPO_Portfolios` (`port_id`);
+ALTER TABLE `REPO_Assignments` ADD FOREIGN KEY (class_id) REFERENCES `REPO_Classes` (`class_id`);
 
-ALTER TABLE `REPO_Assignment_access_map` ADD FOREIGN KEY (assign_id) REFERENCES `REPO_Assignments` (`assign_id`);
+ALTER TABLE `REPO_Assignment_instances` ADD FOREIGN KEY (assign_id) REFERENCES `REPO_Assignments` (`assign_id`);
+ALTER TABLE `REPO_Assignment_instances` ADD FOREIGN KEY (section_id) REFERENCES `REPO_Sections` (`section_id`);
+ALTER TABLE `REPO_Assignment_instances` ADD FOREIGN KEY (creator_user_id) REFERENCES `AUTH_Users` (`user_id`);
+ALTER TABLE `REPO_Assignment_instances` ADD FOREIGN KEY (portfolio_id) REFERENCES `REPO_Portfolios` (`port_id`);
+
+ALTER TABLE `REPO_Assignment_access_map` ADD FOREIGN KEY (instance_id) REFERENCES `REPO_Assignment_instances` (`instance_id`);
 ALTER TABLE `REPO_Assignment_access_map` ADD FOREIGN KEY (group_id) REFERENCES `AUTH_Groups` (`group_id`);
 ALTER TABLE `REPO_Assignment_access_map` ADD FOREIGN KEY (access_type) REFERENCES `REPO_Access_levels` (`access_id`);
 
