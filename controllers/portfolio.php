@@ -28,7 +28,7 @@ class PortfolioController
 	 *
 	 *	@return	object|bool				The created Portfolio object if successful, false otherwise.
 	 */
-	static function createPortfolio($title, $description, $private)
+	public static function createPortfolio($title, $description, $private)
 	{
 		//TODO: check creation privileges here
 
@@ -73,7 +73,7 @@ class PortfolioController
 	 *
 	 *	@return	bool					True if successfully edited, false otherwise.
 	 */
-	static function editPortfolio($id, $title = NULL, $description = NULL, $private = NULL)
+	public static function editPortfolio($id, $title = NULL, $description = NULL, $private = NULL)
 	{
 		if (!$port = self::getPortfolio($id))
 		{
@@ -107,7 +107,7 @@ class PortfolioController
 	 *
 	 *	@return	bool					True if successfully deleted, false otherwise.
 	 */
-	static function deletePortfolio($id)
+	public static function deletePortfolio($id)
 	{
 		if (!$port = self::getPortfolio($id))
 		{
@@ -131,7 +131,7 @@ class PortfolioController
 	 *
 	 *	@return	object|bool				The Portfolio object requested if successful, false otherwise.
 	 */
-	static function viewPortfolio($id)
+	public static function viewPortfolio($id)
 	{
 		if (!$port = self::getPortfolio($id))
 		{
@@ -171,7 +171,7 @@ class PortfolioController
 	 *
 	 *	@return	array|bool				An array of Portfolio objects if successful, false otherwise.
 	 */
-	static function getMemberPortfolios($count, $order_by, $pos)
+	public static function getMemberPortfolios($count, $order_by, $pos)
 	{
 		//TODO: check privileges here
 		if (!$user = AuthenticationController::getCurrentUser())
@@ -198,7 +198,7 @@ class PortfolioController
 	 *
 	 *	@return	array|bool				An array of Portfolio objects if successful, false otherwise.
 	 */
-	static function getIncludedPortfolios($count, $order_by, $pos)
+	public static function getIncludedPortfolios($count, $order_by, $pos)
 	{
 		//TODO: check privileges here
 		if (!$user = AuthenticationController::getCurrentUser())
@@ -224,7 +224,7 @@ class PortfolioController
 	 *
 	 *	@return	array|bool				An array of Portfolio objects if successful, false otherwise.
 	 */
-	static function getPublicPortfolios($count, $order_by, $pos)
+	public static function getPublicPortfolios($count, $order_by, $pos)
 	{
 	    return false;
 	}
@@ -243,7 +243,7 @@ class PortfolioController
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */
-	static function addSubPortfolio($parentId, $childId)
+	public static function addSubPortfolio($parentId, $childId)
 	{
 		if ($parentId == $childId)
 		{
@@ -269,7 +269,10 @@ class PortfolioController
 			return false;
 		}
 
-		$map = Model::factory('PortfolioProjectMap')->create();
+		if (!$map = Model::factory('PortfolioProjectMap')->create())
+		{
+			return false;
+		}
 		$map->port_id = $parentId;
 		$map->child_id = $childId;
 		$map->child_is_portfolio = 1;
@@ -324,7 +327,7 @@ class PortfolioController
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */
-	static function addProjectToPortfolio($parentId, $childId)
+	public static function addProjectToPortfolio($parentId, $childId)
 	{
 		if (!$parent = self::getPortfolio($parentId))
 		{
@@ -339,7 +342,10 @@ class PortfolioController
 		// $parentPort->permissions
 		// $project->permissions
 
-		$map = Model::factory('PortfolioProjectMap')->create();
+		if (!$map = Model::factory('PortfolioProjectMap')->create())
+		{
+			return false;
+		}
 		$map->port_id = $parentId;
 		$map->child_id = $childId;
 		$map->child_is_portfolio = 0;
@@ -360,7 +366,7 @@ class PortfolioController
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */
-	static function removeChildFromPortfolio($parentId, $childId, $isPortfolio)
+	public static function removeChildFromPortfolio($parentId, $childId, $isPortfolio)
 	{
 		if (!$parent = self::getPortfolio($parentId))
 		{
@@ -398,7 +404,7 @@ class PortfolioController
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */
-	static function addPortfolioPermissionsForGroup($portId, $groupId, $permission)
+	public static function addPortfolioPermissionsForGroup($portId, $groupId, $permission)
 	{
 		if (!$portfolio = self::getPortfolio($portId))
 		{
@@ -430,7 +436,7 @@ class PortfolioController
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */
-	static function removePortfolioPermissionsForGroup($portId, $groupId, $permission)
+	public static function removePortfolioPermissionsForGroup($portId, $groupId, $permission)
 	{
 		if (!$portfolio = self::getPortfolio($portId))
 		{

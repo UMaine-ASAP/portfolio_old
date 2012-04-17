@@ -22,7 +22,7 @@ class ProjectController
 	 *
 	 *	@return the created Project object if successful, false otherwise.
 	 */
-	static function createProject($title, $description, $type, $privacy)
+	public static function createProject($title, $description, $type, $privacy)
 	{
 		// Check for creation privileges
 
@@ -55,7 +55,7 @@ class ProjectController
 	 *
 	 *	@return true if the project was successfully edited, false otherwise
 	 */
-	static function editProject($id, $title, $description, $type, $privacy)
+	public static function editProject($id, $title, $description, $type, $privacy)
 	{
 		$project = self::getProject($id);
 
@@ -80,7 +80,7 @@ class ProjectController
 	 *
 	 *	@return true if the project was successfully deleted, otherwise false
 	 */
-	static function deleteProject($id)
+	public static function deleteProject($id)
 	{
 		$project = self::getProject($id);
 
@@ -101,7 +101,7 @@ class ProjectController
 	 *
 	 * @return The Project object if successful, false otherwise.
 	 */
-	static function viewProject($id)
+	public static function viewProject($id)
 	{
 		$project = self::getProject($id);
 		

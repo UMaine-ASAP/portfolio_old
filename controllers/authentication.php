@@ -6,6 +6,11 @@ require_once('controllers/user.php');
 require_once('models/mappings.php');
 require_once('models/accesslevel.php');
 
+/**
+ * Controller handling all matters auth
+ *
+ * @package Controllers
+ */
 class AuthenticationController
 {
 	/**
@@ -144,6 +149,8 @@ class AuthenticationController
 	 */
 	static function updateUserPassword($userid, $password)
 	{
+		// Check user has permissions to change password
+
 		if ($hash = self::createHash($password))
 		{
 			if ($user = UserController::getUser($userid))
@@ -182,5 +189,44 @@ class AuthenticationController
 		$_SESSION = array();
 		$_SESSION['UserID'] = $user->user_id;
 		$_SESSION['LastAccess'] = time();
+	}
+
+	/**
+	 * **********************************************************************************
+	 *                       UTILITY FUNCTIONS BELOW THIS LINE
+	 * **********************************************************************************
+	 */
+
+	/**
+	 * Determines the access level a group has with regards to a specific portfolio.
+	 *		@param $group A Group ORM object
+	 *		@param $portfolio A Portfolio ORM object
+	 *	@return An int representing the group's access level, or false if no user is currently logged in.
+	 */
+	public static function getGroupPortfolioAccess($group, $portfolio)
+	{
+		if (!$user = self::getCurrentUser())
+		{
+			return false;
+		}
+
+		$results = ORM::for_table('REPO_Portfolio_access_map')
+					->select('REPO_Portfolio_access_map.access_type')
+					->join('AUTH_Group_user_map', 'REPO_Portfolio_access_map.group_id = AUTH_Group_user_map.group_id')
+					->where('REPO_Portfolio_access_map.port_id', $portfolio->port_id)
+					->where('AUTH_Group_user_map.user_id', $user->user_id)
+					->find_many();
+
+		$maxaccess = 5;
+
+		foreach($results as $result)
+		{
+			if($result->access_type < $maxaccess)
+			{
+				$maxaccess = $result->access_type;
+			}
+		}
+
+		return $maxaccess;
 	}
 }

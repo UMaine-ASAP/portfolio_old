@@ -27,10 +27,12 @@ class Project extends Model
 				->where('content_id', $this->mediaMap()->content_id)
 				->find_many();
 	}
-
+	
+	/**
+	 *	Overridden delete function to handle the removal of all hanging dependencies on this Portfolio.
+	 */
 	public function delete()
 	{
-		// Remove all references to this Project
 		foreach ($maps = Model::factory('ProjectAccessMap')
 			->where('proj_id', $this->id())
 			->find_many() as $map)

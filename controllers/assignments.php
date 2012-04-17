@@ -2,6 +2,8 @@
 
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
+require_once('libraries/constant.php');
+require_once('controllers/portfolio.php');
 
 /**
  * Assignment controller.
@@ -11,26 +13,34 @@ require_once('libraries/Paris/paris.php');
 class AssignmentController
 {
 	/**
-	 * Creates a new Assignment object, then adds it to the DB.
+	 *	Creates a new Assignment object, then adds it to the DB.
 	 *		@param int section_id is the ID of the section the assignment belongs to
 	 *		@param int group_id is the ID of the group the assignment belongs to
 	 *		@param int owner_id is the ID of the group that owns the assignment (?)
 	 *		@param int collect_id is the ID of the assignment's collection_project_map
-	 *		@param string name is the name of the assignment
+	 *		@param string title is the title of the assignment
 	 *		@param string description is the description of the assignment
 	 *
 	 *	@return the Assignment object if creation was successful, otherwise false
  	 */
-	static function createAssignment($section_id, $group_id, $owner_id, $collect_id, $name, $description)
+	public static function createAssignment($section_id, $group_id, $collect_id, $title, $description, $requirements)
 	{
-		$assignment = Model::factory('Assignment')->create();
-
+		if (!$assignment = Model::factory('Assignment')->create())
+		{
+			return false;
+		}
+		// Create a Portfolio to contain submissions to this Assignment
+		if (!$portfolio = PortfolioController::createPortfolio($title, $description, 1))
+		{
+			return false;
+		}
+		
 		$assignment->section_id = $section_id;
-		$assignment->group_id = $group_id;
-		$assignment->owner_id = $owner_id;
-		$assignment->collect_id = $collect_id;
-		$assignment->name = $name;
+		$assignment->portfolio_id = $portfolio->id();
+		$assignment->creator_user_id = USER_ID;		// Check for User ID here
+		$assignment->title = $title;
 		$assignment->description = $description;
+		$assignment->requirements = $requirements;
 
 		if (!$assignment->save())
 		{
@@ -46,7 +56,7 @@ class AssignmentController
 	 *
 	 *	@return the Assignment object if found, false otherwise
 	 */
-	static function getAssignment($id)
+	public static function getAssignment($id)
 	{
 		return Model::factory('Assignment')->find_one($id);
 	}
@@ -58,12 +68,12 @@ class AssignmentController
 	 *		@param int $group_id is the new group ID of the assignment
 	 *		@param int $owner_id is the new owner ID of the assignment
 	 *		@param int collect_id is the new collection_project_map ID of the assignment
-	 *		@param string name is the new name of the assignment
+	 *		@param string title is the new title of the assignment
 	 *		@param string description is the new description of the assignment
 	 *
 	 *	@return true if the edit was successful, false otherwise
 	 */
-	static function editAssignment($id, $section_id, $group_id, $owner_id, $collect_id, $name, $description)
+	public static function editAssignment($id, $section_id, $group_id, $owner_id, $collect_id, $title, $description)
 	{
 		$assignment = Model::factory('Assignment')->find_one($id);
 
@@ -76,7 +86,7 @@ class AssignmentController
 		$assignment->group_id = $group_id;
 		$assignment->owner_id = $owner_id;
 		$assignment->collect_id = $collect_id;
-		$assignment->name = $name;
+		$assignment->title = $title;
 		$assignment->description = $description;
 
 		if (!$assignment->save())
@@ -93,7 +103,7 @@ class AssignmentController
 	 *
 	 *	@return true if deletion succeeded, otherwise false
 	 */
-	static function deleteAssignment($id)
+	public static function deleteAssignment($id)
 	{
 		$assignment = Model::factory('Assignment')->find_one($id);
 
@@ -103,6 +113,11 @@ class AssignmentController
 		}
 
 		$assignment->delete();
+	}
+
+	public static function addPermissionsToAssignment($id, $perm)
+	{
+		// Be sure to add permissions to the portfolio underneath the assignment!
 	}
 }
 
