@@ -50,6 +50,10 @@ class Portfolio extends Model
 				$return[] = $perm->access_type;
 			}
 			// If curret User's ID is the owner_user_id of the Portfolio, add ownership privilege
+			if ($this->owner_user_id == USER_ID)	// Check for user ID here
+			{
+				$return[] = OWNER; 
+			}
 			return $return;
 			break;
 		

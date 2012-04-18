@@ -18,11 +18,10 @@ class ProjectController
 	 *		@param string title is the title of the project
 	 *		@param string abstract is the abstract of the project
 	 *		@param string description is the description of the project
-	 *		@param bool privacy is the privacy of the project
 	 *
 	 *	@return the created Project object if successful, false otherwise.
 	 */
-	public static function createProject($title, $description, $type, $privacy)
+	public static function createProject($title, $description, $type)
 	{
 		// Check for creation privileges
 
@@ -35,7 +34,6 @@ class ProjectController
 		$project->title = $title;
 		$project->description = $description;
 		$project->type = $type;
-		$project->private = $privacy;
 
 		if (!$project->save())
 		{
@@ -51,11 +49,10 @@ class ProjectController
 	 * 		@param int id is the ID of the project being edited
 	 *		@param string abstract is the abstract of the project. The abstract will not be changed if an empty string is passed.
 	 *		@param string is the description of the project. The description will not be changed if an empty string is passed
-	 *		@param bool privacy is the project's privacy (TRUE for private, FALSE for public)
 	 *
 	 *	@return true if the project was successfully edited, false otherwise
 	 */
-	public static function editProject($id, $title = NULL, $description = NULL, $type = NULL, $privacy = NULL)
+	public static function editProject($id, $title = NULL, $description = NULL, $type = NULL)
 	{
 		$project = self::getProject($id);
 
@@ -69,7 +66,6 @@ class ProjectController
 		if (!is_null($title))		{ $project->title = $title; }
 		if (!is_null($description))	{ $project->description = $description;	}
 		if (!is_null($type))		{ $project->type = $type; }
-		if (!is_null($privacy))		{ $project->privacy = $privacy; }
 
 		return $project->save();
 	}

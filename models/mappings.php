@@ -57,6 +57,12 @@ class AssignmentAccessMap extends Model
 	public static $_id_column = 'id';
 }
 
+class AssignmentInstanceAccessMap extends Model
+{
+	public static $_table = 'REPO_Assignment_instance_access_map';
+	public static $_is_column = 'id';
+}
+
 class PortfolioAccessMap extends Model
 {
 	public static $_table = 'REPO_Portfolio_access_map';
