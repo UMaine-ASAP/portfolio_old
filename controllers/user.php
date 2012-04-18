@@ -1,5 +1,6 @@
 <?php
 
+require_once('controllers/authentication.php');
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
@@ -44,7 +45,16 @@ class UserController
 		}
 
 		$user->username = $username;
-		$user->pass = $pass;
+
+		if ($password = AuthenticationController::createHash($pass))
+		{
+			$user->pass = $password;
+		}
+		else
+		{
+			return false;
+		}
+		
 		$user->first = $first;
 		$user->last = $last;
 		$user->type_id = $type_id;

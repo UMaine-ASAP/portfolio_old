@@ -186,38 +186,4 @@ class AuthenticationController
 		$_SESSION['UserID'] = $user->user_id;
 		$_SESSION['LastAccess'] = time();
 	}
-
-	/**
-	 * **********************************************************************************
-	 *                       UTILITY FUNCTIONS BELOW THIS LINE
-	 * **********************************************************************************
-	 */
-
-	/**
-	 * Determines the access level a user has with regards to a given portfolio.
-	 *		@param $user A user ORM object.
-	 *		@param $portfolio A Portfolio ORM object
-	 *	@return An int representing the user's access level.
-	 */
-	public static function getUserPortfolioAccess($user, $portfolio)
-	{
-		$results = ORM::for_table('REPO_Portfolio_access_map')
-					->select('REPO_Portfolio_access_map.access_type')
-					->join('AUTH_Group_user_map', 'REPO_Portfolio_access_map.group_id = AUTH_Group_user_map.group_id')
-					->where('REPO_Portfolio_access_map.port_id', $portfolio->port_id)
-					->where('AUTH_Group_user_map.user_id', $user->user_id)
-					->find_many();
-
-		$maxaccess = 5;
-
-		foreach($results as $result)
-		{
-			if($result->access_type < $maxaccess)
-			{
-				$maxaccess = $result->access_type;
-			}
-		}
-
-		return $maxaccess;
-	}
 }
