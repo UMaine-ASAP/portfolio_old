@@ -51,10 +51,6 @@ class PortfolioController
 			return false;
 		}
 
-		// Create owner of the new Portfolio
-		$group = GroupController::createGroup($title . " owners", "Portfolio owners", 1);
-		$port->addPermissionForGroup($group->id(), OWNER);
-
 		return $port;
 	}
 
@@ -66,6 +62,8 @@ class PortfolioController
 	 *	Calling user must have editing privileges for the Portfolio object.
 	 *
 	 *	@param	int				$id				The unique identifier of the Portfolio object being edited. 
+	 *	@param	int|null		$owner_user_id	Indentifier of the User to give the Portfolio to
+	 *											(requires ownership privileges on the Portfolio)
 	 *	@param	string|null		$title			The title of the Portfolio to be set, in plain-text (255 char max),
 	 *											or null to leave untouched.
 	 *	@param	string|null		$description	The description of the Portfolio to be set, in plain-text (2^16 char max),
@@ -73,9 +71,9 @@ class PortfolioController
 	 *	@param	bool|null		$private	 	Specifies whether or not the Portfolio is considered private
 	 *											(true = private, false = public).
 	 *
-	 *	@return	bool					True if successfully edited, false otherwise.
+	 *	@return	bool							True if successfully edited, false otherwise.
 	 */
-	public static function editPortfolio($id, $title = NULL, $description = NULL, $private = NULL)
+	public static function editPortfolio($id, $owner_user_id = NULL, $title = NULL, $description = NULL, $private = NULL)
 	{
 		if (!$port = self::getPortfolio($id))
 		{
@@ -85,6 +83,11 @@ class PortfolioController
 		//TODO: check edit privileges here
 		// $port->permissions
 
+		if (!is_null($owner_user_id))
+		{
+			// Check for ownership privileges here
+			$port->owner_user_id = $owner_user_id;
+		}
 		if (!is_null($title)) 		{ $port->title = $title; }
 		if (!is_null($description)) { $port->description = $description; }
 		if (!is_null($private))		{ $port->private = $private; }
@@ -271,15 +274,7 @@ class PortfolioController
 			return false;
 		}
 
-		if (!$map = Model::factory('PortfolioProjectMap')->create())
-		{
-			return false;
-		}
-		$map->port_id = $parentId;
-		$map->child_id = $childId;
-		$map->child_is_portfolio = 1;
-
-		return $map->save();
+		return $parent->addSubPortfolio($childId);
 	}
 
 	/**
@@ -344,15 +339,7 @@ class PortfolioController
 		// $parentPort->permissions
 		// $project->permissions
 
-		if (!$map = Model::factory('PortfolioProjectMap')->create())
-		{
-			return false;
-		}
-		$map->port_id = $parentId;
-		$map->child_id = $childId;
-		$map->child_is_portfolio = 0;
-
-		return $map->save();
+		return $parent->addProject($childId);
 	}
 
 
@@ -378,16 +365,7 @@ class PortfolioController
 		//TODO: check ownership privileges here
 		// $parent->permissions
 
-		if (!$map = Model::factory('PortfolioProjectMap')
-			->where('port_id', $parentId)
-			->where('child_id', $childId)
-			->where('child_is_portfolio', $isPortfolio)
-			->find_one())
-		{
-			return false;
-		}
-
-	    return $map->delete();
+		return $parent->removeChild($childId, $isPortfolio);
 	}
 
 
