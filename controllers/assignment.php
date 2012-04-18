@@ -5,6 +5,7 @@ require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
 require_once('models/assignment.php');
 require_once('controllers/portfolio.php');
+require_once('controllers/class.php');
 
 /**
  * Assignment controller.
@@ -14,18 +15,25 @@ require_once('controllers/portfolio.php');
 class AssignmentController
 {
 	/**
-	 *	Creates a new Assignment object, then adds it to the DB.
-	 *		@param int section_id is the ID of the section the assignment belongs to
-	 *		@param int group_id is the ID of the group the assignment belongs to
-	 *		@param int owner_id is the ID of the group that owns the assignment (?)
-	 *		@param int collect_id is the ID of the assignment's collection_project_map
-	 *		@param string title is the title of the assignment
-	 *		@param string description is the description of the assignment
+	 *	Creates a new Assignment object in the system.
 	 *
-	 *	@return the Assignment object if creation was successful, otherwise false
+	 *	The creating User must have the required privileges on the Class to which the Assignment belongs
+	 *	(if a Class is specified).
+	 *
+	 *	@param	int|null	$class_id		Identifier of the Class the Assignment belongs to (optional)
+	 *	@param	string		$title			Plain-text title of the Assignment (255 character limit)
+	 *	@param	string|null	$description	Plain-text description of the Assignment (2^16 character limit, optional)
+	 *	@param	string|null	$requirements	Plain-text desctiption of the requirements of the Assignment (2^16 character limit, optional)
+	 *
+	 *	@return object|bool					The created Assignment object if successful, false otherwise
  	 */
-	public static function createAssignment($section_id, $group_id, $collect_id, $title, $description, $requirements)
+	public static function createAssignment($class_id, $title, $description, $requirements)
 	{
+		if (!is_null($class_id) && $class = ClassController::getClass($class_id))
+		{
+			// Check for permissions on Class object here
+			// $class->permissions
+		}
 		if (!$assignment = Model::factory('Assignment')->create())
 		{
 			return false;
@@ -33,6 +41,7 @@ class AssignmentController
 		// Create a Portfolio to contain submissions to this Assignment
 		if (!$portfolio = PortfolioController::createPortfolio($title, $description, 1))
 		{
+			$assignment->delete();		// Assume this succeeds
 			return false;
 		}
 		
@@ -45,6 +54,8 @@ class AssignmentController
 
 		if (!$assignment->save())
 		{
+			$assignment->delete();		// Assume these succeed
+			$portfolio->delete();		// 
 			return false;
 		}
 
@@ -52,68 +63,101 @@ class AssignmentController
 	}
 
 	/**
-	 *	Gets a specific Assignment object.
-	 *		@param int $id is the ID of the project to get
+	 *	Gets a specific Assignment object for private use.
 	 *
-	 *	@return the Assignment object if found, false otherwise
+	 *	Does not check permissions.
+	 *
+	 *	@param	int		$id		Identifier of the Assignment object to get
+	 *
+	 *	@return	object|bool		The Assignment object if found, false otherwise
 	 */
-	public static function getAssignment($id)
+	private static function getAssignment($id)
 	{
 		return Model::factory('Assignment')->find_one($id);
 	}
 
 	/**
-	 * Edit a specific Assigment object that the current user has (at least) editing privileges for
-	 *		@param int $id is the ID of the assignment to edit
-	 *		@param int section_id is the new section ID of the assignment
-	 *		@param int $group_id is the new group ID of the assignment
-	 *		@param int $owner_id is the new owner ID of the assignment
-	 *		@param int collect_id is the new collection_project_map ID of the assignment
-	 *		@param string title is the new title of the assignment
-	 *		@param string description is the new description of the assignment
+	 *	Gets a specified Assignment object for public viewing.
 	 *
-	 *	@return true if the edit was successful, false otherwise
+	 *	Checks that the requesting User has viewing privileges on the Assignment.
+	 *
+	 *	@param	int		$id		Identifier of the Assignment object to get
+	 *
+	 *	@return	object|bool		The Assignment object if found, false otherwise
 	 */
-	public static function editAssignment($id, $section_id, $group_id, $owner_id, $collect_id, $title, $description)
+	public static function viewAssignment($id)
 	{
-		$assignment = Model::factory('Assignment')->find_one($id);
-
-		if(!$assignment)
+		if !($assignment = self::getAssignment($id))
 		{
 			return false;
 		}
 
-		$assignment->section_id = $section_id;
-		$assignment->group_id = $group_id;
-		$assignment->owner_id = $owner_id;
-		$assignment->collect_id = $collect_id;
-		$assignment->title = $title;
-		$assignment->description = $description;
+		// Check privileges here
+		// $assignment->privileges
 
-		if (!$assignment->save())
-		{
-			return false;
-		}
-
-		return true;
+		return $assignment;
 	}
 
 	/**
-	 * Deletes an Assignment with the specified ID.
-	 *		@param int id is the ID of the assignment to delete
+	 *	Edit a specific Assignment object.
+	 *	
+	 *	Checks that the current user has (at least) editing privileges on the Assignment.
+	 *	Parameters with a NULL value will be ignored and left unchanged.
 	 *
-	 *	@return true if deletion succeeded, otherwise false
+	 *	@param	int				$id				Identifier of the assignment to edit
+	 *	@param	int|null		$owner_user_id	Identifier of the User to change the Assignment's owner to
+	 *											(requires ownership privileges on the Assignment)
+	 *	@param	int|null		$class_id		Identifier of the class owning the Assignment
+	 *	@param	string|null		$title			Title of the Assignment
+	 *	@param	string|null		$description	Description of the Assignment
+	 *	@param	string|null		$requirements	Requirements of the Assignment to be fulfilled by submissions
+	 *
+	 *	@return	bool							True if successful, false otherwise
 	 */
-	public static function deleteAssignment($id)
+	public static function editAssignment($id, $owner_user_id = NULL, $class_id = NULL, $title = NULL, $description = NULL, $requirements = NULL)
 	{
-		$assignment = Model::factory('Assignment')->find_one($id);
-
-		if(!$assignment)
+		if (!$assignment = Model::factory('Assignment')->find_one($id))
 		{
 			return false;
 		}
 
-		$assignment->delete();
+		// Check permissions for editing the Assignment here
+		// $assignment->permissions
+
+		if (!is_null($section_id))	{ $assignment->section_id = $section_id; }
+		if (!is_null($group_id))	{ $assignment->group_id = $group_id; }
+		if (!is_null($owner_user_id))
+		{
+			// Check for ownership privileges here
+			$assignment->owner_user_id = $owner_user_id;
+		}
+		if (!is_null($collect_id))	{ $assignment->collect_id = $collect_id; }
+		if (!is_null($title))		{ $assignment->title = $title; }
+		if (!is_null($description))	{ $assignment->description = $description; }
+
+		return $assignment->save();
+	}
+
+	/**
+	 *	Deletes a specific Assignment.
+	 *
+	 *	Caller requires deletion privileges.
+	 *
+	 *	@param	int		$id		Identifier of the Assignment to delete
+	 *
+	 *	@return	bool			True if successful, false otherwise
+	 */
+	public static function deleteAssignment($id)
+	{
+		if (!$assignment = Model::factory('Assignment')->find_one($id))
+		{
+			return false;
+		}
+
+		// Check deletion privileges
+		// $assignment->permissions
+
+		return $assignment->delete();
 	}
 
 	public static function addPermissionsToAssignment($id, $perm)

@@ -2,6 +2,8 @@
 
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
+require_once('controllers/user.php');
+require_once('controllers/section.php');
 
 /**
  * @package Models
@@ -17,13 +19,44 @@ class Assignment extends Model
 	public static $_id_column = "assign_id";
 
 	/**
+	 *	Magic-method property getters
+	 */
+	public function __get($name)
+	{
+		switch ($name)
+		{
+		case 'permissions':
+			$result = ORM::for_table('REPO_Portfolio_access_map')
+				->table_alias('access')
+				->select('access.access_type')
+				->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
+				->where('access.port_id', $this->id())
+				->where('AUTH_Group_user_map.user_id', USER_ID)	// add user credentials here
+				->find_many();
+			
+			$return = array();
+			foreach ($result as $perm)
+			{	// Results are returned as ORM objects, de-reference them
+				$return[] = $perm->access_type;
+			}
+			// If curret User's ID is the owner_user_id of the Portfolio, add ownership privilege
+			return $return;
+			break;
+
+		case 'creator':
+			break;
+
+		default:
+			parent::__get($name);
+			break;
+		}
+	}
+	/**
 	 * @return the User who created this Assignment
 	 */
 	public function creator()
 	{
-		return Model::factory('User')
-					-> where('user_id', $this->creator_user_id)
-					-> find_one();
+		return UserController::getUser($this->creator_user_id);
 	}
 
 }
@@ -43,17 +76,15 @@ class AssignmentInstance extends Model
 	 */
 	public function creator()
 	{
-		return 
-
+		return UserController::getUser($this->creator_user_id);
+	}
 
 	/**
 	 * @return the Section that this AssignmentInstance is associated with
 	 */
 	public function section()
 	{
-		return Model::factory('Section')
-					-> where('section_id', $this->section_id)
-					-> find_one();
+		return SectionController::getSection($this->section_id);
 	}
 }
 
