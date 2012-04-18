@@ -75,7 +75,7 @@ class Portfolio extends Model
 			break;
 
 		default:
-			parent::__get($name);
+			return parent::__get($name);
 			break;
 		}
 	}
