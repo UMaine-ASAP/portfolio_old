@@ -2,6 +2,8 @@
 
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
+require_once('libraries/constant.php');
+require_once('models/user.php');
 
 /**
  *	@package Controllers
