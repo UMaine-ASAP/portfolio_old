@@ -18,6 +18,7 @@ require_once('controllers/portfolio.php');
  *	
  *	@property-read	array	permissions		Array of permission levels specific to the requesting user
  *	@property-read	object	owner			User object of the User who currently owns the Assignment
+ *	@property-read	array	instances		Array of AssignmentInstances derived from this Assignment
  */
 class Assignment extends Model
 {
@@ -45,7 +46,7 @@ class Assignment extends Model
 					->table_alias('access')
 					->select('access.access_type')
 					->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
-					->where('access.port_id', $this->id())
+					->where('access.assign_id', $this->id())
 					->where('AUTH_Group_user_map.user_id', USER_ID)	// add user credentials here
 					->find_many();
 				
@@ -59,6 +60,12 @@ class Assignment extends Model
 
 		case 'owner':
 			return UserController::getUser($this->creator_user_id);
+			break;
+
+		case 'instances':
+			return Model::factory('AssignmentInstance')
+				->where('assign_id', $this->id())
+				->find_many();
 			break;
 
 		default:
@@ -96,9 +103,14 @@ class Assignment extends Model
 	 */
 	public function destroy()
 	{
+		// Delete all AssignmentInstances referencing this Assignment
+		foreach ($this->instances as $instance)
+		{
+			$instance->delete();
+		}	
 
+		return parent::delete();
 	}
-
 }
 
 /**
@@ -132,11 +144,11 @@ class AssignmentInstance extends Model
 			}
 			else
 			{
-				$result = ORM::for_table('REPO_Portfolio_access_map')
+				$result = ORM::for_table('REPO_Assignment_instance_access_map')
 					->table_alias('access')
 					->select('access.access_type')
 					->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
-					->where('access.port_id', $this->id())
+					->where('access.instance_id', $this->id())
 					->where('AUTH_Group_user_map.user_id', USER_ID)	// add user credentials here
 					->find_many();
 				
@@ -160,8 +172,43 @@ class AssignmentInstance extends Model
 			return PortfolioController::viewPortfolio($this->portfolio_id);
 			break;
 
+		case 'assignment':
+			return AssignmentController::viewAssignment($this->assign_id);
+			break;
+
+		case 'title':
+			// Check whether this Instance has overridden its Assignment's title,
+			// or if we need to pull the title from its Assignment
+			if (($title = parent::__get('title')) ||
+				($title = $this->__get('assignment')->title) ||
+				(!$title = NULL)) // (c) Josh Komusin
+			{
+				return $title; 
+			}
+			break;
+
+		case 'description':
+			// See above
+			if (($desc = parent::__get('description')) ||
+				($desc = $this->__get('assignment')->description) ||
+				(!$desc = NULL))
+			{
+				return $desc; 
+			}
+			break;
+
+		case 'requirements':
+			// See above
+			if (($reqs = parent::__get('requirements')) ||
+				($reqs = self::__get('assignment')->requirements) ||
+				(!$reqs = NULL))
+			{
+				return $reqs; 
+			}
+			break;
+
 		default:
-			parent::__get($name);
+			return parent::__get($name);
 			break;
 		}
 	}

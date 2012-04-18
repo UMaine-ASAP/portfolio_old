@@ -5,6 +5,7 @@ require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
 require_once('models/assignment.php');
 require_once('controllers/portfolio.php');
+require_once('controllers/class.php');
 
 /**
  * Assignment controller.
@@ -39,7 +40,7 @@ class AssignmentController
 		// Create a Portfolio to contain submissions to this Assignment
 		if (!$portfolio = PortfolioController::createPortfolio($title, $description, 1))
 		{
-			$assignment->delete();		// Assume this succeeds
+			$assignment->destroy();		// Assume this succeeds
 			return false;
 		}
 		
@@ -50,15 +51,14 @@ class AssignmentController
 
 			$assignment->class_id = $class_id;
 		}
-		$assignment->portfolio_id = $portfolio->id();
-		$assignment->creator_user_id = USER_ID;		// Check for User ID here
+		$assignment->owner_user_id = USER_ID;		// Check for User ID here
 		$assignment->title = $title;
 		$assignment->description = $description;
 		$assignment->requirements = $requirements;
 
 		if (!$assignment->save())
 		{
-			$assignment->delete();		// Assume these succeed
+			$assignment->destroy();		// Assume these succeed
 			$portfolio->delete();		// 
 			return false;
 		}
@@ -120,7 +120,7 @@ class AssignmentController
 	 */
 	public static function editAssignment($id, $owner_user_id = NULL, $class_id = NULL, $title = NULL, $description = NULL, $requirements = NULL)
 	{
-		if (!$assignment = Model::factory('Assignment')->find_one($id))
+		if (!$assignment = self::getAssignment($id))
 		{
 			return false;
 		}
@@ -128,16 +128,19 @@ class AssignmentController
 		// Check permissions for editing the Assignment here
 		// $assignment->permissions
 
-		if (!is_null($section_id))	{ $assignment->section_id = $section_id; }
-		if (!is_null($group_id))	{ $assignment->group_id = $group_id; }
 		if (!is_null($owner_user_id))
 		{
 			// Check for ownership privileges here
 			$assignment->owner_user_id = $owner_user_id;
 		}
-		if (!is_null($collect_id))	{ $assignment->collect_id = $collect_id; }
+		if (!is_null($class_id) && ClassController::getClass($class_id))
+		{
+			// Check for ownership of Class
+			$assignment->class_id = $class_id;
+		}
 		if (!is_null($title))		{ $assignment->title = $title; }
 		if (!is_null($description))	{ $assignment->description = $description; }
+		if (!is_null($requirements)){ $assignment->requirements = $requirements; }
 
 		return $assignment->save();
 	}
@@ -153,7 +156,7 @@ class AssignmentController
 	 */
 	public static function deleteAssignment($id)
 	{
-		if (!$assignment = Model::factory('Assignment')->find_one($id))
+		if (!$assignment = self::getAssignment($id))
 		{
 			return false;
 		}
@@ -164,9 +167,129 @@ class AssignmentController
 		return $assignment->delete();
 	}
 
+	/**
+	 *	Un-deletes an Assignment.
+	 *
+	 *	Caller requires ownership privileges on deactivated Assignment.
+	 *
+	 *	@param	int		$id		Identifier of the Assignment to un-delete
+	 *
+	 *	@return	bool			True if successful, false otherwise
+	 */
+	public static function unDeleteAssignment($id)
+	{
+		if (!$assignment = self::getAssignment($id))
+		{
+			return false;
+		}
+
+		// Check ownership privileges
+		// $assignment->permissions
+
+		return $assignment->unDelete();
+	}
+
 	public static function addPermissionsToAssignment($id, $perm)
 	{
 		// Be sure to add permissions to the portfolio underneath the assignment!
+	}
+
+
+	/************************************************************************************
+	 * AssignmentInstance object management												*
+	 ***********************************************************************************/
+
+	/**
+	 *	Create a new AssignmentInstance from a master Assignment.
+	 *
+	 *	Calling User must have ownership privileges on the master Assignment.
+	 *
+	 *	@param	int			$id				Identifier of the master Assignmet we wish to instantiate
+	 *	@param	string|null	$title			Overridden title of the instance (255 character max, optional)
+	 *	@param	string|null	$description	Overridden description of the instance (2^16 character max, optional)
+	 *	@param	string|null	$requirements	Overridden requirements of the instance (2^16 character max, optional)
+	 *
+	 *	@return	object|bool					The new AssignmentInstance if successful, false otherwise
+	 */
+	public static function instantiateAssignment($id, $title = NULL, $description = NULL, $requirements = NULL)
+	{
+	}
+
+	/**
+	 * 	Submit a unit of work (Project or Portfolio) to an AssignmentInstance.
+	 *
+	 * 	Calling User must have submission privileges for the Instance.
+	 * 	Instance's due date must not have expired.
+	 *
+	 * 	@param	int		$assign_id			Identifier of the AssignmentInstance to add work to
+	 * 	@param	int		$work_id			Identifier of the piece of work to add
+	 * 	@param	bool	$work_is_portfolio	Whether or not the work is a Portfolio (true=portfolio)
+	 *
+	 * 	@return	bool						True if successful, false otherwise
+	 */
+	public static function submitWorkToAssignmentInstance($assign_id, $work_id, $work_is_portfolio)
+	{
+	}
+
+	/**
+	 *	Retrieve an AssignmentInstance for viewing.
+	 *
+	 *	Caller requires viewing privileges on the instance.
+	 *
+	 *	@param	int		$id		Identifier of the instance to retrieve
+	 *
+	 *	@return	object|bool		AssignmentInstance object if successful, false otherwise
+	 */
+	public static function viewAssignmentInstance($id)
+	{
+		if (!$instance = self::getAssignmentInstance($id))
+		{
+			return false;
+		}
+
+		// Check viewing permissions here
+		// $instance->permissions
+		
+		return $instance;
+	}
+
+	/**
+	 *	Retrieves an AssignmentInstance for internal use.
+	 *
+	 *	Does not check for permissions.
+	 *
+	 *	@param	int		$id		Identifier of the instance to retrieve
+	 *
+	 *	@return	object|bool		AssignmentInstance object if successful, false otherwise
+	 */
+	public static function getAssignmentInstance($id)
+	{
+		return Model::factory('AssignmentInstance')->find_one($id);
+	}
+
+	/**
+	 *	Returns all instances of a specific Assignment.
+	 *
+	 *	@param	int		$id		Identifier of the Assignment to find AssignmentInstances of
+	 *
+	 *	@return	array|bool		Array of AssignmentInstance objects if successful, false otherwise
+	 */
+	private static function viewInstancesOfAssignment($id)
+	{
+		if (!$assignment = self::getAssignment($id))
+		{
+			return false;
+		}
+
+		$return = array();
+		foreach ($assignment->instances as $instance)
+		{
+			// Check if User has permission to view AssignmentInstance
+			// $instance->permissions
+			$return[] = $instance;
+		}
+
+		return $return;
 	}
 }
 
