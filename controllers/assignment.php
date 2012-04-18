@@ -5,7 +5,6 @@ require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
 require_once('models/assignment.php');
 require_once('controllers/portfolio.php');
-require_once('controllers/class.php');
 
 /**
  * Assignment controller.
@@ -14,6 +13,10 @@ require_once('controllers/class.php');
  */
 class AssignmentController
 {
+	/************************************************************************************
+	 * Assignment object management														*
+	 ***********************************************************************************/
+
 	/**
 	 *	Creates a new Assignment object in the system.
 	 *
@@ -29,11 +32,6 @@ class AssignmentController
  	 */
 	public static function createAssignment($class_id, $title, $description, $requirements)
 	{
-		if (!is_null($class_id) && $class = ClassController::getClass($class_id))
-		{
-			// Check for permissions on Class object here
-			// $class->permissions
-		}
 		if (!$assignment = Model::factory('Assignment')->create())
 		{
 			return false;
@@ -45,7 +43,13 @@ class AssignmentController
 			return false;
 		}
 		
-		$assignment->section_id = $section_id;
+		if (!is_null($class_id) && $class = ClassController::getClass($class_id))
+		{
+			// Check for permissions on Class object here
+			// $class->permissions
+
+			$assignment->class_id = $class_id;
+		}
 		$assignment->portfolio_id = $portfolio->id();
 		$assignment->creator_user_id = USER_ID;		// Check for User ID here
 		$assignment->title = $title;
@@ -87,7 +91,7 @@ class AssignmentController
 	 */
 	public static function viewAssignment($id)
 	{
-		if !($assignment = self::getAssignment($id))
+		if (!$assignment = self::getAssignment($id))
 		{
 			return false;
 		}
@@ -108,9 +112,9 @@ class AssignmentController
 	 *	@param	int|null		$owner_user_id	Identifier of the User to change the Assignment's owner to
 	 *											(requires ownership privileges on the Assignment)
 	 *	@param	int|null		$class_id		Identifier of the class owning the Assignment
-	 *	@param	string|null		$title			Title of the Assignment
-	 *	@param	string|null		$description	Description of the Assignment
-	 *	@param	string|null		$requirements	Requirements of the Assignment to be fulfilled by submissions
+	 *	@param	string|null		$title			Title of the Assignment (plain-text, 255 character max)
+	 *	@param	string|null		$description	Description of the Assignment (plain-text, 2^16 character max)
+	 *	@param	string|null		$requirements	Requirements of the Assignment to be fulfilled by submissions (plain-text, 2^16 character max)
 	 *
 	 *	@return	bool							True if successful, false otherwise
 	 */
