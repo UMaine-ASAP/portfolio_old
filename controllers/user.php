@@ -171,7 +171,7 @@ class UserController
 	{
 		// Check any credentials here
 		
-		if (!user = self::getUser($userID))
+		if (!$user = self::getUser($userID))
 		{
 			return false;
 		}
