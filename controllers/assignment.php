@@ -3,6 +3,7 @@
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
+require_once('controllers/authentication.php');
 require_once('models/assignment.php');
 require_once('controllers/portfolio.php');
 
@@ -26,6 +27,10 @@ class AssignmentController
  	 */
 	public static function createAssignment($section_id, $group_id, $collect_id, $title, $description, $requirements)
 	{
+		if (!$user = AuthenticationController::get_current_user())
+		{
+			return false;
+		}
 		if (!$assignment = Model::factory('Assignment')->create())
 		{
 			return false;
@@ -35,10 +40,10 @@ class AssignmentController
 		{
 			return false;
 		}
-		
+
 		$assignment->section_id = $section_id;
 		$assignment->portfolio_id = $portfolio->id();
-		$assignment->creator_user_id = USER_ID;		// Check for User ID here
+		$assignment->creator_user_id = $user->user_id;
 		$assignment->title = $title;
 		$assignment->description = $description;
 		$assignment->requirements = $requirements;
@@ -76,6 +81,12 @@ class AssignmentController
 	 */
 	public static function editAssignment($id, $section_id, $group_id, $owner_id, $collect_id, $title, $description)
 	{
+		//currently just checks to see if you're logged in; DOES NOT CHECK EDIT PERMISSIONS
+		if (!$user = AuthenticationController::get_current_user())
+		{
+			return false;
+		}
+
 		$assignment = Model::factory('Assignment')->find_one($id);
 
 		if(!$assignment)
@@ -106,6 +117,11 @@ class AssignmentController
 	 */
 	public static function deleteAssignment($id)
 	{
+		if (!$user = AuthenticationController::get_current_user())
+		{
+			return false;
+		}
+
 		$assignment = Model::factory('Assignment')->find_one($id);
 
 		if(!$assignment)
@@ -113,7 +129,12 @@ class AssignmentController
 			return false;
 		}
 
-		$assignment->delete();
+		if ($assignment->creator_user_id === $user->user_id)
+		{
+			return $assignment->delete();
+		}
+
+		return false;
 	}
 
 	public static function addPermissionsToAssignment($id, $perm)

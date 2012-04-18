@@ -62,7 +62,6 @@ class GroupController
 	 */
 	static function deleteGroup($id)
 	{
-
 		if (!$user = AuthenticationController::get_current_user())
 		{
 			return false;
@@ -104,7 +103,7 @@ class GroupController
 	/**
 	 * Gets a Group object with the specified ID.
 	 *		@param int id is the ID of the group to look for
-	 *	
+	 *
 	 *	@return the Group object if one was found, otherwise false
 	 */
 	private static function getGroup($id)
@@ -129,11 +128,12 @@ class GroupController
 			return false;
 		}
 
+		//we bring $user into the function's scope so that we can later check permissions
 		if (!$user = AuthenticationController::get_current_user())
 		{
 			return false;
 		}
-		
+
 		//TODO: Check for editing permissions
 		// $groupToUpdate->permissions
 
