@@ -3,8 +3,9 @@
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
-require_once('controllers/group.php');
 require_once('models/mappings.php');
+require_once('models/portfolio.php');
+require_once('controllers/group.php');
 require_once('controllers/authentication.php');
 
 /**
