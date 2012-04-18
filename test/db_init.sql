@@ -148,10 +148,10 @@ DROP TABLE IF EXISTS `REPO_Assignment_instances`;
 CREATE TABLE `REPO_Assignment_instances` (
   `instance_id` INTEGER NOT NULL AUTO_INCREMENT,
   `assign_id` INTEGER NOT NULL,
-  `section_id` INTEGER NOT NULL,
-  `portfolio_id` INTEGER NULL DEFAULT NULL,
+  `section_id` INTEGER NULL DEFAULT NULL,
+  `portfolio_id` INTEGER NOT NULL,
   `owner_user_id` INTEGER NOT NULL,
-  `title` VARCHAR(255) NOT NULL,
+  `title` VARCHAR(255) NULL DEFAULT NULL,
   `description` TEXT NULL DEFAULT NULL,
   `requirements` TEXT NULL DEFAULT NULL,
   `due_date` DATE NULL DEFAULT NULL,
