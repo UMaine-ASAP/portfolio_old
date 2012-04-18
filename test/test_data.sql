@@ -128,12 +128,22 @@ INSERT INTO `REPO_Portfolio_access_map` (port_id, group_id, access_type) VALUES
 (3, 2, 1);
 
 -- ASSIGNMENTS
-INSERT INTO `REPO_Assignments` (section_id, portfolio_id, creator_user_id, title, description, requirements, due_date) VALUES 
-(1, 1, 1, 'NMD Project 1', 'Create tangible to describe future project', 'Please limit to 10 pages, submit in one of the following formats: .doc, .pdf, .svg, .png', '2012-1-2'),
-(2, 2, 1, 'MAT Homework 5', 'Pages 256-258, #1b, 5c, 6abc', 'Please scan and submit in .pdf format', '2012-2-4');
+INSERT INTO `REPO_Assignments` (owner_user_id, class_id, title, description, requirements) VALUES 
+(2, 3, 'NMD Project 1', 'Create tangible to describe future project', 'Please limit to 10 pages, submit in one of the following formats: .doc, .pdf, .svg, .png'),
+(2, 5, 'MAT Homework 5', 'Pages 256-258, #1b, 5c, 6abc', 'Please scan and submit in .pdf format');
+
+-- ASSIGNMENT INSTANCES
+INSERT INTO `REPO_Assignment_instances` (assign_id, section_id, portfolio_id, owner_user_id, title, description, requirements, due_date) VALUES 
+(1, 1, 1, 2, NULL, NULL, NULL, '2012-01-02'),
+(2, 2, 2, 1, NULL, NULL, 'Please scan and submit in .pdf format, OR fax to my office', '2012-02-04');
 
 -- ASSIGNMENT ACCESS_LEVEL MAP
 INSERT INTO `REPO_Assignment_access_map` (assign_id, group_id, access_type) VALUES 
+(1, 1, 1),
+(2, 2, 1);
+
+-- ASSIGNMENT INSTANCE ACCESS_LEVEL MAP
+INSERT INTO `REPO_Assignment_instance_access_map` (instance_id, group_id, access_type) VALUES 
 (1, 1, 1),
 (2, 2, 1);
 
@@ -144,13 +154,13 @@ INSERT INTO `REPO_Media_types` (name, description) VALUES
 ('video', 'Video file');
 
 -- MEDIA
-INSERT INTO `REPO_Media` (type, title, description, created, edited, creator_user_id, filename, private) VALUES 
-(1, 'NMD302 Touch Wall Tangible', 'Tangible describing the development and implementation of a large-scale multi-touch wall display', '2012-2-3', NULL, 1, '/path/to/file.txt', 1),
-(2, 'NMD302 Touch Wall Illustration', 'Illustration of conceptualized touch wall', '2012-2-3', NULL, 1, '/path/to/file.png', 1),
-(1, 'NMD302 Scratch Sensor Tangible', 'Tangible describing the research and development of sensors to detech scrathing as input to applications', '2012-2-3', '2012-2-5', 1, '/short/path/to/crazy/intense/file.txt', 1),
-(2, 'MAT258 Homework 5', 'Submission', '2012-1-1', NULL, 2, '/math/file.png', 1),
-(2, 'MAT258 Homework 5', 'Submission', '2012-2-1', NULL, 2, '/math/file2.svg', 1),
-(3, 'Crazy Video of Research', 'CUGR 2012 Submission', '2012-3-2', NULL, 2, '/cugr/sub1.mpeg', 0);
+INSERT INTO `REPO_Media` (type, title, description, created, edited, creator_user_id, filename) VALUES 
+(1, 'NMD302 Touch Wall Tangible', 'Tangible describing the development and implementation of a large-scale multi-touch wall display', '2012-2-3', NULL, 1, '/path/to/file.txt'),
+(2, 'NMD302 Touch Wall Illustration', 'Illustration of conceptualized touch wall', '2012-2-3', NULL, 1, '/path/to/file.png'),
+(1, 'NMD302 Scratch Sensor Tangible', 'Tangible describing the research and development of sensors to detech scrathing as input to applications', '2012-2-3', '2012-2-5', 1, '/short/path/to/crazy/intense/file.txt'),
+(2, 'MAT258 Homework 5', 'Submission', '2012-1-1', NULL, 2, '/math/file.png'),
+(2, 'MAT258 Homework 5', 'Submission', '2012-2-1', NULL, 2, '/math/file2.svg'),
+(3, 'Crazy Video of Research', 'CUGR 2012 Submission', '2012-3-2', NULL, 2, '/cugr/sub1.mpeg');
 
 -- MEDIA ACCESS_LEVEL MAP
 INSERT INTO `REPO_Media_access_map` (media_id, group_id, access_type) VALUES 
@@ -164,12 +174,12 @@ INSERT INTO `REPO_Project_types` (name, description) VALUES
 ('gallery', 'Gallery-style display of medias');
 
 -- PROJECTS
-INSERT INTO `REPO_Projects` (creator_user_id, title, description, private, type) VALUES 
-(1, 'NMD302 Touch Wall', 'Creation and study of touch wall', 0, 1),
-(1, 'NMD302 Scratch Sensor', 'Research and development of scratch sensor', 0, 2),
-(2, 'MAT258 Homework 5', 'Submission', 1, 1),
-(2, 'MAT258 Homework 5', 'Submission', 1, 1),
-(2, 'Windboard', 'A formal study of the cost-effectiveness of wind-powered keyboards', 0, 1);
+INSERT INTO `REPO_Projects` (creator_user_id, title, description, type) VALUES 
+(1, 'NMD302 Touch Wall', 'Creation and study of touch wall', 1),
+(1, 'NMD302 Scratch Sensor', 'Research and development of scratch sensor', 2),
+(2, 'MAT258 Homework 5', 'Submission', 1),
+(2, 'MAT258 Homework 5', 'Submission', 1),
+(2, 'Windboard', 'A formal study of the cost-effectiveness of wind-powered keyboards', 1);
 
 -- PROJECT ACCESS_LEVEL MAP
 INSERT INTO `REPO_Project_access_map` (proj_id, group_id, access_type) VALUES 

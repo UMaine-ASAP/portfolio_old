@@ -12,21 +12,16 @@
 DEFINE("USER_ID", 2);
 
 
-/**
- * Global ID column overrides.
- */
-ORM::configure('id_column_overrides', array(
-	'REPO_Portfolios' => 'port_id',
-));
-
 
 /**
  * Permission types.
  * Constant mapping of integer values to standard permission names.
+ * Permissions constitute a heirarchy, whereby each permission also grants all permissions
+ * below it (i.e. EDIT privilege also grants READ and SUBMIT to the User/Group)
  */
 /**
  * OWNER
- * Has overarching total permission of an object (read, write, edit, delete).
+ * Has overarching total permission of an object (including deletion).
  */
 DEFINE("OWNER",	1);
 /**

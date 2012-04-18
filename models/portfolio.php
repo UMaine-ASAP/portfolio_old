@@ -36,20 +36,29 @@ class Portfolio extends Model
 		switch ($name)
 		{
 		case 'permissions':
-			$result = ORM::for_table('REPO_Portfolio_access_map')
-				->table_alias('access')
-				->select('access.access_type')
-				->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
-				->where('access.port_id', $this->id())
-				->where('AUTH_Group_user_map.user_id', USER_ID)	// add user credentials here
-				->find_many();
-			
 			$return = array();
-			foreach ($result as $perm)
-			{	// Results are returned as ORM objects, de-reference them
-				$return[] = $perm->access_type;
+			// If curret User's ID is the owner_user_id of the Portfolio, return ownership privilege
+			if ($this->owner_user_id == USER_ID)	// Check for user ID here
+			{
+				$return[] = OWNER; 
+				return $return;
 			}
-			return $return;
+			else
+			{
+				$result = ORM::for_table('REPO_Portfolio_access_map')
+					->table_alias('access')
+					->select('access.access_type')
+					->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
+					->where('access.port_id', $this->id())
+					->where('AUTH_Group_user_map.user_id', USER_ID)	// add user credentials here
+					->find_many();
+				
+				foreach ($result as $perm)
+				{	// Results are returned as ORM objects, de-reference them
+					$return[] = $perm->access_type;
+				}
+				return $return;
+			}
 			break;
 		
 		case 'children':
@@ -66,30 +75,7 @@ class Portfolio extends Model
 			break;
 
 		default:
-			parent::__get($name);
-			break;
-		}
-	}
-
-	/**
-	 *	Magic-method property setters
-	 */
-	public function __set($name, $value)
-	{
-		switch ($name)
-		{
-		case 'permissions':
-			// Permissions are read-only with magic-methods
-			return false;
-			break;
-
-		case 'children':
-			// Children are read-only with magic-methods
-			return false;
-			break;
-
-		default:
-			parent::__set($name, $value);
+			return parent::__get($name);
 			break;
 		}
 	}
@@ -142,6 +128,69 @@ class Portfolio extends Model
 	}
 
 	/**
+	 *	Adds a Portfolio as a sub-Portfolio to this Portfolio.
+	 *
+	 *	@param	int		$child_id		Identifier of the Portfolio to be added underneath this one
+	 *
+	 *	@return	bool					True if successful, false otherwise
+	 */
+	public function addSubPortfolio($child_id)
+	{
+		if (!$map = Model::factory('PortfolioProjectMap')->create())
+		{
+			return false;
+		}
+		$map->port_id = $this->id();
+		$map->child_id = $child_id;
+		$map->child_is_portfolio = 1;
+
+		return $map->save();
+	}
+
+	/**
+	 *	Adds a Project to this Portfolio.
+	 *
+	 *	@param	int		$proj_id		Identifier of the Project to be added
+	 *
+	 *	@return	bool					True if successful, false otherwise
+	 */
+	public function addProject($proj_id)
+	{
+		if (!$map = Model::factory('PortfolioProjectMap')->create())
+		{
+			return false;
+		}
+		$map->port_id = $this->id();
+		$map->child_id = $proj_id;
+		$map->child_is_portfolio = 0;
+
+		return $map->save();
+	}
+
+	/**
+	 *	Remove a child from this Portfolio (either Project or sub-Portfolio).
+	 *
+	 *	@param	int		$child_id				Identifier of the object to be removed from the Portfolio
+	 *	@param	bool	$child_is_portfolio		Whether or not the child is a sub-Portfolio
+	 *											(true=child is sub-Portfolio)
+	 *
+	 *	@return	bool							True if successful, false otherwise
+	 */
+	public function removeChild($child_id, $child_is_portfolio)
+	{
+		if (!$map = Model::factory('PortfolioProjectMap')
+			->where('port_id', $this->id())
+			->where('child_id', $child_id)
+			->where('child_is_portfolio', $child_is_portfolio)
+			->find_one())
+		{
+			return false;
+		}
+
+	    return $map->delete();
+	}
+
+	/**
 	 *	Retrieve all Groups with permissions for this Porfolio.
 	 *
 	 *	@return	array				An array of arrays with keys specifying the identifier of the Group,
@@ -177,11 +226,11 @@ class Portfolio extends Model
 	 *	@return	array				An array of permission levels as specified in 'constant.php', or an empty
 	 * 								array in the event the Group has no permissions.
 	 */
-	public function permissionsForGroup($group)
+	public function permissionsForGroup($group_id)
 	{
 		$result = Model::factory('PortfolioAccessMap')
 			->where('port_id', $this->id())
-			->where('group_id', $group)
+			->where('group_id', $group_id)
 			->find_many();
 		
 		$return = array();
@@ -200,12 +249,12 @@ class Portfolio extends Model
 	 *
 	 *	@return	bool				True if successful, false otherwise.
 	 */
-	public function addPermissionForGroup($group, $perm)
+	public function addPermissionForGroup($group_id, $perm_id)
 	{
 		if (Model::factory('PortfolioAccessMap')
 			->where('port_id', $this->id())
-			->where('group_id', $group)
-			->where('access_type', $perm)
+			->where('group_id', $group_id)
+			->where('access_type', $perm_id)
 			->find_one())
 		{
 			return false;
@@ -217,8 +266,8 @@ class Portfolio extends Model
 		}
 		
 		$map->port_id = $this->id();
-		$map->group_id = $group;
-		$map->access_type = $perm;
+		$map->group_id = $group_id;
+		$map->access_type = $perm_id;
 
 		return $map->save();
 	}
@@ -231,21 +280,21 @@ class Portfolio extends Model
 	 *
 	 *	@return	bool				True if successful, false otherwise.
 	 */
-	public function removePermissionForGroup($group, $perm)
+	public function removePermissionForGroup($group_id, $perm_id)
 	{
-		if (!$permissions = $this->permissionsForGroup($group))
+		if (!$permissions = $this->permissionsForGroup($group_id))
 		{
 			return false;
 		}
 
 		foreach ($permissions as $p)
 		{
-			if ($p == $perm)
+			if ($p == $perm_id)
 			{
 				$permORM = Model::factory('PortfolioAccessMap')
 					->where('port_id', $this->id())
-					->where('group_id', $group)
-					->where('access_type', $perm)
+					->where('group_id', $group_id)
+					->where('access_type', $perm_id)
 					->find_one();
 				return $permORM->delete();
 			}

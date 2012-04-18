@@ -16,15 +16,14 @@ class MediaController
 	 *
 	 *	Calling User must exist.
 	 *
-	 *	@param 	int 	$creator_user_id	The ID of the user creating the media
-	 *	@param 	string 	$title				The title of the media
-	 *	@param 	string 	$abstract			The abstract of the media
-	 *	@param 	string 	$description		The description of the media
-	 *	@param 	bool 	$privacy			The privacy of the media
+	 *	@param	int			$type				Identifier of the MediaType of this Media object
+	 *	@param 	string 		$title				The title of the Media object (255 character max)
+	 *	@param 	string|null	$description		The description of the Media object (2^16 character max, optional)
+	 *	@param	string		$filename			Filename where the Media is stored on the server (2^16 character max)
 	 *
-	 *	@return object|bool					The created Media object if successful, false otherwise.
+	 *	@return object|bool						The created Media object if successful, false otherwise.
 	 */
-	static function createMedia($type, $title, $description, $privacy, $filename)
+	static function createMedia($type, $title, $description, $filename)
 	{
 		// Check for creation privileges
 
@@ -36,12 +35,12 @@ class MediaController
 		$media->creator_user_id = USER_ID;	// Get USER ID from caller user
 		$media->title = $title;
 		$media->description = $description;
-		$media->private = $privacy;
 		$media->filename = $filename;
+		$media->created = date("Y-m-d H:i:s");
 
 		if (!$media->save())
 		{
-			$media->delete();
+			$media->delete();	// Assume this succeeds
 			return false;
 		}
 
@@ -53,14 +52,16 @@ class MediaController
 	 *
 	 *	The currently logged-in user must have editing permissions.
 	 *
-	 * 	@param 	int		$id				The ID of the media being edited
-	 *	@param 	string	$abstract		The abstract of the media. The abstract will not be changed if an empty string is passed.
-	 *	@param 	string	$description	The description of the media. The description will not be changed if an empty string is passed
-	 *	@param 	bool	$privacy		The media's privacy (TRUE for private, FALSE for public)
+	 * 	@param 	int		$id				The identifier of the Media being edited
+	 * 	@param	int		$type			Identifier of the MediaType of the Media being edited
+	 * 	@param	string	$title			Title of the Media (255 character max)
+	 *	@param 	string	$description	The description of the Media. The description will not be changed if an empty string is passed
+	 *									(2^16 character max)
+	 *	@param	string	$filename		The path where the media file is stored (2^16 character max)
 	 *
 	 *	@return bool					True if the media was successfully edited, false otherwise
 	 */
-	static function editMedia($id, $abstract, $description, $privacy)
+	static function editMedia($id, $type = NULL, $title = NULL, $description = NULL, $filename = NULL)
 	{
 		if (!$media = self::getMedia($id))
 		{
@@ -69,9 +70,11 @@ class MediaController
 
 		// Check for editing permissions
 
-		if (!is_null($abstract))	{ $media->abstract = $abstract;	}
+		if (!is_null($type))		{ $media->type = $type; }
+		if (!is_null($title))		{ $media->title = $title; }
 		if (!is_null($description))	{ $media->description = $description; }
-		if (!is_null($media))		{ $media->privacy = $privacy; }
+		if (!is_null($filename))	{ $media->filename = $filename; }
+		$media->edited = date("Y-m-d H:i:s");
 
 		return $media->save();
 	}
