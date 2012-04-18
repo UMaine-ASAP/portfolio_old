@@ -54,7 +54,7 @@ class UserController
 		{
 			return false;
 		}
-		
+
 		$user->first = $first;
 		$user->last = $last;
 		$user->type_id = $type_id;
@@ -182,7 +182,6 @@ class UserController
 	public static function reactivateUser($userID)
 	{
 		// Check any credentials here
-		
 		if (!$user = self::getUser($userID))
 		{
 			return false;

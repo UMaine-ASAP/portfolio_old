@@ -30,7 +30,12 @@ class PortfolioController
 	 */
 	public static function createPortfolio($title, $description, $private)
 	{
-		//TODO: check creation privileges here
+		//Currently, we don't check portfolio creation privileges (because that's not yet a thing)
+		//all we do is check to see that a user is in fact currently logged in
+		if (!$user = AuthenticationController::get_current_user())
+		{
+			return false;
+		}
 
 		if (!$port = Model::factory('Portfolio')->create())
 		{
@@ -41,8 +46,8 @@ class PortfolioController
 		else					{ return false; }
 		if (!is_null($private))	{ $port->private = $private; }
 		else					{ return false; }
-		if (!is_null(USER_ID))	{ $port->owner_user_id = USER_ID; }	// check user credentials
-		else					{ return false; }
+
+		$port->owner_user_id = $user->user_id;
 		$port->description = $description;
 
 		if (!$port->save())
@@ -179,12 +184,12 @@ class PortfolioController
 	public static function getMemberPortfolios($count, $order_by, $pos)
 	{
 		//TODO: check privileges here
-		if (!$user = AuthenticationController::getCurrentUser())
+		if (!$user = AuthenticationController::get_current_user())
 		{
 			return false;
 		}
 
-		//user $user's privileges to determine the results
+		//use $user's privileges to determine the results
 		
 	    return false;
 	}
@@ -205,12 +210,11 @@ class PortfolioController
 	 */
 	public static function getIncludedPortfolios($count, $order_by, $pos)
 	{
-		//TODO: check privileges here
-		if (!$user = AuthenticationController::getCurrentUser())
+		if (!$user = AuthenticationController::get_current_user())
 		{
 			return false;
 		}
-
+		//TODO: check privileges here
 
 	    return false;
 	}

@@ -181,7 +181,7 @@ class AuthenticationController
 	 */
 	static function is_logged_in()
 	{
-		return (self::get_current_user() !== false);
+		return self::check_login();
 	}
 
 	/**
