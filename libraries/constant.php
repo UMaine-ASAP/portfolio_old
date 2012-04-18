@@ -5,13 +5,6 @@
  * @package Constants
  */
 
-/******************************************
- ****** TEST USER ID 				 ******
- ****** DEVELOPMENT ENVIRONMENT ONLY ******
- *****************************************/
-DEFINE("USER_ID", 2);
-
-
 
 /**
  * Permission types.

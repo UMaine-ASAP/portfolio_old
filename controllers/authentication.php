@@ -157,6 +157,10 @@ class AuthenticationController
 	static function update_user_password($userID, $password)
 	{
 		// Check user has permissions to change password
+		if (!$user = self::get_current_user())
+		{
+			return false;
+		}
 
 		if ($hash = self::create_hash($password))
 		{
