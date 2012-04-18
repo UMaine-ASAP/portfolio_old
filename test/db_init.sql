@@ -135,6 +135,7 @@ CREATE TABLE `REPO_Assignments` (
   `title` VARCHAR(255) NOT NULL,
   `description` TEXT NULL DEFAULT NULL,
   `requirements` TEXT NULL DEFAULT NULL,
+  `deactivated` BOOL NOT NULL DEFAULT 0,
   PRIMARY KEY (`assign_id`)
 ) COMMENT='Assignments instantiated for submissions';
 
