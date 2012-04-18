@@ -36,6 +36,12 @@ class AuthenticationController
 				return false;
 			}
 
+			if (strcmp($_SESSION['RemoteIP'], $_SERVER['REMOTE_ADDR']) != 0)
+			{
+				self::logout();
+				return false;
+			}
+
 			$_SESSION['LastAccess'] = $latestAccess;
 
 			//try to acquire a user object from Paris; assuming that UserID holds the user's ID field
@@ -185,5 +191,6 @@ class AuthenticationController
 		$_SESSION = array();
 		$_SESSION['UserID'] = $user->user_id;
 		$_SESSION['LastAccess'] = time();
+		$_SESSION['RemoteIP'] = $_SERVER['REMOTE_ADDR'];
 	}
 }
