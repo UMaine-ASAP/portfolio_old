@@ -55,7 +55,7 @@ class ProjectController
 	 *
 	 *	@return true if the project was successfully edited, false otherwise
 	 */
-	public static function editProject($id, $title, $description, $type, $privacy)
+	public static function editProject($id, $title = NULL, $description = NULL, $type = NULL, $privacy = NULL)
 	{
 		$project = self::getProject($id);
 

@@ -141,23 +141,19 @@ class AuthenticationController
 
 	/**
 	 * Sets a users's password to the secure hash of the plaintext password passed to the function.
-	 *		@param int $userid The ID of the user whose password will be updated.
+	 *		@param int $userID The ID of the user whose password will be updated.
 	 *		@param string $password The plaintext of the user's new password (will be hashed)
 	 *
 	 *	@return True if the update was successful, false otherwise.
 	 *
 	 */
-	static function updateUserPassword($userid, $password)
+	static function updateUserPassword($userID, $password)
 	{
 		// Check user has permissions to change password
 
 		if ($hash = self::createHash($password))
 		{
-			if ($user = UserController::getUser($userid))
-			{
-				$user->pass = $hash;
-				return $user->save();
-			}
+			return UserController::editUser($userID, NULL, $password);
 		}
 
 		return false;

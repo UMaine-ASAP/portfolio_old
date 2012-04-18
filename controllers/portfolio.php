@@ -21,12 +21,12 @@ class PortfolioController
 	 *	logged in user is given 'owner' level permissions.
 	 *	User must therefore have a user account registered with Portfolio creation privileges.
 	 *
-	 *	@param	string	$title			Specifies the title of the new Portfolio in plain-text (255 char max).
-	 *	@param	string	$description 	Describes the new Portfolio in plain-text (2^16 char max).
-	 *	@param	bool	$private		Specifies whether or not the Portfolio is considered private
-	 *									(true = private, false = public).
+	 *	@param	string		$title			Specifies the title of the new Portfolio in plain-text (255 char max).
+	 *	@param	string|null	$description 	Describes the new Portfolio in plain-text (2^16 char max, optional).
+	 *	@param	bool		$private		Specifies whether or not the Portfolio is considered private
+	 *										(true = private, false = public).
 	 *
-	 *	@return	object|bool				The created Portfolio object if successful, false otherwise.
+	 *	@return	object|bool					The created Portfolio object if successful, false otherwise.
 	 */
 	public static function createPortfolio($title, $description, $private)
 	{
@@ -37,10 +37,13 @@ class PortfolioController
 			return false;
 		}
 
-		$port->title = $title;
+		if (!is_null($title))	{ $port->title = $title; }
+		else					{ return false; }
+		if (!is_null($private))	{ $port->private = $private; }
+		else					{ return false; }
+		if (!is_null(USER_ID))	{ $port->owner_user_id = USER_ID; }	// check user credentials
+		else					{ return false; }
 		$port->description = $description;
-		$port->private = $private;
-		$port->owner_user_id = USER_ID;	// check user credentials
 
 		if (!$port->save())
 		{
@@ -62,8 +65,7 @@ class PortfolioController
 	 *	Edits paramaters of a Portfolio object in the system.
 	 *	Calling user must have editing privileges for the Portfolio object.
 	 *
-	 *	@param	int|null		$id				The unique identifier of the Portfolio object being edited, 
-	 *											or null to leave untouched.
+	 *	@param	int				$id				The unique identifier of the Portfolio object being edited. 
 	 *	@param	string|null		$title			The title of the Portfolio to be set, in plain-text (255 char max),
 	 *											or null to leave untouched.
 	 *	@param	string|null		$description	The description of the Portfolio to be set, in plain-text (2^16 char max),

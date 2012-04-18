@@ -16,8 +16,9 @@ class GroupController
 	 *	Creates a group and adds it to the database.
 	 *	User must be logged in with correct privileges.
 	 *
-	 *		@param string name is the name of the group
-	 *		@param string description is the description of the group
+	 *		@param string name is the name of the group	(2^16 character max,
+	 *			to accomodate names of 255 character Portfolios, etc. appended to)
+	 *		@param string description is the description of the group (2^16 character max)
 	 *		@param bool private is true if the group is not globally visible, false otherwise
 	 *
 	 *	@return the Group object if creation was successful, otherwise false
@@ -31,10 +32,10 @@ class GroupController
 			return false;
 		}
 
-		$newGroup->name = $name;
+		if (!is_null($name))	{ $newGroup->name = $name; }
+		if (!is_null($private))	{ $newGroup->private = $private; }
+		if (!is_null(USER_ID))	{ $newGroup->owner_user_id = USER_ID; }	// should find auth'd user's ID
 		$newGroup->description = $description;
-		$newGroup->private = $private;
-		$newGroup->owner_user_id = USER_ID;	// should find auth'd user's ID
 
 		if (!$newGroup->save())
 		{
