@@ -171,7 +171,7 @@ class UserController
 	}
 
 	/**
-	 *	"Revives" a specified User in the system that had previously been deactivates.
+	 *	"Revives" a specified User in the system that had previously been deactivated.
 	 *
 	 *	Checks whether the currently logged in User has permissions to reactivate the User.
 	 *
