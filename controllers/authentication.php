@@ -14,47 +14,48 @@ require_once('models/accesslevel.php');
 class AuthenticationController
 {
 	/**
-	 * Gets the user who is currently logged in. Will log the user out of their UserID does not belong
-	 * to any known user. Currently, this seems pretty vulnerable to anyone who feels like changing their
-	 * UserID.
+	 * Gets the user who is currently logged in. Since it calls check_login, it will log the user
+	 * out if their session has expired or their IP has changed during their current session.
+	 *
 	 *		@return The logged in user as an ORM object, or false if no user is logged in.
 	 */
-	static function getCurrentUser()
+	static function get_current_user()
 	{
-		//change this to true if you want to add a session_timeout in $GLOBALS
-		//and log users out after that period of time if they've been inactive
-		$logOutOnLastAccess = false;
+		if (self::check_login())
+		{
+			return UserController::getUser(intval($_SESSION['UserID']));
+		}
 
+		return false;
+	}
+
+	/**
+	 * Determines if a user is currently logged in. If so, it checks their session data and logs them out
+	 * if their session has expired or their IP has changed. It then updates their latest access time to
+	 * the current time() value
+	 *
+	 *	@return True if a user is currently logged in, false otherwise
+	 */
+	static function check_login()
+	{
 		if(isset($_SESSION['UserID']))
 		{
-			//update the user's access time
 			$latestAccess = time();
 
-			if($logOutOnLastAccess && $latestAccess - $_SESSION['LastAccess'] > $GLOBALS["session_timeout"])
+			if ($latestAccess - $_SESSION['LastAccess'] > $GLOBALS["session_timeout"])
 			{
-				self::logout();
+				self::log_out();
 				return false;
 			}
 
 			if (strcmp($_SESSION['RemoteIP'], $_SERVER['REMOTE_ADDR']) != 0)
 			{
-				self::logout();
+				self::log_out();
 				return false;
 			}
 
 			$_SESSION['LastAccess'] = $latestAccess;
-
-			//try to acquire a user object from Paris; assuming that UserID holds the user's ID field
-			$user = UserController::getUser(intval($_SESSION['UserID']));
-
-			if ($user === false) //invalid session ID
-			{
-				//clear the bad session info
-				self::logOut();
-				return false;
-			}
-
-			return $user;
+			return true;
 		}
 
 		return false;
@@ -72,12 +73,12 @@ class AuthenticationController
 	 *
 	 *	@return False if the login was unsuccessful, true otherwise.
 	 */
-	static function attemptLogin($username, $password)
+	static function attempt_login($username, $password)
 	{
 		//sanity check -- if a user attempts to log in and they/another user is actually logged in, log them out first
-		if (self::isLoggedIn())
+		if (self::is_logged_in())
 		{
-			self::logOut();
+			self::log_out();
 		}
 
 		//passwords greater than 72 characters in length take a long time to hash; by blatantly disallowing them we keep
@@ -100,7 +101,7 @@ class AuthenticationController
 		if ($hasher->CheckPassword($password, $user->pass))
 		{
 			//great success!
-			self::doLogin($user);
+			self::do_login($user);
 			return true;
 		}
 
@@ -111,7 +112,7 @@ class AuthenticationController
 	/**
 	 * Completely destroys the current session.
 	 */
-	static function destroySession()
+	static function destroy_session()
 	{
 		$_SESSION = array();
 		session_destroy();
@@ -125,7 +126,7 @@ class AuthenticationController
 	 *		@param string $password The plaintext password to hash.
 	 *	@return The hashed password, or false if hashing failed.
 	 */
-	static function createHash($password)
+	static function create_hash($password)
 	{
 		$hasher = new PasswordHash(8, false);
 
@@ -153,11 +154,11 @@ class AuthenticationController
 	 *	@return True if the update was successful, false otherwise.
 	 *
 	 */
-	static function updateUserPassword($userID, $password)
+	static function update_user_password($userID, $password)
 	{
 		// Check user has permissions to change password
 
-		if ($hash = self::createHash($password))
+		if ($hash = self::create_hash($password))
 		{
 			return UserController::editUser($userID, NULL, $password);
 		}
@@ -169,24 +170,24 @@ class AuthenticationController
 	 * Logs the current user out. Currently, it just destroys their session. In the future, it'll
 	 * probably have to take more factors into account.
 	 */
-	static function logOut()
+	static function log_out()
 	{
-		self::destroySession();
+		self::destroy_session();
 	}
 
 	/**
 	 * Determines if a user is logged in.
 	 *	@return True if a user is currently logged in, false otherwise.
 	 */
-	static function isLoggedIn()
+	static function is_logged_in()
 	{
-		return (self::getCurrentUser() !== false);
+		return (self::get_current_user() !== false);
 	}
 
 	/**
 	 * Resets $_SESSION, then sets appropriate variables within it (currently UserID and LastAccess)
 	 */
-	private static function doLogin($user)
+	private static function do_login($user)
 	{
 		$_SESSION = array();
 		$_SESSION['UserID'] = $user->user_id;
