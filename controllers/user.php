@@ -1,5 +1,6 @@
 <?php
 
+require_once('controllers/authentication.php');
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
@@ -44,7 +45,16 @@ class UserController
 		}
 
 		$user->username = $username;
-		$user->pass = $pass;
+
+		if ($password = AuthenticationController::createHash($pass))
+		{
+			$user->pass = $password;
+		}
+		else
+		{
+			return false;
+		}
+
 		$user->first = $first;
 		$user->last = $last;
 		$user->type_id = $type_id;
@@ -110,7 +120,11 @@ class UserController
 	 */
 	public static function editUser($userID, $username = NULL, $pass = NULL, $first = NULL, $middle = NULL, $last = NULL, $email = NULL, $email_priv = NULL, $addn_contact = NULL, $bio = NULL, $user_pic = NULL, $major = NULL, $minor = NULL, $grad_year = NULL, $type_id = NULL)
 	{
-		// Check current User's credentials here
+		//Checks to see if a user is logged in. DOES NOT CHECK PERMISSIONS.
+		if (!$currentUser = AuthenticationController::get_current_user())
+		{
+			return false;
+		}
 
 		if (!$user = self::getUser($userID))
 		{
@@ -148,6 +162,11 @@ class UserController
 	 */
 	public static function deactivateUser($userID)
 	{
+		if (!$currentUser = AuthenticationController::get_current_user())
+		{
+			return false;
+		}
+
 		// Check any credentials here
 
 		if (!$user = self::getUser($userID))
@@ -161,7 +180,7 @@ class UserController
 	}
 
 	/**
-	 *	"Revives" a specified User in the system that had previously been deactivates.
+	 *	"Revives" a specified User in the system that had previously been deactivated.
 	 *
 	 *	Checks whether the currently logged in User has permissions to reactivate the User.
 	 *
@@ -171,8 +190,12 @@ class UserController
 	 */
 	public static function reactivateUser($userID)
 	{
-		// Check any credentials here
+		if (!$currentUser = AuthenticationController::get_current_user())
+		{
+			return false;
+		}
 		
+		// Check any credentials here
 		if (!$user = self::getUser($userID))
 		{
 			return false;

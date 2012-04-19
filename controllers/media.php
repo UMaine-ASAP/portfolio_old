@@ -3,6 +3,7 @@
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
+require_once('controllers/assignment.php');
 
 /**
  * Media controller.
@@ -25,14 +26,17 @@ class MediaController
 	 */
 	static function createMedia($type, $title, $description, $filename)
 	{
-		// Check for creation privileges
+		if (!$user = AuthenticationController::get_current_user())
+		{
+			return false;
+		}
 
 		if (!$media = Model::factory('Media')->create())
 		{
 			return false;
 		}
 
-		$media->creator_user_id = USER_ID;	// Get USER ID from caller user
+		$media->creator_user_id = $user->user_id;	// Get USER ID from caller user
 		$media->title = $title;
 		$media->description = $description;
 		$media->filename = $filename;
@@ -63,12 +67,17 @@ class MediaController
 	 */
 	static function editMedia($id, $type = NULL, $title = NULL, $description = NULL, $filename = NULL)
 	{
+		if (!$user = AuthenticationController::get_current_user())
+		{
+			return false;
+		}
+
 		if (!$media = self::getMedia($id))
 		{
 			return false;
 		}
 
-		// Check for editing permissions
+		//Check for editing permissions
 
 		if (!is_null($type))		{ $media->type = $type; }
 		if (!is_null($title))		{ $media->title = $title; }
@@ -90,14 +99,19 @@ class MediaController
 	 */
 	static function deleteMedia($id)
 	{
+		if (!$user = AuthenticationController::get_current_user())
+		{
+			return false;
+		}
 		if (!$media = self::getMedia($id))
 		{
 			return false;
 		}
 
-		// Check for deletion permissions
-
-		return $media->delete();
+		if ($user->user_id === $media->creator_user_id)
+		{
+			return $media->delete();
+		}
 	}
 
 	/**
@@ -111,6 +125,11 @@ class MediaController
 	 */
 	static function viewMedia($id)
 	{
+		if (!$user = AuthenticationController::get_current_user())
+		{
+			return false;
+		}
+		
 		if (!$media = self::getMedia($id))
 		{
 			return false;

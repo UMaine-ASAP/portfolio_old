@@ -199,12 +199,12 @@ INSERT INTO `REPO_Project_media_map` (proj_id, media_id) VALUES
 (5, 6);
 
 -- PORTFOLIO PROJECT MAP
-INSERT INTO `REPO_Portfolio_project_map` (port_id, child_id, child_is_portfolio) VALUES 
-(1, 1, 0),
-(1, 2, 0),
-(2, 3, 0),
-(2, 4, 0),
-(4, 5, 0);
+INSERT INTO `REPO_Portfolio_project_map` (port_id, child_id, child_is_portfolio, child_privacy) VALUES 
+(1, 1, 0, 0),
+(1, 2, 0, 1),
+(2, 3, 0, 1),
+(2, 4, 0, 2),
+(4, 5, 0, 1);
 
 -- EVALUATION COMPONENT TYPES
 INSERT INTO `EVAL_Component_types` (name, description) VALUES 

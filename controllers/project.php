@@ -24,13 +24,17 @@ class ProjectController
 	public static function createProject($title, $description, $type)
 	{
 		// Check for creation privileges
+		if (!$user = AuthenticationController::get_current_user())
+		{
+			return false;
+		}
 
 		if (!$project = Model::factory('Project')->create())
 		{
 			return false;
 		}
 
-		$project->creator_user_id = USER_ID;	// Check for calling USER ID
+		$project->creator_user_id = $user->user_id;
 		$project->title = $title;
 		$project->description = $description;
 		$project->type = $type;

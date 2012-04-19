@@ -25,7 +25,11 @@ class GroupController
 	 */
 	static function createGroup($name, $description, $private)
 	{
-		//TODO: Check user permissions
+		//We don't currently check for creation privileges, just to make sure that the user is logged in
+		if (!$user = AuthenticationController::get_current_user())
+		{
+			return false;
+		}
 
 		if (!$newGroup = Model::factory('Group')->create())
 		{
@@ -34,7 +38,8 @@ class GroupController
 
 		if (!is_null($name))	{ $newGroup->name = $name; }
 		if (!is_null($private))	{ $newGroup->private = $private; }
-		if (!is_null(USER_ID))	{ $newGroup->owner_user_id = USER_ID; }	// should find auth'd user's ID
+
+		$newGroup->owner_user_id = $user->user_id;
 		$newGroup->description = $description;
 
 		if (!$newGroup->save())
@@ -57,15 +62,22 @@ class GroupController
 	 */
 	static function deleteGroup($id)
 	{
+		if (!$user = AuthenticationController::get_current_user())
+		{
+			return false;
+		}
+
 		if (!$toDelete = GroupController::getGroup($id))
 		{
 			return false;
 		}
 
-		//TODO: Check if user has ownership privileges on Group
-		// $toDelete->permissions
+		if ($user->user_id === $toDelete->owner_user_id)
+		{
+			return $toDelete->delete();
+		}
 
-		return $toDelete->delete();
+		return false;
 	}
 
 	/**
@@ -91,7 +103,7 @@ class GroupController
 	/**
 	 * Gets a Group object with the specified ID.
 	 *		@param int id is the ID of the group to look for
-	 *	
+	 *
 	 *	@return the Group object if one was found, otherwise false
 	 */
 	private static function getGroup($id)
@@ -112,6 +124,12 @@ class GroupController
 	static function editGroup($id, $name = NULL, $description = NULL, $global = NULL, $owner = NULL, $type = NULL)
 	{
 		if (!$groupToUpdate = self::getGroup($id))
+		{
+			return false;
+		}
+
+		//we bring $user into the function's scope so that we can later check permissions
+		if (!$user = AuthenticationController::get_current_user())
 		{
 			return false;
 		}

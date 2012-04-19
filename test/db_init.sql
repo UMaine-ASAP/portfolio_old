@@ -277,7 +277,7 @@ CREATE TABLE `REPO_Portfolio_project_map` (
   `port_id` INTEGER NOT NULL,
   `child_id` INTEGER NOT NULL,
   `child_is_portfolio` BOOL NOT NULL DEFAULT 0,
-  `child_is_private` BOOL NOT NULL DEFAULT 0,
+  `child_privacy` TINYINT(1) NOT NULL DEFAULT 0,	-- Not a BOOL, because 3 values: public, private, submitted
   PRIMARY KEY (`id`)
 ) COMMENT='A map of projects and portfolios to portfolios';
 

@@ -5,12 +5,8 @@
  * @package Constants
  */
 
-/******************************************
- ****** TEST USER ID 				 ******
- ****** DEVELOPMENT ENVIRONMENT ONLY ******
- *****************************************/
-DEFINE("USER_ID", 2);
-
+//for testing purposes
+error_reporting(E_ALL);
 
 
 /**

@@ -3,6 +3,7 @@
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
+require_once('controllers/authentication.php');
 require_once('models/assignment.php');
 require_once('controllers/portfolio.php');
 require_once('controllers/class.php');
@@ -33,7 +34,8 @@ class AssignmentController
  	 */
 	public static function createAssignment($class_id, $title, $description, $requirements)
 	{
-		if (!$assignment = Model::factory('Assignment')->create())
+		if ((!$user = AuthenticationController::get_current_user()) ||
+			(!$assignment = Model::factory('Assignment')->create()))
 		{
 			return false;
 		}
@@ -91,7 +93,9 @@ class AssignmentController
 	 */
 	public static function viewAssignment($id)
 	{
-		if (!$assignment = self::getAssignment($id))
+		//currently just checks to see if you're logged in; DOES NOT CHECK EDIT PERMISSIONS
+		if ((!$user = AuthenticationController::get_current_user()) ||
+			(!$assignment = self::getAssignment($id)))
 		{
 			return false;
 		}
@@ -120,7 +124,8 @@ class AssignmentController
 	 */
 	public static function editAssignment($id, $owner_user_id = NULL, $class_id = NULL, $title = NULL, $description = NULL, $requirements = NULL)
 	{
-		if (!$assignment = self::getAssignment($id))
+		if ((!$user = AuthenticationController::get_current_user()) ||
+			(!$assignment = self::getAssignment($id)))
 		{
 			return false;
 		}
@@ -156,7 +161,8 @@ class AssignmentController
 	 */
 	public static function deleteAssignment($id)
 	{
-		if (!$assignment = self::getAssignment($id))
+		if ((!$user = AuthenticationController::get_current_user()) || 
+			(!$assignment = self::getAssignment($id)))
 		{
 			return false;
 		}
@@ -178,15 +184,21 @@ class AssignmentController
 	 */
 	public static function unDeleteAssignment($id)
 	{
-		if (!$assignment = self::getAssignment($id))
+		if ((!$user = AuthenticationController::get_current_user()) || 
+			(!$assignment = self::getAssignment($id)))
 		{
 			return false;
 		}
 
-		// Check ownership privileges
-		// $assignment->permissions
-
-		return $assignment->unDelete();
+		if ($assignment->creator_user_id === $user->user_id)
+		{	// Should also check for Users with privileges aside from the sole User atatched to the Assignment
+			//	i.e. co-owners
+			return $assignment->unDelete();
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	public static function addPermissionsToAssignment($id, $perm)
