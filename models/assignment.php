@@ -132,10 +132,6 @@ class AssignmentInstance extends Model
 	 */
 	public function __get($name)
 	{
-<<<<<<< HEAD
-		return;
-	}
-=======
 		switch ($name)
 		{
 		case 'permissions':
@@ -167,7 +163,6 @@ class AssignmentInstance extends Model
 		case 'owner':
 			return UserController::getUser($this->owner_user_id);
 			break;
->>>>>>> assignments
 
 		case 'section':
 			return SectionController::getSection($this->section_id);
