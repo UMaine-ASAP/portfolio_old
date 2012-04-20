@@ -16,18 +16,19 @@ class Project extends Model
 	public static $_table = 'REPO_Projects';
 	public static $_id_column = 'proj_id';
 
-	/**
-	 *	Gets all media associated with the project.
-	 *	
-	 *	@return an array containing Media objects (empty if none were found)
-	 */
-	public function media()
+	public function __get($name)
 	{
-		return Model::factory('Media')
-				->where('content_id', $this->mediaMap()->content_id)
-				->find_many();
+		switch ($name)
+		{
+			case 'media':
+				return Model::factory('Media')
+							-> where('content_id', $this->mediaMap()->content_id)
+							-> find_pointer();
+			default:
+				return parent::__get($name);
+		}
 	}
-	
+
 	/**
 	 *	Overridden delete function to handle the removal of all hanging dependencies on this Portfolio.
 	 */
