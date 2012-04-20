@@ -3,8 +3,9 @@
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
-require_once('controllers/group.php');
 require_once('models/mappings.php');
+require_once('models/portfolio.php');
+require_once('controllers/group.php');
 require_once('controllers/authentication.php');
 
 /**
@@ -249,10 +250,12 @@ class PortfolioController
 	 *
 	 *	@param	int		$parentId		The identifier of the parent Portfolio object.
 	 *	@param	int		$childId		The identifier of the child sub-Portfolio object.
+	 *	@param	int		$privacy		Privacy level of the child within the parent Portfolio,
+	 *									as defined in constant.php.
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */
-	public static function addSubPortfolio($parentId, $childId)
+	public static function addSubPortfolio($parentId, $childId, $privacy)
 	{
 		if ($parentId == $childId)
 		{
@@ -278,7 +281,7 @@ class PortfolioController
 			return false;
 		}
 
-		return $parent->addSubPortfolio($childId);
+		return $parent->addSubPortfolio($childId $privacy);
 	}
 
 	/**
@@ -303,9 +306,9 @@ class PortfolioController
 			$children = $portfolio->children;
 		}
 
-		foreach ($children as $childId=>$isPortfolio)
+		foreach ($children as $childId=>$arr)
 		{
-			if ($childId == $parentId ||	// (C) Ross Trundy
+			if (($childId == $parentId) ||	// (C) Ross Trundy
 				($isPortfolio && self::portfolioHasCircularRefs($parentId, $childId)))
 			{
 				return true;
@@ -325,6 +328,8 @@ class PortfolioController
 	 *	
 	 *	@param	int		$parentId		The identifier of the parent Portfolio object.
 	 *	@param	int		$childId		The identifier of the child Project object.
+	 *	@param	int		$privacy		Privacy level of the child within the parent Portfolio,
+	 *									as defined in constant.php.
 	 *
 	 *	@return	bool					True if successful, false otherwise.
 	 */

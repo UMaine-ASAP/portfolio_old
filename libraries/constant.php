@@ -7,6 +7,7 @@
 
 //for testing purposes
 error_reporting(E_ALL);
+DEFINE("USER_ID", 1);
 
 /**
  * Permission types.
@@ -47,6 +48,14 @@ DEFINE("SUBMIT", 5);
  */
 DEFINE("ARTICLE", 1);
 DEFINE("GALLERY", 2);
+
+/**
+ *	Statuses of Portfolio children
+ */
+DEFINE("PUBLIC", 0);	// Child is fully viewable to Users with READ or higher privileges on the parent Portfolio
+DEFINE("PRIVATE", 1);	// Child is only viewable by Users with WRITE or higher permissions on the parent Portfolio
+DEFINE("SUBMITTED", 2);	// Child is awaiting approval from a submissions, and can be viewable by Users with WRITE 
+						//	or higher permissions on the parent Portfolio
 
 function arrayFlatten($array)
 {
