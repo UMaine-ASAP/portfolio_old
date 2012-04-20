@@ -1,10 +1,3 @@
--- ROLES
--- INSERT INTO `AUTH_Roles` (name, description) VALUES 
--- ('coder', 'Programmer in the group'),
--- ('artist', 'In charge of visual design'),
--- ('scribe', 'Handles documentation of project, meeting nots, etc.'),
--- ('manager', 'Handles managerial logistics');
-
 -- USER TYPES
 INSERT INTO `AUTH_User_types` (name, description) VALUES 
 ('admin', 'Administrator'),
@@ -48,14 +41,6 @@ INSERT INTO `AUTH_Group_user_map` (group_id, user_id) VALUES
 (2, 2),
 (3, 1),
 (4, 2);
-
--- GROUP USER ROLE MAP
--- INSERT INTO `AUTH_Group_user_role_map` (group_id, user_id, role_id) VALUES 
--- (1, 2, 1),
--- (1, 2, 2),
--- (1, 2, 3),
--- (1, 2, 4),
--- (3, 1, 2);
 
 -- COLLEGES
 INSERT INTO `REPO_Colleges` (name, description, owner_user_id) VALUES 
@@ -115,11 +100,11 @@ INSERT INTO `REPO_Section_access_map` (section_id, group_id, access_type) VALUES
 (2, 2, 5);
 
 -- PORTFOLIOS
-INSERT INTO `REPO_Portfolios` (owner_user_id, title, description, private) VALUES 
-(2, 'NMD 320 Project 1', 'Create tangible to describe future project', 0),
-(1, 'MAT 258 Homework 5', 'Pages 256-258, #1b, 5c, 6abc', 1),
-(2, 'NMD Portfolio', 'Portfolio for Spring 2012', 0),
-(1, 'CUGR 2012', 'Showcase of undergraduate student work', 0);
+INSERT INTO `REPO_Portfolios` (title, description, private) VALUES 
+('NMD 320 Project 1', 'Create tangible to describe future project', 0),
+('MAT 258 Homework 5', 'Pages 256-258, #1b, 5c, 6abc', 1),
+('NMD Portfolio', 'Portfolio for Spring 2012', 0),
+('CUGR 2012', 'Showcase of undergraduate student work', 0);
 
 -- PORTFOLIO ACCESS_LEVEL MAP
 INSERT INTO `REPO_Portfolio_access_map` (port_id, group_id, access_type) VALUES 
@@ -128,14 +113,14 @@ INSERT INTO `REPO_Portfolio_access_map` (port_id, group_id, access_type) VALUES
 (3, 2, 1);
 
 -- ASSIGNMENTS
-INSERT INTO `REPO_Assignments` (owner_user_id, class_id, title, description, requirements) VALUES 
-(2, 3, 'NMD Project 1', 'Create tangible to describe future project', 'Please limit to 10 pages, submit in one of the following formats: .doc, .pdf, .svg, .png'),
-(2, 5, 'MAT Homework 5', 'Pages 256-258, #1b, 5c, 6abc', 'Please scan and submit in .pdf format');
+INSERT INTO `REPO_Assignments` (class_id, title, description, requirements) VALUES 
+(3, 'NMD Project 1', 'Create tangible to describe future project', 'Please limit to 10 pages, submit in one of the following formats: .doc, .pdf, .svg, .png'),
+(5, 'MAT Homework 5', 'Pages 256-258, #1b, 5c, 6abc', 'Please scan and submit in .pdf format');
 
 -- ASSIGNMENT INSTANCES
-INSERT INTO `REPO_Assignment_instances` (assign_id, section_id, portfolio_id, owner_user_id, title, description, requirements, due_date) VALUES 
-(1, 1, 1, 2, NULL, NULL, NULL, '2012-01-02'),
-(2, 2, 2, 1, NULL, NULL, 'Please scan and submit in .pdf format, OR fax to my office', '2012-02-04');
+INSERT INTO `REPO_Assignment_instances` (assign_id, section_id, portfolio_id, title, description, requirements, due_date) VALUES 
+(1, 1, 1, NULL, NULL, NULL, '2012-01-02'),
+(2, 2, 2, NULL, NULL, 'Please scan and submit in .pdf format, OR fax to my office', '2012-02-04');
 
 -- ASSIGNMENT ACCESS_LEVEL MAP
 INSERT INTO `REPO_Assignment_access_map` (assign_id, group_id, access_type) VALUES 
@@ -154,13 +139,13 @@ INSERT INTO `REPO_Media_types` (name, description) VALUES
 ('video', 'Video file');
 
 -- MEDIA
-INSERT INTO `REPO_Media` (type, title, description, created, edited, creator_user_id, filename) VALUES 
-(1, 'NMD302 Touch Wall Tangible', 'Tangible describing the development and implementation of a large-scale multi-touch wall display', '2012-2-3', NULL, 1, '/path/to/file.txt'),
-(2, 'NMD302 Touch Wall Illustration', 'Illustration of conceptualized touch wall', '2012-2-3', NULL, 1, '/path/to/file.png'),
-(1, 'NMD302 Scratch Sensor Tangible', 'Tangible describing the research and development of sensors to detech scrathing as input to applications', '2012-2-3', '2012-2-5', 1, '/short/path/to/crazy/intense/file.txt'),
-(2, 'MAT258 Homework 5', 'Submission', '2012-1-1', NULL, 2, '/math/file.png'),
-(2, 'MAT258 Homework 5', 'Submission', '2012-2-1', NULL, 2, '/math/file2.svg'),
-(3, 'Crazy Video of Research', 'CUGR 2012 Submission', '2012-3-2', NULL, 2, '/cugr/sub1.mpeg');
+INSERT INTO `REPO_Media` (type, title, description, created, edited, filename) VALUES 
+(1, 'NMD302 Touch Wall Tangible', 'Tangible describing the development and implementation of a large-scale multi-touch wall display', '2012-2-3', NULL, '/path/to/file.txt'),
+(2, 'NMD302 Touch Wall Illustration', 'Illustration of conceptualized touch wall', '2012-2-3', NULL, '/path/to/file.png'),
+(1, 'NMD302 Scratch Sensor Tangible', 'Tangible describing the research and development of sensors to detech scrathing as input to applications', '2012-2-3', '2012-2-5', '/short/path/to/crazy/intense/file.txt'),
+(2, 'MAT258 Homework 5', 'Submission', '2012-1-1', NULL, '/math/file.png'),
+(2, 'MAT258 Homework 5', 'Submission', '2012-2-1', NULL, '/math/file2.svg'),
+(3, 'Crazy Video of Research', 'CUGR 2012 Submission', '2012-3-2', NULL, '/cugr/sub1.mpeg');
 
 -- MEDIA ACCESS_LEVEL MAP
 INSERT INTO `REPO_Media_access_map` (media_id, group_id, access_type) VALUES 
@@ -174,12 +159,12 @@ INSERT INTO `REPO_Project_types` (name, description) VALUES
 ('gallery', 'Gallery-style display of medias');
 
 -- PROJECTS
-INSERT INTO `REPO_Projects` (creator_user_id, title, description, type) VALUES 
-(1, 'NMD302 Touch Wall', 'Creation and study of touch wall', 1),
-(1, 'NMD302 Scratch Sensor', 'Research and development of scratch sensor', 2),
-(2, 'MAT258 Homework 5', 'Submission', 1),
-(2, 'MAT258 Homework 5', 'Submission', 1),
-(2, 'Windboard', 'A formal study of the cost-effectiveness of wind-powered keyboards', 1);
+INSERT INTO `REPO_Projects` (title, description, type) VALUES 
+('NMD302 Touch Wall', 'Creation and study of touch wall', 1),
+('NMD302 Scratch Sensor', 'Research and development of scratch sensor', 2),
+('MAT258 Homework 5', 'Submission', 1),
+('MAT258 Homework 5', 'Submission', 1),
+('Windboard', 'A formal study of the cost-effectiveness of wind-powered keyboards', 1);
 
 -- PROJECT ACCESS_LEVEL MAP
 INSERT INTO `REPO_Project_access_map` (proj_id, group_id, access_type) VALUES 
