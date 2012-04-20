@@ -131,37 +131,6 @@ class AssignmentController
 	}
 
 	/**
-	 * Edit a specific Assigment object that the current user has (at least) editing privileges for
-	 *		@param int $id is the ID of the assignment to edit
-	 *		@param int section_id is the new section ID of the assignment
-	 *		@param int $group_id is the new group ID of the assignment
-	 *		@param int $owner_id is the new owner ID of the assignment
-	 *		@param int collect_id is the new collection_project_map ID of the assignment
-	 *		@param string title is the new title of the assignment
-	 *		@param string description is the new description of the assignment
-	 *
-	 *	Checks that the requesting User has viewing privileges on the Assignment.
-	 *
-	 *	@param	int		$id		Identifier of the Assignment object to get
-	 *
-	 *	@return	object|bool		The Assignment object if found, false otherwise
-	 */
-	public static function viewAssignment($id)
-	{
-		//currently just checks to see if you're logged in; DOES NOT CHECK EDIT PERMISSIONS
-		if ((!$user = AuthenticationController::get_current_user()) ||
-			(!$assignment = self::getAssignment($id)))
-		{
-			return false;
-		}
-
-		// Check privileges here
-		// $assignment->permissions
-
-		return $assignment;
-	}
-
-	/**
 	 *	Edit a specific Assignment object.
 	 *	
 	 *	Checks that the current user has (at least) editing privileges on the Assignment.
@@ -463,7 +432,7 @@ class AssignmentController
 	public static function getUnapprovedChildren($id)
 	{
 		if ((!$user = AuthenticationController::get_current_user()) ||
-			(!$instance = self::getAssignmentInstance($id))
+			(!$instance = self::getAssignmentInstance($id)))
 		{
 			return false;
 		}
@@ -472,7 +441,7 @@ class AssignmentController
 		// $instance->permissions || $instance->owner_user_id
 
 		$result = array();
-		for ($instance->children as $child_id=>$arr)
+		foreach ($instance->children as $child_id=>$arr)
 		{
 			if ($arr[1] == SUBMITTED)
 			{
