@@ -96,7 +96,7 @@ class PortfolioController
 		if (!is_null($title)) 		{ $port->title = $title; }
 		if (!is_null($description)) { $port->description = $description; }
 		if (!is_null($private))		{ $port->private = $private; }
-			
+
 		if (!$port->save())
 		{
 			return false;

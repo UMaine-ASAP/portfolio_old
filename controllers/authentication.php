@@ -114,8 +114,15 @@ class AuthenticationController
 	 */
 	static function destroy_session()
 	{
+		if (session_id() === '')
+		{
+			$_SESSION = array();
+			return true;
+		}
+
 		$_SESSION = array();
 		session_destroy();
+		return true;
 	}
 
 	/**

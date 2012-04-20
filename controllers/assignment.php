@@ -5,6 +5,7 @@ require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
 require_once('controllers/authentication.php');
 require_once('models/assignment.php');
+require_once('models/mappings.php');
 require_once('controllers/portfolio.php');
 
 /**
@@ -65,6 +66,60 @@ class AssignmentController
 	public static function getAssignment($id)
 	{
 		return Model::factory('Assignment')->find_one($id);
+	}
+
+	/**
+	 * Gets a specified ASsignment object, first checking if the logged-in user has the proper permissions to do so.
+	 *		@param int $id is the ID of the assignment
+	 *
+	 *	@return the Assignment object if found, false if the user could not see it or it did not exist
+	 */
+	public static function viewAssignment($id)
+	{
+		if (!$user = AuthenticationController::get_current_user())
+		{
+			return false;
+		}
+
+		$groups = $user->groups(); //find the user's groups
+		$accessMaps = array();
+
+		if (count($groups) === 0)
+		{
+			return false;
+		}
+
+		foreach ($groups as $group) //find the access maps that exist between the user's groups and the assignment
+		{
+			$map = Model::factory('AssignmentAccessMap')
+						->where('group_id', $group->group_id)
+						->where('assign_id', $id)
+						->find_one();
+
+			$accessMaps[] = $map;
+		}
+
+		if (count($accessMaps) === 0)
+		{
+			return false;
+		}
+
+		$hasPermissions = false;
+		foreach ($accessMaps as $accessMap) //determine if we have the permission level required to view the assignment
+		{
+			if ($accessMap->access_level <= READ)
+			{
+				$hasPermissions = true;
+				break;
+			}
+		}
+
+		if (!$hasPermissions) //if this is still false, we iterated through their groups and could not find one with the requisite permissions
+		{
+			return false;
+		}
+
+		return self::getAssignment($id); //we have permission, so return the assignment
 	}
 
 	/**

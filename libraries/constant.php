@@ -8,7 +8,6 @@
 //for testing purposes
 error_reporting(E_ALL);
 
-
 /**
  * Permission types.
  * Constant mapping of integer values to standard permission names.
@@ -48,5 +47,15 @@ DEFINE("SUBMIT", 5);
  */
 DEFINE("ARTICLE", 1);
 DEFINE("GALLERY", 2);
+
+function arrayFlatten($array)
+{
+	$ret = array();
+	array_walk_recursive($array, function($value) use(&$ret) {
+		$ret[] = $value;
+	});
+
+	return $ret;
+}
 
 ?>

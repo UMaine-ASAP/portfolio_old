@@ -43,8 +43,8 @@ class AssignmentInstance extends Model
 	 */
 	public function creator()
 	{
-		return 
-
+		return;
+	}
 
 	/**
 	 * @return the Section that this AssignmentInstance is associated with

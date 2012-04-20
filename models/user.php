@@ -1,5 +1,5 @@
 <?php
-
+require_once('libraries/constant.php');
 /*
 * A User class represents a single row in the REPO_Users table.
 */
@@ -81,6 +81,7 @@ class User extends Model
 							-> find_many();
 		}
 
+		$groups = arrayFlatten($groups);
 		return $groups;
 	}
 

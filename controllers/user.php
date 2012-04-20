@@ -46,7 +46,7 @@ class UserController
 
 		$user->username = $username;
 
-		if ($password = AuthenticationController::createHash($pass))
+		if ($password = AuthenticationController::create_hash($pass))
 		{
 			$user->pass = $password;
 		}
@@ -194,7 +194,7 @@ class UserController
 		{
 			return false;
 		}
-		
+
 		// Check any credentials here
 		if (!$user = self::getUser($userID))
 		{
