@@ -16,9 +16,11 @@ require_once('libraries/constant.php');
  *											Each value corresponds to an enumerable value as specified in 'constants.php'.
  *	@property-read	array	$children		Associative array specifying children Portfolio or Project objects underneath the current one.
  *											Each object in the array is structured as follows:
- *												- Key = identifier of child Portfolio / Project object at index 0.
- *												- Value = boolean value specifying whether the child is a sub-Portfolio or Project
- *												  (true = child is sub-Portfolio, false = child is not sub-Portfolio) at index 1.
+ *												- Key = identifier of child Portfolio / Project object.
+ *												- Value = 2-tuple(array) of the following:
+ *															-- boolean value specifying whether the child is a sub-Portfolio or Project
+ *												  				(true = child is sub-Portfolio, false = child is not sub-Portfolio) at index 0.
+ *												  			-- Type of privacy the child object has, as specified in constant.php
  *
  * 	@package Models
  */
@@ -67,9 +69,9 @@ class Portfolio extends Model
 				->find_many();
 			
 			$return = array();
-			foreach ($result as $child)
+			foreach ($result as $map)
 			{	// De-reference ORM object
-				$return[$child->child_id] = $child->child_is_portfolio;
+				$return[$map->child_id] = array($map->child_is_portfolio, $map->child_privacy);
 			}
 			return $return;
 			break;
@@ -134,7 +136,7 @@ class Portfolio extends Model
 	 *
 	 *	@return	bool					True if successful, false otherwise
 	 */
-	public function addSubPortfolio($child_id)
+	public function addSubPortfolio($child_id, $privacy)
 	{
 		if (!$map = Model::factory('PortfolioProjectMap')->create())
 		{
@@ -143,6 +145,7 @@ class Portfolio extends Model
 		$map->port_id = $this->id();
 		$map->child_id = $child_id;
 		$map->child_is_portfolio = 1;
+		$map->child_privacy = $privacy;
 
 		return $map->save();
 	}

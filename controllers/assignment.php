@@ -39,13 +39,7 @@ class AssignmentController
 		{
 			return false;
 		}
-		// Create a Portfolio to contain submissions to this Assignment
-		if (!$portfolio = PortfolioController::createPortfolio($title, $description, 1))
-		{
-			$assignment->destroy();		// Assume this succeeds
-			return false;
-		}
-		
+				
 		if (!is_null($class_id) && $class = ClassController::getClass($class_id))
 		{
 			// Check for permissions on Class object here
@@ -61,7 +55,6 @@ class AssignmentController
 		if (!$assignment->save())
 		{
 			$assignment->destroy();		// Assume these succeed
-			$portfolio->delete();		// 
 			return false;
 		}
 
@@ -101,7 +94,7 @@ class AssignmentController
 		}
 
 		// Check privileges here
-		// $assignment->privileges
+		// $assignment->permissions
 
 		return $assignment;
 	}
@@ -201,11 +194,13 @@ class AssignmentController
 		}
 	}
 
-	public static function addPermissionsToAssignment($id, $perm)
+	public static function addCoownerToAssignment($assign_id, $user_id)
 	{
-		// Be sure to add permissions to the portfolio underneath the assignment!
 	}
 
+	public static function removeCoownerFromAssignment($assign_id, $user_id)
+	{
+	}
 
 	/************************************************************************************
 	 * AssignmentInstance object management												*
@@ -216,33 +211,54 @@ class AssignmentController
 	 *
 	 *	Calling User must have ownership privileges on the master Assignment.
 	 *
-	 *	@param	int			$id				Identifier of the master Assignmet we wish to instantiate
+	 *	@param	int			$assign_id		Identifier of the master Assignment we wish to instantiate
+	 *	@param	int			$section_id		Identifier of the Section we wish to add the Assignment to
 	 *	@param	string|null	$title			Overridden title of the instance (255 character max, optional)
 	 *	@param	string|null	$description	Overridden description of the instance (2^16 character max, optional)
 	 *	@param	string|null	$requirements	Overridden requirements of the instance (2^16 character max, optional)
+	 *	@param	string|null	$due_date		Date string formatted as YY-MM-DD hh-mm-ss representing the closing date of the instance
 	 *
 	 *	@return	object|bool					The new AssignmentInstance if successful, false otherwise
 	 */
-	public static function instantiateAssignment($id, $title = NULL, $description = NULL, $requirements = NULL)
+	public static function instantiateAssignment($assign_id, $section_id, $title = NULL, $description = NULL, $requirements = NULL, $due_date = NULL)
 	{
-	}
+		if ((!$user = AuthenticationController::get_current_user()) || 
+			(!$assignment = self::getAssignment($assign_id)) ||
+			(!$section = SectionController::getSection($section_id)) ||
+			(!$instance = Model::factory('AssignmentInstance')->create()))
+		{
+			return false;
+		}
 
-	/**
-	 * 	Submit a unit of work (Project or Portfolio) to an AssignmentInstance.
-	 *
-	 * 	Calling User must have submission privileges for the Instance.
-	 * 	Instance's due date must not have expired.
-	 *
-	 * 	@param	int		$assign_id			Identifier of the AssignmentInstance to add work to
-	 * 	@param	int		$work_id			Identifier of the piece of work to add
-	 * 	@param	bool	$work_is_portfolio	Whether or not the work is a Portfolio (true=portfolio)
-	 *
-	 * 	@return	bool						True if successful, false otherwise
-	 */
-	public static function submitWorkToAssignmentInstance($assign_id, $work_id, $work_is_portfolio)
-	{
-	}
+		// Check that current User has ownership privileges on the master Assignment & Section
+		// $assignment->permissions && $assignment->owner_user_id && $section->permissions && section->owner_user_id
 
+		$instance->assign_id = $assign_id;
+		$instance->section_id = $section_id;
+		$instance->owner_user_id = USER_ID;	// Retrieve User ID
+		$instance->title = (is_null($title) ? $assignment->title : $title);
+		$instance->description = (is_null($description) ? $assignment->description : $description);
+		$instance->requirements = (is_null($requirements) ? $assignment->requirements : $requirements);
+		if (!is_null($due_date))	{ $instance->due_date = $due_date; }
+		// Create new Portfolio to hold the contents of this Instance
+		// NOTE: Portfolio is created as private, permissions must be added to an Assignment
+		if (!$portfolio = PortfolioController::createPortfolio($instance->title . " Assignment Submissions", $instance->description, true))
+		{
+			$instance->delete();
+			return false;
+		}
+		$instance->portfolio_id = $portfolio->id();
+
+		if (!$instance->save())
+		{
+			$portfolio->delete();
+			$instance->delete();
+			return false;
+		}
+
+		return $instance;
+	}
+	
 	/**
 	 *	Retrieve an AssignmentInstance for viewing.
 	 *
@@ -274,9 +290,39 @@ class AssignmentController
 	 *
 	 *	@return	object|bool		AssignmentInstance object if successful, false otherwise
 	 */
-	public static function getAssignmentInstance($id)
+	private static function getAssignmentInstance($id)
 	{
 		return Model::factory('AssignmentInstance')->find_one($id);
+	}
+
+	/**
+	 *	Edit a specific AssignmentInstance.
+	 *
+	 *	Calling User must have EDIT privileges or higher on the instance.
+	 *
+	 *	@param	int|null	$owner_user_id	Identifier of the owner User object of the instance
+	 *	@param	string|null	$title			Overridden title of the instance (255 character max, optional)
+	 *	@param	string|null	$description	Overridden description of the instance (2^16 character max, optional)
+	 *	@param	string|null	$requirements	Overridden requirements of the instance (2^16 character max, optional)
+	 *	@param	string|null	$due_date		Date string formatted as YY-MM-DD hh-mm-ss representing the closing date of the instance
+	 *
+	 *	@return	bool						True if successful, false otherwise
+	 */
+	private static function editAssignmentInstance($id, $owner_user_id = NULL, $title = NULL, $description = NULL, $requirements = NULL, $due_date = NULL)
+	{
+	}
+
+	/**
+	 *	Delete specific AssignmentInstance
+	 *
+	 *	Destroys the Portfolio containing work.
+	 *
+	 *	@param	int		$id		Identifier of the AssignmentInstance to remove from the system
+	 *
+	 *	@return	bool			True if successful, false otherwise
+	 */
+	public static function deleteAssignmentInstance($id)
+	{
 	}
 
 	/**
@@ -303,6 +349,78 @@ class AssignmentController
 
 		return $return;
 	}
+
+	/**
+	 * 	Submit a unit of work (Project or Portfolio) to an AssignmentInstance.
+	 *
+	 * 	Calling User must have submission privileges for the Instance.
+	 * 	Instance's due date must not have expired.
+	 *
+	 * 	@param	int		$assign_id			Identifier of the AssignmentInstance to add work to
+	 * 	@param	int		$work_id			Identifier of the piece of work to add
+	 * 	@param	bool	$work_is_portfolio	Whether or not the work is a Portfolio (true=portfolio)
+	 *
+	 * 	@return	bool						True if successful, false otherwise
+	 */
+	public static function submitWorkToAssignmentInstance($assign_id, $work_id, $work_is_portfolio)
+	{
+	}
+	
+	public static function approveChildOfInstance($instance_id, $child_id)
+	{
+	}
+
+	public static function rejectChildOfInstance($instance_id, $child_id)
+	{
+	}
+
+	public static function removeChildOfInstance($instance_id, $child_id)
+	{
+	}
+
+	public static function getPublicChildren($id)
+	{
+	}
+
+	public static function getPrivateChildren($id)
+	{
+	}
+
+	/**
+	 *	Retrieve all children of a specific AssignmentInstance that are awaiting approval after submission.
+	 *
+	 *	Checks current User for permission level of WRITE or above.
+	 *
+	 *	@param	int		$id			Identifier of the AssignmentInstance whose children we seek
+	 *
+	 *	@return	array				Associative array of the following format:
+	 *								- Key = identifier of the child object awaiting approval
+	 *								- Value = boolean specifying whether or not the child is a Portfolio or Project
+ 	 *					  				(true = child is sub-Portfolio, false = child is not sub-Portfolio)
+	 */
+	public static function getUnapprovedChildren($id)
+	{
+		if ((!$user = AuthenticationController::get_current_user()) ||
+			(!$instance = self::getAssignmentInstance($id))
+		{
+			return false;
+		}
+		
+		// Check permission level is WRITE or above
+		// $instance->permissions || $instance->owner_user_id
+
+		$result = array();
+		for ($instance->children as $child_id=>$arr)
+		{
+			if ($arr[1] == SUBMITTED)
+			{
+				$result[$child_id] = $arr[0];
+			}
+		}
+
+		return $result;
+	}
+
 }
 
 ?>

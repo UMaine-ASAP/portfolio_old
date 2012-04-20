@@ -172,6 +172,10 @@ class AssignmentInstance extends Model
 			return PortfolioController::viewPortfolio($this->portfolio_id);
 			break;
 
+		case 'children':
+			$port = $this->portfolio;
+			return $port->children;
+
 		case 'assignment':
 			return AssignmentController::viewAssignment($this->assign_id);
 			break;
