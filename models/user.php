@@ -48,6 +48,9 @@ class User extends Model
 				}
 
 				return $groups;
+
+			default:
+				return parent::__get($name);
 		}
 	}
 
