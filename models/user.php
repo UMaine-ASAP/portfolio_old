@@ -78,10 +78,9 @@ class User extends Model
 		{
 			$groups[] = Model::factory('Group')
 							-> where('group_id', $map->group_id)
-							-> find_many();
+							-> find_one();
 		}
-
-		$groups = arrayFlatten($groups);
+		
 		return $groups;
 	}
 
