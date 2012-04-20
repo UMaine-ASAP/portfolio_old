@@ -7,7 +7,6 @@
 
 //for testing purposes
 error_reporting(E_ALL);
-DEFINE("USER_ID", 1);
 
 /**
  * Permission types.

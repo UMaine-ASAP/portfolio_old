@@ -38,11 +38,15 @@ class Portfolio extends Model
 		switch ($name)
 		{
 		case 'permissions':
+			if (!$user = AuthenticationController::get_current_user())
+				return false;
+
+			$userID = $user->user_id;
 			$return = array();
 			// If curret User's ID is the owner_user_id of the Portfolio, return ownership privilege
-			if ($this->owner_user_id == USER_ID)	// Check for user ID here
+			if ($this->owner_user_id == $userID)	// Check for user ID here
 			{
-				$return[] = OWNER; 
+				$return[] = OWNER;
 				return $return;
 			}
 			else
@@ -52,7 +56,7 @@ class Portfolio extends Model
 					->select('access.access_type')
 					->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
 					->where('access.port_id', $this->id())
-					->where('AUTH_Group_user_map.user_id', USER_ID)	// add user credentials here
+					->where('AUTH_Group_user_map.user_id', $userID)	// add user credentials here
 					->find_many();
 				
 				foreach ($result as $perm)

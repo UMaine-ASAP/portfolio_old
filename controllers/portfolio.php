@@ -281,7 +281,7 @@ class PortfolioController
 			return false;
 		}
 
-		return $parent->addSubPortfolio($childId $privacy);
+		return $parent->addSubPortfolio($childId->$privacy);
 	}
 
 	/**

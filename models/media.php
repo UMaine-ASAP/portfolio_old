@@ -14,6 +14,34 @@ class Media extends Model
 	public static $_table = "REPO_Media";
 	public static $_id_column = "media_id";
 
+	public function __get($name)
+	{
+		switch ($name)
+		{
+			case 'projects':
+				if (!$maps = Model::factory('ProjectMediaMap')
+					->where('media_id', $this->media_id)
+					->find_many())
+				{
+					return false;
+				}
+
+				$projects = array();
+
+				foreach ($maps as $map)
+				{
+					if ($project = ProjectController::viewProject($map->proj_id))	// check for user's viewing privilege on the project
+					{
+						$projects[] = $project;
+					}
+				}
+
+				return $projects;
+
+			default:
+				return parent::__get($name);
+		}
+	}
 	/**
 	 *	Acquire a handle to the file specified by the media object's filename.
 	 *		@param mode|string The mode of the handle. Defaults to read-only.
@@ -24,33 +52,6 @@ class Media extends Model
 		//TODO: check to see if the user that's currently logged in can see this file, or however we're going to manage that
 
 		if (!$this->private) return fopen($this->filename, $mode);
-	}
-
-	/**
-	 *	Returns the project(s) that use this media.
-	 *
-	 *	@return An array containing the projects that use this Media object, or false if none do.
-	 */
-	public function projects()
-	{
-		if (!$maps = Model::factory('ProjectMediaMap')
-			->where('media_id', $this->media_id)
-			->find_many())
-		{
-			return false;
-		}
-
-		$projects = array();
-
-		foreach ($maps as $map)
-		{
-			if ($project = ProjectController::viewProject($map->proj_id))	// check for user's viewing privilege on the project
-			{
-				$projects[] = $project;
-			}
-		}
-
-		return $projects;
 	}
 }
 
