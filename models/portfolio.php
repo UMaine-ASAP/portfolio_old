@@ -39,7 +39,7 @@ class Portfolio extends Model
 		switch ($name)
 		{
 		case 'permissions':
-			if (!$user = AuthenticationController::get_current_user())
+			if (!$user_id = AuthenticationController::get_current_user_id())
 				return false;
 
 			$userID = $user->user_id;

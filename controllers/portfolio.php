@@ -34,7 +34,7 @@ class PortfolioController
 		//Currently, we don't check portfolio creation privileges (because that's not yet a thing)
 		//all we do is check to see that a user is in fact currently logged in
 		if ((!$port = Model::factory('Portfolio')->create()) ||
-			(!$user = AuthenticationController::get_current_user()))
+			(!$user_id = AuthenticationController::get_current_user_id()))
 		{
 			return false;
 		}
@@ -174,7 +174,7 @@ class PortfolioController
 	public static function getMemberPortfolios($count, $order_by, $pos)
 	{
 		//TODO: check privileges here
-		if (!$user = AuthenticationController::get_current_user())
+		if (!$user_id = AuthenticationController::get_current_user_id())
 		{
 			return false;
 		}
@@ -200,7 +200,7 @@ class PortfolioController
 	 */
 	public static function getIncludedPortfolios($count, $order_by, $pos)
 	{
-		if (!$user = AuthenticationController::get_current_user())
+		if (!$user_id = AuthenticationController::get_current_user_id())
 		{
 			return false;
 		}

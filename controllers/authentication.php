@@ -19,7 +19,7 @@ class AuthenticationController
 	 *
 	 *		@return The logged in user as an ORM object, or false if no user is logged in.
 	 */
-	static function get_current_user()
+	static function get_current_user_id()
 	{
 		if (self::check_login())
 		{
@@ -164,7 +164,7 @@ class AuthenticationController
 	static function update_user_password($userID, $password)
 	{
 		// Check user has permissions to change password
-		if (!$user = self::get_current_user())
+		if (!$user = self::get_current_user_id())
 		{
 			return false;
 		}

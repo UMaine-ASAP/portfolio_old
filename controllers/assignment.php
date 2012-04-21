@@ -35,7 +35,7 @@ class AssignmentController
  	 */
 	public static function createAssignment($class_id, $title, $description, $requirements)
 	{
-		if ((!$user = AuthenticationController::get_current_user()) ||
+		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
 			(!$assignment = Model::factory('Assignment')->create()))
 		{
 			return false;
@@ -86,7 +86,7 @@ class AssignmentController
 	public static function viewAssignment($id)
 	{
 		if ((!$assignment = self::getAssignment($id)) ||
-			(!$user = AuthenticationController::get_current_user()))
+			(!$user_id = AuthenticationController::get_current_user_id()))
 		{
 			return false;
 		}
@@ -120,7 +120,7 @@ class AssignmentController
 	 */
 	public static function editAssignment($id, $owner_user_id = NULL, $class_id = NULL, $title = NULL, $description = NULL, $requirements = NULL)
 	{
-		if ((!$user = AuthenticationController::get_current_user()) ||
+		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
 			(!$assignment = self::getAssignment($id)))
 		{
 			return false;
@@ -157,7 +157,7 @@ class AssignmentController
 	 */
 	public static function deleteAssignment($id)
 	{
-		if ((!$user = AuthenticationController::get_current_user()) || 
+		if ((!$user_id = AuthenticationController::get_current_user_id()) || 
 			(!$assignment = self::getAssignment($id)))
 		{
 			return false;
@@ -180,7 +180,7 @@ class AssignmentController
 	 */
 	public static function unDeleteAssignment($id)
 	{
-		if ((!$user = AuthenticationController::get_current_user()) || 
+		if ((!$user_id = AuthenticationController::get_current_user_id()) || 
 			(!$assignment = self::getAssignment($id)))
 		{
 			return false;
@@ -245,7 +245,7 @@ class AssignmentController
 	 */
 	public static function instantiateAssignment($assign_id, $section_id, $title = NULL, $description = NULL, $requirements = NULL, $due_date = NULL)
 	{
-		if ((!$user = AuthenticationController::get_current_user()) || 
+		if ((!$user_id = AuthenticationController::get_current_user_id()) || 
 			(!$assignment = self::getAssignment($assign_id)) ||
 			(!$section = SectionController::getSection($section_id)) ||
 			(!$instance = Model::factory('AssignmentInstance')->create()))
@@ -423,7 +423,7 @@ class AssignmentController
 	 */
 	public static function getUnapprovedChildren($id)
 	{
-		if ((!$user = AuthenticationController::get_current_user()) ||
+		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
 			(!$instance = self::getAssignmentInstance($id)))
 		{
 			return false;

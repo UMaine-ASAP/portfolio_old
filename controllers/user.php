@@ -121,7 +121,7 @@ class UserController
 	public static function editUser($userID, $username = NULL, $pass = NULL, $first = NULL, $middle = NULL, $last = NULL, $email = NULL, $email_priv = NULL, $addn_contact = NULL, $bio = NULL, $user_pic = NULL, $major = NULL, $minor = NULL, $grad_year = NULL, $type_id = NULL)
 	{
 		//Checks to see if a user is logged in. DOES NOT CHECK PERMISSIONS.
-		if (!$currentUser = AuthenticationController::get_current_user())
+		if (!$currentUser = AuthenticationController::get_current_user_id())
 		{
 			return false;
 		}
@@ -162,7 +162,7 @@ class UserController
 	 */
 	public static function deactivateUser($userID)
 	{
-		if (!$currentUser = AuthenticationController::get_current_user())
+		if (!$currentUser = AuthenticationController::get_current_user_id())
 		{
 			return false;
 		}
@@ -190,7 +190,7 @@ class UserController
 	 */
 	public static function reactivateUser($userID)
 	{
-		if (!$currentUser = AuthenticationController::get_current_user())
+		if (!$currentUser = AuthenticationController::get_current_user_id())
 		{
 			return false;
 		}

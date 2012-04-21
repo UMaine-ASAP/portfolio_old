@@ -26,7 +26,7 @@ class MediaController
 	 */
 	static function createMedia($type, $title, $description, $filename)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user()) ||
+		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
 			(!$media = Model::factory('Media')->create()))
 		{
 			return false;
@@ -63,7 +63,7 @@ class MediaController
 	 */
 	static function editMedia($id, $type = NULL, $title = NULL, $description = NULL, $filename = NULL)
 	{
-		if (!$user = AuthenticationController::get_current_user())
+		if (!$user_id = AuthenticationController::get_current_user_id())
 		{
 			return false;
 		}
@@ -95,7 +95,7 @@ class MediaController
 	 */
 	static function deleteMedia($id)
 	{
-		if (!$user = AuthenticationController::get_current_user())
+		if (!$user_id = AuthenticationController::get_current_user_id())
 		{
 			return false;
 		}
@@ -121,7 +121,7 @@ class MediaController
 	 */
 	static function viewMedia($id)
 	{
-		if (!$user = AuthenticationController::get_current_user())
+		if (!$user_id = AuthenticationController::get_current_user_id())
 		{
 			return false;
 		}

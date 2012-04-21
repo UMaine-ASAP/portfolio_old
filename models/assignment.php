@@ -35,7 +35,7 @@ class Assignment extends Model
 		{
 		case 'permissions':
 			$return = array();
-			if (!$user_id = AuthenticationController::get_current_user())
+			if (!$user_id = AuthenticationController::get_current_user_id())
 			{
 				return $return;
 			}

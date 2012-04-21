@@ -22,7 +22,7 @@ class Group extends Model
 		{
 		case 'permissions':
 			$return = array();
-			$user_id = AuthenticationController::get_current_user();
+			$user_id = AuthenticationController::get_current_user_id();
 			// If current User's ID is the owner_user_id of the Group, add ownership privilege
 			if ($this->owner_user_id === $user_id)
 			{
