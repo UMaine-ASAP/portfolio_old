@@ -48,10 +48,11 @@ class AssignmentController
 
 			$assignment->class_id = $class_id;
 		}
-		$assignment->owner_user_id = USER_ID;		// Check for User ID here
 		$assignment->title = $title;
 		$assignment->description = $description;
 		$assignment->requirements = $requirements;
+		// Add current User as OWNER
+		$assignment->addOwner($user->id());
 
 		if (!$assignment->save())
 		{
@@ -77,57 +78,28 @@ class AssignmentController
 	}
 
 	/**
-	 * Gets a specified ASsignment object, first checking if the logged-in user has the proper permissions to do so.
+	 * Gets a specified Assignment object, first checking if the logged-in user has the proper permissions to do so.
 	 *		@param int $id is the ID of the assignment
 	 *
 	 *	@return the Assignment object if found, false if the user could not see it or it did not exist
 	 */
 	public static function viewAssignment($id)
 	{
-		if (!$user = AuthenticationController::get_current_user())
+		if ((!$assignment = self::getAssignment($id)) ||
+			(!$user = AuthenticationController::get_current_user()))
 		{
 			return false;
 		}
 
-		$groups = $user->groups(); //find the user's groups
-		$accessMaps = array();
-
-		if (count($groups) === 0)
+		foreach ($assignment->permissions as $perm) //determine if we have the permission level required to view the assignment
 		{
-			return false;
-		}
-
-		foreach ($groups as $group) //find the access maps that exist between the user's groups and the assignment
-		{
-			$map = Model::factory('AssignmentAccessMap')
-						->where('group_id', $group->group_id)
-						->where('assign_id', $id)
-						->find_one();
-
-			$accessMaps[] = $map;
-		}
-
-		if (count($accessMaps) === 0)
-		{
-			return false;
-		}
-
-		$hasPermissions = false;
-		foreach ($accessMaps as $accessMap) //determine if we have the permission level required to view the assignment
-		{
-			if ($accessMap->access_level <= READ)
+			if ($perm <= READ)
 			{
-				$hasPermissions = true;
-				break;
+				return self::getAssignment($id); //we have permission, so return the assignment
 			}
 		}
 
-		if (!$hasPermissions) //if this is still false, we iterated through their groups and could not find one with the requisite permissions
-		{
-			return false;
-		}
-
-		return self::getAssignment($id); //we have permission, so return the assignment
+		return false;
 	}
 
 	/**
@@ -225,10 +197,30 @@ class AssignmentController
 		}
 	}
 
+	/**
+	 *	Adds an additional User with OWNER level permissions to a specific Assignment.
+	 *
+	 *	Calling User must also be an OWNER.
+	 *
+	 *	@param	int		$assign_id		Identifier of the Assignment to add a new OWNER to
+	 *	@param	int		$user_id		Identifier of the User to give OWNER permissions to
+	 *
+	 *	@return	bool					True if successful, false otherwise
+	 */
 	public static function addCoownerToAssignment($assign_id, $user_id)
 	{
 	}
 
+	/**
+	 *	Remove a User with OWNER level permissions from a specific Assignment.
+	 *
+	 *	Calling User must also be an OWNER.
+	 *
+	 *	@param	int		$assign_id		Identifier of the Assignment to remove an OWNER from
+	 *	@param	int		$user_id		Identifier of the User to remove OWNER permissiosn from
+	 *
+	 *	@return	bool					True if successful, false otherwise
+	 */
 	public static function removeCoownerFromAssignment($assign_id, $user_id)
 	{
 	}

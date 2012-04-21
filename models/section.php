@@ -12,13 +12,6 @@ class Section extends Model
 					->find_one();
 	}
 
-	public function ownerGroup()
-	{
-		return Model::factory('Group')
-					->where('group_id', $this->owner_id)
-					->find_one();
-	}
-
 	public function classes()
 	{
 		return Model::factory('ClassModel')
@@ -26,12 +19,6 @@ class Section extends Model
 					->find_many();
 	}
 
-	public function owner()
-	{
-		return Model::factory('User')
-					->where('user_id', $this->owner_id)
-					->find_one();
-	}
 }
 
 ?>

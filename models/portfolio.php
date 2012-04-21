@@ -2,9 +2,10 @@
 
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
+require_once('libraries/constant.php');
+require_once('controllers/group.php');
 require_once('models/mappings.php');
 require_once('models/assignment.php');
-require_once('libraries/constant.php');
 
 /**
  *	Portfolio model object
@@ -43,28 +44,19 @@ class Portfolio extends Model
 
 			$userID = $user->user_id;
 			$return = array();
-			// If curret User's ID is the owner_user_id of the Portfolio, return ownership privilege
-			if ($this->owner_user_id == $userID)	// Check for user ID here
-			{
-				$return[] = OWNER;
-				return $return;
+			$result = ORM::for_table('REPO_Portfolio_access_map')
+				->table_alias('access')
+				->select('access.access_type')
+				->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
+				->where('access.port_id', $this->id())
+				->where('AUTH_Group_user_map.user_id', $userID)	// add user credentials here
+				->find_many();
+			
+			foreach ($result as $perm)
+			{	// Results are returned as ORM objects, de-reference them
+				$return[] = $perm->access_type;
 			}
-			else
-			{
-				$result = ORM::for_table('REPO_Portfolio_access_map')
-					->table_alias('access')
-					->select('access.access_type')
-					->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
-					->where('access.port_id', $this->id())
-					->where('AUTH_Group_user_map.user_id', $userID)	// add user credentials here
-					->find_many();
-				
-				foreach ($result as $perm)
-				{	// Results are returned as ORM objects, de-reference them
-					$return[] = $perm->access_type;
-				}
-				return $return;
-			}
+			return $return;
 			break;
 		
 		case 'children':
@@ -310,7 +302,58 @@ class Portfolio extends Model
 		return false;
 	}
 
+	/**
+	 *	Add a permission level for a specific User in regards to this Portfolio.
+	 *
+	 *	@param	int		$user_id	Identifier of the User to add permissions for
+	 *	@param	int		$perm_id	Identifier of the permission level to add for the User
+	 *
+	 *	@return	bool				True if successful, false otherwise
+	 */
+	public function addPermissionForUser($user_id, $perm_id)
+	{
+		if (!$group = GroupController::createGroup($this->title . " Permissions", "Permissions for " . $this->title, true))
+		{
+			return false;
+		}
 
+		return $this->addPermissionForGroup($group->id(), $perm_id);
+	}
+
+	/**
+	 *	Remove a permission level for a specific User in regards to this Portfolio.
+	 *
+	 *	We assume that we may only remove a single User's permissions if
+	 *	they are in a Group by themselves with the specific permission, and
+	 *	we assume that this is the only Group the User is a member of that has this permission.
+	 *	(Because of these, this should only be used to reverse the 'addPermissionForUser' above,
+	 *	OR be redone in a more robust way. (Sorry)
+	 *
+	 *	@param	int		$user_id	Identifier of the User to remove permissions from
+	 *	@param	int		$perm_id	Identifier of the permission level to remove from the User
+	 *
+	 *	@return	bool				True if successful, false otherwise
+	 */
+	public function removePermissionForUser($user_id, $perm_id)
+	{
+		if (!$groups = $this->groupsWithPermission())
+		{
+			return false;
+		}
+
+		foreach ($groups as $group_id=>$perms)
+		{
+			if (($group = GroupController::viewGroup($group_id)) &&
+				($group->count === 1) &&
+				($group->containsUser($user_id)) &&
+				(in_array($perm_id, $perms)))
+			{
+				return $this->removePermissionForGroup($group_id, $perm_id);
+			}
+		}
+
+		return false;
+	}
 
 }
 

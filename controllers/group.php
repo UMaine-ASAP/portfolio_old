@@ -23,22 +23,17 @@ class GroupController
 	 *
 	 *	@return the Group object if creation was successful, otherwise false
 	 */
-	static function createGroup($name, $description, $private)
+	public static function createGroup($name, $description, $private)
 	{
 		//We don't currently check for creation privileges, just to make sure that the user is logged in
-		if (!$user = AuthenticationController::get_current_user())
-		{
-			return false;
-		}
-
-		if (!$newGroup = Model::factory('Group')->create())
+		if ((!$user = AuthenticationController::get_current_user()) ||
+			(!$newGroup = Model::factory('Group')->create()))
 		{
 			return false;
 		}
 
 		if (!is_null($name))	{ $newGroup->name = $name; }
 		if (!is_null($private))	{ $newGroup->private = $private; }
-
 		$newGroup->owner_user_id = $user->user_id;
 		$newGroup->description = $description;
 
@@ -60,14 +55,10 @@ class GroupController
 	 *
 	 *	@return true if deletion was successful, otherwise false
 	 */
-	static function deleteGroup($id)
+	public static function deleteGroup($id)
 	{
-		if (!$user = AuthenticationController::get_current_user())
-		{
-			return false;
-		}
-
-		if (!$toDelete = GroupController::getGroup($id))
+		if ((!$user = AuthenticationController::get_current_user()) ||
+			(!$toDelete = GroupController::getGroup($id)))
 		{
 			return false;
 		}
@@ -87,7 +78,7 @@ class GroupController
 	 *
 	 * 	@return	object|bool		The Group object if successful, false otherwise.
 	 */
-	static function viewGroup($id)
+	public static function viewGroup($id)
 	{
 		if (!$group = GroupController::getGroup($id))
 		{
@@ -112,24 +103,21 @@ class GroupController
 	}
 
 	/**
-	 * Edits a Group object with the specified ID.
-	 *		@param string|null name is the new name of the group
-	 *		@param string|null description is the description of the group
-	 *		@param bool|null global specifies whether or not the group is global
-	 *		@param int|null owner is the owner of the group (still not sure what this corresponds to)
-	 *		@param int|null type is the new type of the group
+	 *	Edits a Group object with the specified ID.
+	 *	
+	 *	Calling User must have OWNER permissions on the Group
 	 *
-	 *	@return true if the update was successful, otherwise false
+	 *	@param	string|null	$name			New name of the group
+	 *	@param	string|null $description	Description of the group
+	 *	@param	bool|null 	$private		Whether or not the group is publicly visible (true=private)
+	 *	@param	int|null 	$owner_user_id	Identifier of the User who owns the group
+	 *		
+	 *	@return								True if the update was successful, otherwise false
 	 */
-	static function editGroup($id, $name = NULL, $description = NULL, $global = NULL, $owner = NULL, $type = NULL)
+	public static function editGroup($id, $name = NULL, $description = NULL, $private = NULL, $owner_user_id = NULL)
 	{
-		if (!$groupToUpdate = self::getGroup($id))
-		{
-			return false;
-		}
-
-		//we bring $user into the function's scope so that we can later check permissions
-		if (!$user = AuthenticationController::get_current_user())
+		if ((!$groupToUpdate = self::getGroup($id)) ||
+			(!$user = AuthenticationController::get_current_user()))
 		{
 			return false;
 		}
@@ -137,14 +125,57 @@ class GroupController
 		//TODO: Check for editing permissions
 		// $groupToUpdate->permissions
 
-		if (!is_null($name))		{ $groupToUpdate->name = $name; }
-		if (!is_null($description))	{ $groupToUpdate->description = $description; }
-		if (!is_null($global))		{ $groupToUpdate->global = $global; }
-		if (!is_null($owner))		{ $groupToUpdate->owner = $owner; }
-		if (!is_null($type))		{ $groupToUpdate->type = $type; }
+		if (!is_null($name))			{ $groupToUpdate->name = $name; }
+		if (!is_null($description))		{ $groupToUpdate->description = $description; }
+		if (!is_null($private))			{ $groupToUpdate->private = $private; }
+		if (!is_null($owner_user_id))	{ $groupToUpdate->owner_user_id = $owner_user_id; }
 
 		return $groupToUpdate->save();
 	}
+
+	/**
+	 *	Add a User to a specific Group object.
+	 *
+	 *	Calling User must have OWNER permissions on the Group the User is being added to.
+	 *
+	 *	@param	int		$group_id		Identifier of the Group to add the User to
+	 *	@param	int		$user_id		Identifier of the User to add to the Group
+	 *
+	 *	@return	bool					True if successful, false otherwise
+	 */
+	public static function addUserToGroup($group_id, $user_id)
+	{
+		if ((!$group = self::getGroup($group_id)) ||
+			(!$user = UserController::getUser($user_id)) ||
+			($group->owner_user_id != AuthenticationController::get_current_user()))
+		{
+			return false;
+		}
+
+		return $group->addUser($user_id);
+	}
+
+	/**
+	 *	Remove a User from a specific Group object.
+	 *
+	 *	Calling User must have OWNER permissions on the Group the User is being removed from.
+	 *
+	 *	@param	int		$group_id		Identifier of the Group to remove the User from
+	 *	@param	int		$user_id		Identifier of the User to remove from the Group
+	 *
+	 *	@return	bool					True if successful, false otherwise
+	 */
+	public static function removeUserFromGroup($group_id, $user_id)
+	{
+		if ((!$group = self::getGroup($group_id)) ||
+			($group->owner_user_id != AuthenticationController::get_current_user()))
+		{
+			return false;
+		}
+
+		return $group->removeUser($user_id);
+	}
+
 }
 
 ?>

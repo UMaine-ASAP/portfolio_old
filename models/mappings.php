@@ -81,12 +81,6 @@ class ProjectAccessMap extends Model
 	public static $_id_column = 'id';
 }
 
-// class GroupUserRoleMap extends Model
-// {
-// 	public static $_table = 'AUTH_Group_user_role_map';
-// 	public static $_id_column = 'id';
-// }
-
 class GroupUserMap extends Model
 {
 	public static $_table = 'AUTH_Group_user_map';

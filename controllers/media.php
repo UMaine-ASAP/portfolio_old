@@ -26,17 +26,13 @@ class MediaController
 	 */
 	static function createMedia($type, $title, $description, $filename)
 	{
-		if (!$user = AuthenticationController::get_current_user())
+		if ((!$user_id = AuthenticationController::get_current_user()) ||
+			(!$media = Model::factory('Media')->create()))
 		{
 			return false;
 		}
 
-		if (!$media = Model::factory('Media')->create())
-		{
-			return false;
-		}
-
-		$media->creator_user_id = $user->user_id;	// Get USER ID from caller user
+		$media->addPermissionForUser($user_id, OWNER);
 		$media->title = $title;
 		$media->description = $description;
 		$media->filename = $filename;

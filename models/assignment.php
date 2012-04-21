@@ -5,6 +5,7 @@ require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
 require_once('models/mappings.php');
 require_once('controllers/user.php');
+require_once('controllers/authentication.php');
 require_once('controllers/section.php');
 require_once('controllers/portfolio.php');
 
@@ -34,8 +35,12 @@ class Assignment extends Model
 		{
 		case 'permissions':
 			$return = array();
+			if (!$user_id = AuthenticationController::get_current_user())
+			{
+				return $return;
+			}
 			// If current User's ID is the owner_user_id of the Portfolio, add ownership privilege
-			if ($this->owner_user_id == USER_ID)	// Check user ID here
+			if ($this->owner_user_id == $user_id)
 			{
 				$return[] = OWNER;
 				return $return;
@@ -47,7 +52,7 @@ class Assignment extends Model
 					->select('access.access_type')
 					->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
 					->where('access.assign_id', $this->id())
-					->where('AUTH_Group_user_map.user_id', USER_ID)	// add user credentials here
+					->where('AUTH_Group_user_map.user_id', $user_id)
 					->find_many();
 				
 				foreach ($result as $perm)
@@ -72,6 +77,28 @@ class Assignment extends Model
 			return parent::__get($name);
 			break;
 		}
+	}
+
+	/**
+	 *	Adds a User with OWNER permissions to this Assignment.
+	 *
+	 *	@param	int		$id		Identifier of the User to give OWNER permissions to
+	 *
+	 *	@return	bool			True if successful, false otherwise
+	 */
+	public function addOwner($id)
+	{
+	}
+
+	/**
+	 *	Removes a User with OWNER permissiosn from this Assignment.
+	 *
+	 *	@param	int		$id		Identifier of the User to remove OWNER permissions from
+	 *
+	 *	@return	bool			True if successful, false otherwise
+	 */
+	public function removeOwner($id)
+	{
 	}
 
 	/**

@@ -24,8 +24,11 @@ class Project extends Model
 				return Model::factory('Media')
 							-> where('content_id', $this->mediaMap()->content_id)
 							-> find_pointer();
+				break;
+
 			default:
 				return parent::__get($name);
+				break;
 		}
 	}
 
