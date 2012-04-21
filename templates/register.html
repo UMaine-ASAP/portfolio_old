@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+
+{% block page_title %}New Media Portfolio Login{% endblock %}
+
+{% block content %}
+
+
+	<header>New Media Portfolio - Register</header>
+	
+	<hr>
+	
+	<div id="themed" class="loginForm">
+		
+		<form id="form" name="form" method="post" action="submit">
+		
+		<label>Username</label>
+		<input type="text" name="name" id="name" />
+
+		<label>Password	</label>
+		<input type="text" name="password" id="password" />
+		
+		<label>FirstClass Email </label>
+		<input type="text" name="email" id="email" />
+
+		<button type="submit">Sign-up</button>
+			
+		<div class="spacer"></div>
+
+		</form>
+	</div>
+
+{% endblock %}
