@@ -1,6 +1,12 @@
 <?php
 
-class Section extends Model
+require_once('libraries/Idiorm/idiorm.php');
+require_once('libraries/Paris/paris.php');
+require_once('libraries/constant.php');
+require_once('models/access_map_model.php');
+require_once('models/mappings.php');
+
+class Section extends AccessMapModel
 {
 	public static $_table = "REPO_Sections";
 	public static $_id_column = "section_id";

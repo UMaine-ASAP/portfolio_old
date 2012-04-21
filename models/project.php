@@ -3,6 +3,7 @@
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
+require_once('models/access_map_model.php');
 require_once('models/mappings.php');
 
 /**
@@ -11,10 +12,11 @@ require_once('models/mappings.php');
  * @package Models
  */
 
-class Project extends Model
+class Project extends AccessMapModel
 {
 	public static $_table = 'REPO_Projects';
 	public static $_id_column = 'proj_id';
+	public static $_access_map_name = 'ProjectAccessMap';
 
 	public function __get($name)
 	{

@@ -3,6 +3,7 @@
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
+require_once('models/access_map_model.php');
 require_once('models/mappings.php');
 require_once('controllers/user.php');
 require_once('controllers/authentication.php');
@@ -149,10 +150,11 @@ class Assignment extends Model
  *	@property-read	object	section			Section object the Assignment has been instantiated for
  *	@property-read	object	portfolio		Portfolio object the Assignment's works are contained within
  */
-class AssignmentInstance extends Model
+class AssignmentInstance extends AccessModel
 {
 	public static $_table = "REPO_Assignment_instances";
 	public static $_id_column = "instance_id";
+	public static $_access_map_name "AssignmentInstanceAccessMap";
 
 	/**
 	 *	Magic-method property getters
