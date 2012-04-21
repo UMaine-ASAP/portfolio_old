@@ -200,7 +200,6 @@ class AuthenticationController
 	 */
 	private static function do_login($user)
 	{
-		session_start();
 		$_SESSION = array();
 		$_SESSION['UserID'] = $user->user_id;
 		$_SESSION['LastAccess'] = time();
