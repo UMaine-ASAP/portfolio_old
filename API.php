@@ -8,9 +8,12 @@ require_once 'settings.php';
 
 // External Libraries
 require_once 'Slim/Slim/Slim.php';
-require_once 'idiorm/idiorm.php';
+require_once 'Idiorm/idiorm.php';
 require_once 'Paris/paris.php';
-require 'Views/TwigView.php';
+require_once 'Views/TwigView.php';
+
+// Controllers
+require_once 'controllers/authentication.php';
 
 // Library configuration
 TwigView::$twigDirectory = __DIR__ . '/libraries/Twig/lib/Twig/';
@@ -18,10 +21,6 @@ TwigView::$twigDirectory = __DIR__ . '/libraries/Twig/lib/Twig/';
 ORM::configure("mysql:host=$HOST;dbname=$DATABASE");
 ORM::configure('username', $USERNAME);
 ORM::configure('password', $PASSWORD);
-
-// Our code
-// @TODO: move functionality to the authentication controller
-require_once './scripts/sessions.php';
 
 
 function redirect( $destination ){
@@ -49,6 +48,20 @@ $app->get('/register', function() use ($app) {
 // View Portfolio
 $app->get('/view_portfolio', function() use ($app) {					
 	return $app->render('view_portfolio.html');		
+});
+/**
+ *	Posts to /view_portfolio come from the Login page when submitted
+ */
+$app->post('/view_portfolio', function() use ($app) {
+	if (isset($_POST['name']) && isset($_POST['password']) &&
+		AuthenticationController::attempt_login($_POST['username'], $_POST['password']))
+	{	// Success!
+		echo "Login success!";
+	}
+	else
+	{	// Fail :(
+		echo "Login failed!";
+	}
 });
 
 // Add Project
