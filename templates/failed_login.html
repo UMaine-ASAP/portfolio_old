@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 
-{% block page_title %}New Media Portfolio - Logged Out{% endblock %}
+{% block page_title %}New Media Portfolio - Failed Login{% endblock %}
 
 {% block content %}
 
@@ -8,6 +8,10 @@
 		<li><a href="{{ flash['web_root'] }}/view_portfolio">New Media Portfolio 2012</a></li>
 	</ul>
 
-	<header>You have been successfully logged out.</header>
-
+	<header>Oops...</header>
+	
+	<hr>
+	
+	<p>Your login failed.
+		
 {% endblock %}
