@@ -26,7 +26,8 @@ class Assignment extends AccessMapModel
 {
 	public static $_table = "REPO_Assignments";
 	public static $_id_column = "assign_id";
-	public static $_access_map_name "AssignmentAccessMap";
+	public static $_access_map_name = "AssignmentAccessMap";
+	public static $_access_table = "REPO_Assignment_access_map";
 
 	/**
 	 *	Magic-method property getters
@@ -35,27 +36,6 @@ class Assignment extends AccessMapModel
 	{
 		switch ($name)
 		{
-		case 'permissions':
-			$return = array();
-			if (!$user_id = AuthenticationController::get_current_user_id())
-			{
-				return $return;
-			}
-			$result = ORM::for_table('REPO_Assignment_access_map')
-				->table_alias('access')
-				->select('access.access_type')
-				->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
-				->where('access.assign_id', $this->id())
-				->where('AUTH_Group_user_map.user_id', $user_id)
-				->find_many();
-			
-			foreach ($result as $perm)
-			{	// Results are returned as ORM objects, de-reference them
-				$return[] = $perm->access_type;
-			}
-			return $return;
-			break;
-
 		case 'instances':
 			return Model::factory('AssignmentInstance')
 				->where('assign_id', $this->id())
@@ -138,11 +118,11 @@ class Assignment extends AccessMapModel
  *	@property-read	object	section			Section object the Assignment has been instantiated for
  *	@property-read	object	portfolio		Portfolio object the Assignment's works are contained within
  */
-class AssignmentInstance extends AccessModel
+class AssignmentInstance extends AccessMapModel
 {
 	public static $_table = "REPO_Assignment_instances";
 	public static $_id_column = "instance_id";
-	public static $_access_map_name "AssignmentInstanceAccessMap";
+	public static $_access_map_name = "AssignmentInstanceAccessMap";
 
 	/**
 	 *	Magic-method property getters

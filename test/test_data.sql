@@ -139,13 +139,13 @@ INSERT INTO `REPO_Media_types` (name, description) VALUES
 ('video', 'Video file');
 
 -- MEDIA
-INSERT INTO `REPO_Media` (type, title, description, created, edited, filename) VALUES 
-(1, 'NMD302 Touch Wall Tangible', 'Tangible describing the development and implementation of a large-scale multi-touch wall display', '2012-2-3', NULL, '/path/to/file.txt'),
-(2, 'NMD302 Touch Wall Illustration', 'Illustration of conceptualized touch wall', '2012-2-3', NULL, '/path/to/file.png'),
-(1, 'NMD302 Scratch Sensor Tangible', 'Tangible describing the research and development of sensors to detech scrathing as input to applications', '2012-2-3', '2012-2-5', '/short/path/to/crazy/intense/file.txt'),
-(2, 'MAT258 Homework 5', 'Submission', '2012-1-1', NULL, '/math/file.png'),
-(2, 'MAT258 Homework 5', 'Submission', '2012-2-1', NULL, '/math/file2.svg'),
-(3, 'Crazy Video of Research', 'CUGR 2012 Submission', '2012-3-2', NULL, '/cugr/sub1.mpeg');
+INSERT INTO `REPO_Media` (type, title, description, created, edited, filename, filesize, md5, extension) VALUES 
+(1, 'NMD302 Touch Wall Tangible', 'Tangible describing the development and implementation of a large-scale multi-touch wall display', '2012-2-3', NULL, '/path/to/file', 23894, '79054025255fb1a26e4bc422aef54eb4', 'txt'),
+(2, 'NMD302 Touch Wall Illustration', 'Illustration of conceptualized touch wall', '2012-2-3', NULL, '/path/to/file', 32652, '79054025255fb1a26e4bc422aef54eb4', 'png'),
+(1, 'NMD302 Scratch Sensor Tangible', 'Tangible describing the research and development of sensors to detech scrathing as input to applications', '2012-2-3', '2012-2-5', '/short/path/to/crazy/intense/file', 3243, '79054025255fb1a26e4bc422aef54eb4', 'txt'),
+(2, 'MAT258 Homework 5', 'Submission', '2012-1-1', NULL, '/math/file', 32479, '79054025255fb1a26e4bc422aef54eb4', 'png'),
+(2, 'MAT258 Homework 5', 'Submission', '2012-2-1', NULL, '/math/file2', 73864, '79054025255fb1a26e4bc422aef54eb4', 'svg'),
+(3, 'Crazy Video of Research', 'CUGR 2012 Submission', '2012-3-2', NULL, '/cugr/sub1', 23472, '79054025255fb1a26e4bc422aef54eb4', 'mpeg');
 
 -- MEDIA ACCESS_LEVEL MAP
 INSERT INTO `REPO_Media_access_map` (media_id, group_id, access_type) VALUES 

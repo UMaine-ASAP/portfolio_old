@@ -3,6 +3,7 @@
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
+require_once('models/media.php');
 require_once('controllers/assignment.php');
 
 /**
@@ -20,12 +21,16 @@ class MediaController
 	 *	@param	int			$type				Identifier of the MediaType of this Media object
 	 *	@param 	string 		$title				The title of the Media object (255 character max)
 	 *	@param 	string|null	$description		The description of the Media object (2^16 character max, optional)
-	 *	@param	string		$filename			Filename where the Media is stored on the server (2^16 character max)
+	 *	@param	string		$filename			Filename where the Media is stored on the server, sans extension (2^16 character max)
+	 *	@param	int			$filesize			Size of the file uploaded
+	 *	@param	string		$md5				MD5 hash of the uploaded file (32 characters exactly)
+	 *	@param	string		$ext				Extension of the file (10 character max)
 	 *
 	 *	@return object|bool						The created Media object if successful, false otherwise.
 	 */
 	static function createMedia($type, $title, $description, $filename)
 	{
+		// Check Media creation privileges (for now, User must only be logged in)
 		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
 			(!$media = Model::factory('Media')->create()))
 		{
@@ -36,6 +41,9 @@ class MediaController
 		$media->title = $title;
 		$media->description = $description;
 		$media->filename = $filename;
+		$media->filesize = $filesize;
+		$media->md5 = $md5;
+		$media->extension = $ext;
 		$media->created = date("Y-m-d H:i:s");
 
 		if (!$media->save())
@@ -50,7 +58,7 @@ class MediaController
 	/**
 	 *	Edit a specific Media object's properties.
 	 *
-	 *	The currently logged-in user must have editing permissions.
+	 *	The currently logged-in user must have EDIT permissions.
 	 *
 	 * 	@param 	int		$id				The identifier of the Media being edited
 	 * 	@param	int		$type			Identifier of the MediaType of the Media being edited
@@ -64,12 +72,11 @@ class MediaController
 	static function editMedia($id, $type = NULL, $title = NULL, $description = NULL, $filename = NULL)
 	{
 		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
-			(!$media = self::getMedia($id)))
+			(!$media = self::getMedia($id))
+			(!$media->havePermissionOrHigher(EDIT))	// User must have EDIT privileges
 		{
 			return false;
 		}
-
-		//Check for editing permissions
 
 		if (!is_null($type))		{ $media->type = $type; }
 		if (!is_null($title))		{ $media->title = $title; }
@@ -93,7 +100,7 @@ class MediaController
 	{
 		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
 			(!$media = self::getMedia($id)) ||
-			($user->user_id !== $media->creator_user_id))
+			(!$media->havePermissionOrHigher(OWNER)))
 		{
 			return false;
 		}

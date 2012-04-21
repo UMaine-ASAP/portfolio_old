@@ -20,7 +20,61 @@ class AccessMapModel extends Model
 	 *	For example, Portfolios' mapping is called static::$_access_map_name.
 	 */
 	public static $_access_map_name;
+	/**
+	 *	Name of the table the _access_map_name corresponds to
+	 */
+	public static $_access_table;
 
+
+	/**
+	 *	Magic-method property getters
+	 */
+	public function __get($name)
+	{
+		switch ($name)
+		{
+		case 'permissions':
+			if (!$user_id = AuthenticationController::get_current_user_id())
+			{
+				return false;
+			}
+
+			$return = array();
+			$result = ORM::for_table(static::$_access_table)
+				->table_alias('access')
+				->select('access.access_type')
+				->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
+				->where('access.' . static::$_id_column, $this->id())
+				->where('AUTH_Group_user_map.user_id', $user_id)	// add user credentials here
+				->find_many();
+			
+			foreach ($result as $perm)
+			{	// Results are returned as ORM objects, de-reference them
+				$return[] = $perm->access_type;
+			}
+			return $return;
+			break;
+		
+		default:
+			return parent::__get($name);
+			break;
+		}
+	}
+
+	/**
+	 *	Checks to see whether the current User has a permission level equal to or higher
+	 *	than the one specified on this Model object.
+	 *
+	 *	@param	int		$perm		Identifier of the permission level to check for
+	 *
+	 *	@return	bool				True if current User has permission, false otherwise
+	 */
+	public function havePermissionOrHigher($perm)
+	{
+		return array_reduce($this->permissions, function($reduced, $p) {
+			return ($reduced || ($p <= $perm));
+		});
+	}
 
 	/**
 	 *	Retrieve all Groups with permissions for this Model object.

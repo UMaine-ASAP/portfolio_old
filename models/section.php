@@ -10,6 +10,8 @@ class Section extends AccessMapModel
 {
 	public static $_table = "REPO_Sections";
 	public static $_id_column = "section_id";
+	public static $_access_map_name = "SectionAccessMap";
+	public static $_access_table = "REPO_Section_access_map";
 
 	public function days()
 	{

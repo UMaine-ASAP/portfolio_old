@@ -31,6 +31,7 @@ class Portfolio extends AccessMapModel
 	public static $_table = 'REPO_Portfolios';
 	public static $_id_column = 'port_id';
 	public static $_access_map_name = 'PortfolioAccessMap';
+	public static $_access_table = 'REPO_Portfolio_access_map';
 
 
 	/**
@@ -40,27 +41,6 @@ class Portfolio extends AccessMapModel
 	{
 		switch ($name)
 		{
-		case 'permissions':
-			if (!$user_id = AuthenticationController::get_current_user_id())
-				return false;
-
-			$userID = $user->user_id;
-			$return = array();
-			$result = ORM::for_table('REPO_Portfolio_access_map')
-				->table_alias('access')
-				->select('access.access_type')
-				->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
-				->where('access.port_id', $this->id())
-				->where('AUTH_Group_user_map.user_id', $userID)	// add user credentials here
-				->find_many();
-			
-			foreach ($result as $perm)
-			{	// Results are returned as ORM objects, de-reference them
-				$return[] = $perm->access_type;
-			}
-			return $return;
-			break;
-		
 		case 'children':
 			$result = Model::factory('PortfolioProjectMap')
 				->where('port_id', $this->id())
