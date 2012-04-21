@@ -22,10 +22,11 @@ require_once('controllers/portfolio.php');
  *	@property-read	object	owner			User object of the User who currently owns the Assignment
  *	@property-read	array	instances		Array of AssignmentInstances derived from this Assignment
  */
-class Assignment extends Model
+class Assignment extends AccessMapModel
 {
 	public static $_table = "REPO_Assignments";
 	public static $_id_column = "assign_id";
+	public static $_access_map_name "AssignmentAccessMap";
 
 	/**
 	 *	Magic-method property getters
@@ -40,32 +41,19 @@ class Assignment extends Model
 			{
 				return $return;
 			}
-			// If current User's ID is the owner_user_id of the Portfolio, add ownership privilege
-			if ($this->owner_user_id == $user_id)
-			{
-				$return[] = OWNER;
-				return $return;
+			$result = ORM::for_table('REPO_Assignment_access_map')
+				->table_alias('access')
+				->select('access.access_type')
+				->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
+				->where('access.assign_id', $this->id())
+				->where('AUTH_Group_user_map.user_id', $user_id)
+				->find_many();
+			
+			foreach ($result as $perm)
+			{	// Results are returned as ORM objects, de-reference them
+				$return[] = $perm->access_type;
 			}
-			else
-			{
-				$result = ORM::for_table('REPO_Assignment_access_map')
-					->table_alias('access')
-					->select('access.access_type')
-					->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
-					->where('access.assign_id', $this->id())
-					->where('AUTH_Group_user_map.user_id', $user_id)
-					->find_many();
-				
-				foreach ($result as $perm)
-				{	// Results are returned as ORM objects, de-reference them
-					$return[] = $perm->access_type;
-				}
-				return $return;
-			}
-			break;
-
-		case 'owner':
-			return UserController::getUser($this->creator_user_id);
+			return $return;
 			break;
 
 		case 'instances':
@@ -165,32 +153,23 @@ class AssignmentInstance extends AccessModel
 		{
 		case 'permissions':
 			$return = array();
-			// If curret User's ID is the owner_user_id of the Portfolio, add ownership privilege
-			if ($this->owner_user_id == USER_ID)	// Check user ID here
+			if (!$user_id = AuthenticationController::get_current_user_id())
 			{
-				$return[] = OWNER;
 				return $return;
 			}
-			else
-			{
-				$result = ORM::for_table('REPO_Assignment_instance_access_map')
-					->table_alias('access')
-					->select('access.access_type')
-					->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
-					->where('access.instance_id', $this->id())
-					->where('AUTH_Group_user_map.user_id', USER_ID)	// add user credentials here
-					->find_many();
-				
-				foreach ($result as $perm)
-				{	// Results are returned as ORM objects, de-reference them
-					$return[] = $perm->access_type;
-				}
-				return $return;
+			$result = ORM::for_table('REPO_Assignment_instance_access_map')
+				->table_alias('access')
+				->select('access.access_type')
+				->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
+				->where('access.instance_id', $this->id())
+				->where('AUTH_Group_user_map.user_id', USER_ID)	// add user credentials here
+				->find_many();
+			
+			foreach ($result as $perm)
+			{	// Results are returned as ORM objects, de-reference them
+				$return[] = $perm->access_type;
 			}
-			break;
-
-		case 'owner':
-			return UserController::getUser($this->owner_user_id);
+			return $return;
 			break;
 
 		case 'section':
