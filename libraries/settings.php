@@ -6,9 +6,9 @@ if( $IS_PRODUCTION ) {
 
 } else {
 	$HOST = "localhost";
-	$DATABASE = "MUD_TEST";
-	$USERNAME = "root";
-	$PASSWORD = "";
+	$DATABASE = "mj_dev";
+	$USERNAME = "asap";
+	$PASSWORD = "asap4u";
 }
 
 /** Time until idle sessions are disconnected */
@@ -16,4 +16,4 @@ $session_timeout = 600; // 10 minutes to logout
 
 
 /** Web Root */
-$web_root = "/MUD";
+$web_root = "/mainejournal";

@@ -34,16 +34,20 @@ function redirect( $destination ){
 $app = new Slim(array(
 	'view' => new TwigView
 ));
+$app->flashNow('web_root', $web_root);
+
 
 // Login
 $app->get('/', function() use ($app) {					
 	return $app->render('login.html');		
 });
 
+
 // Register
 $app->get('/register', function() use ($app) {					
 	return $app->render('register.html');		
 });
+
 
 // View Portfolio
 $app->get('/view_portfolio', function() use ($app) {					
@@ -53,7 +57,7 @@ $app->get('/view_portfolio', function() use ($app) {
  *	Posts to /view_portfolio come from the Login page when submitted
  */
 $app->post('/view_portfolio', function() use ($app) {
-	if (isset($_POST['name']) && isset($_POST['password']) &&
+	if (isset($_POST['username']) && isset($_POST['password']) &&
 		AuthenticationController::attempt_login($_POST['username'], $_POST['password']))
 	{	// Success!
 		echo "Login success!";
@@ -64,30 +68,36 @@ $app->post('/view_portfolio', function() use ($app) {
 	}
 });
 
+
 // Add Project
 $app->get('/add_project', function() use ($app) {					
 	return $app->render('add_project.html');		
 });
+
 
 // Edit Project
 $app->get('/edit_project', function() use ($app) {					
 	return $app->render('edit_project.html');		
 });
 
+
 // Review Portfolio
 $app->get('/review_portfolio', function() use ($app) {					
 	return $app->render('review_portfolio.html');		
 });
+
 
 // Portfolio Submitted
 $app->get('/portfolio_submitted', function() use ($app) {					
 	return $app->render('portfolio_submitted.html');		
 });
 
+
 // Log Out
 $app->get('/logout', function() use ($app) {					
 	return $app->render('logout.html');		
 });
+
 
 $app->run();
 ?>
