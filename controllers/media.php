@@ -121,6 +121,7 @@ class MediaController
 	{
 		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
 			(!$media = self::getMedia($id))
+			(!$media->havePermissionOrHigher(READ)))	// Calling User must have READ permissions
 		{
 			return false;
 		}
