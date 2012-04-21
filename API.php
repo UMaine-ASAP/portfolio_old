@@ -34,18 +34,51 @@ function redirect( $destination ){
 $app = new Slim(array(
 	'view' => new TwigView
 ));
-$app->flashNow('web_root', $web_root);
+$app->flashNow('web_root', $GLOBALS['web_root']);
+
+
+// Webroot
+$app->get('/', function() use ($app) {
+	if (AuthenticationController::check_login())
+	{
+		$app->redirect($GLOBALS['web_root'].'/view_portfolio');
+	}
+	else
+	{
+		$app->redirect($GLOBALS['web_root'].'/login');
+	}
+});
 
 
 // Login
-$app->get('/', function() use ($app) {					
-	return $app->render('login.html');		
+$app->get('/login', function() use ($app) {
+	return $app->render('login.html');
+});
+/**
+ *	Posts to /login come from the Login page when submitted, and should redirect approprately
+ */
+$app->post('/login', function() use ($app) {
+	if (isset($_POST['username']) && isset($_POST['password']) &&
+		AuthenticationController::attempt_login($_POST['username'], $_POST['password']))
+	{	// Success!
+		$app->redirect($GLOBALS['web_root'].'/view_portfolio');
+	}
+	else
+	{	// Fail :(
+		return $app->render('failed_login.html');
+	}
 });
 
 
 // Register
 $app->get('/register', function() use ($app) {					
 	return $app->render('register.html');		
+});
+/**
+ *	POSTs to /register come from the Registratio page when submitted; redirect appropriately
+ */
+$app->post('/register', function() use ($app) {
+
 });
 
 
@@ -57,15 +90,6 @@ $app->get('/view_portfolio', function() use ($app) {
  *	Posts to /view_portfolio come from the Login page when submitted
  */
 $app->post('/view_portfolio', function() use ($app) {
-	if (isset($_POST['username']) && isset($_POST['password']) &&
-		AuthenticationController::attempt_login($_POST['username'], $_POST['password']))
-	{	// Success!
-		echo "Login success!";
-	}
-	else
-	{	// Fail :(
-		echo "Login failed!";
-	}
 });
 
 

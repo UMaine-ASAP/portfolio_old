@@ -14,7 +14,7 @@
 	
 	<div id="themed" class="loginForm">
 		
-		<form id="form" name="form" method="post" action="{{ flash['web_root'] }}/view_portfolio">
+		<form id="form" name="form" method="post" action="{{ flash['web_root'] }}/login">
 		
 		<label>Username</label>
 		<input type="text" name="username" id="username" />
@@ -25,6 +25,10 @@
 		<button type="submit">Login</button>
 			
 		<div class="spacer"></div>
+
+		{% if flash['error'] is defined %}
+			<label>Login failed, please retype username and password</label>
+		{% endif %}
 
 		</form>
 	</div>
