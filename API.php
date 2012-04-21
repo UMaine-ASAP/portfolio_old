@@ -28,6 +28,9 @@ function redirect( $destination ){
 	$GLOBALS['app']->redirect($GLOBALS['web_root'] . $destination);
 }
 
+// Basic routes to each of the templates. 
+// Will need to be populated with all of the modules.
+
 // System Home
 $app = new Slim(array(
 	'view' => new TwigView
