@@ -3,7 +3,6 @@
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
-require_once('models/mappings.php');
 require_once('models/portfolio.php');
 require_once('controllers/group.php');
 require_once('controllers/authentication.php');
@@ -39,11 +38,9 @@ class PortfolioController
 			return false;
 		}
 
-		if (!is_null($title))	{ $port->title = $title; }
-		else					{ return false; }
-		if (!is_null($private))	{ $port->private = $private; }
-		else					{ return false; }
+		$port->title = $title;
 		$port->description = $description;
+		$port->private = $private;
 		// Add current User as OWNER
 		$port->addPermissionForUser($user, OWNER);
 
@@ -75,13 +72,12 @@ class PortfolioController
 	 */
 	public static function editPortfolio($id, $title = NULL, $description = NULL, $private = NULL)
 	{
-		if (!$port = self::getPortfolio($id))
+		if ((!$user_id = AuthenticationController::get_current_user_id()) ||	// Make sure calling User is logged in
+			(!$port = self::getPortfolio($id)) ||
+			(!$port->havePermissionOrHigher(EDIT)))	// Check for EDIT privileges
 		{
 			return false;
 		}
-
-		//TODO: check edit privileges here
-		// $port->permissions
 
 		if (!is_null($title)) 		{ $port->title = $title; }
 		if (!is_null($description)) { $port->description = $description; }
@@ -133,15 +129,16 @@ class PortfolioController
 	 */
 	public static function viewPortfolio($id)
 	{
-		if (!$port = self::getPortfolio($id))
+		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+			(!$port = self::getPortfolio($id)) ||
+			(!$port->havePermissionOrHigher(READ)))	// Check for READ privileges
 		{
 			return false;
 		}
 
-		//TODO: check view privileges here
-
 		return $port;
 	}
+
 
 	/**
 	 * 	Helper function to retrieve a Portfolio object.
@@ -155,6 +152,33 @@ class PortfolioController
 	private static function getPortfolio($id)
 	{
 		return Model::factory('Portfolio')->find_one($id);
+	}
+
+
+	/**
+	 *	Retrieve list of Portfolio objects the current User has ownership privileges for.
+	 *
+	 *	@return	array		Array of Portfolio objects the User owns
+	 */
+	public static function getOwnedPortfolios()
+	{
+		$return = array();
+		if ($user_id = AuthenticationController::get_current_user_id())
+		{
+			$result = ORM::for_table('REPO_Portfolio_access_map')
+				->table_alias('access')
+				->select('access.port_id')
+				->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
+				->where('access.access_level', OWNER)
+				->where('AUTH_Group_user_map.user_id', $userID)
+				->find_many();
+			foreach ($result as $port_id)
+			{
+				$return[] = self::getPortfolio($port_id);
+			}
+		}
+
+		return $return;
 	}
 
 
@@ -324,15 +348,14 @@ class PortfolioController
 	 */
 	public static function addProjectToPortfolio($parent_id, $child_id)
 	{
-		if ((!$parent = self::getPortfolio($parent_id)) ||
-			(!$project = ProjectController::viewProject($child_id)))	// Requires 'viewing' (or higher, assumed) permissions on the Project
+		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+			(!$parent = self::getPortfolio($parent_id)) ||
+			(!$parent->havePermissionOrHigher(WRITE)) ||	// User must have WRITE permission on parent
+			(!$project = ProjectController::viewProject($child_id)) ||	// Requires 'viewing' (or higher, assumed) permissions on the Project
+			(!$project->havePermissionOrHigher(OWNER)))		// User must have OWNER permission on child
 		{
 			return false;
 		}
-
-		//TODO: check submission/ownership privileges here
-		// $parentPort->permissions
-		// $project->permissions
 
 		return $parent->addProject($child_id);
 	}
@@ -352,13 +375,13 @@ class PortfolioController
 	 */
 	public static function removeChildFromPortfolio($parent_id, $child_id, $is_portfolio)
 	{
-		if (!$parent = self::getPortfolio($parent_id))
+		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+			(!$parent = self::getPortfolio($parent_id)) ||
+			(!$parent->havePermissionOrHigher(WRITE)) ||	// User must have WRITE permissions on parent
+			(!array_key_exists($child_id, $parent->children)))
 		{
 			return false;
 		}
-
-		//TODO: check ownership privileges here
-		// $parent->permissions
 
 		return $parent->removeChild($child_id, $is_portfolio);
 	}

@@ -363,6 +363,9 @@ CREATE TABLE `REPO_Media` (
   `created` DATETIME NOT NULL,
   `edited` DATETIME NULL DEFAULT NULL,
   `filename` TEXT NOT NULL,
+  `filesize` INTEGER NOT NULL,
+  `md5` CHAR(32) NOT NULL,
+  `extension` VARCHAR(10) NOT NULL,
   PRIMARY KEY (`media_id`)
 ) COMMENT='Unit of media contained within a body of work';
 

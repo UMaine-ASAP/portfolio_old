@@ -3,9 +3,8 @@
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
-require_once('controllers/authentication.php');
 require_once('models/assignment.php');
-require_once('models/mappings.php');
+require_once('controllers/authentication.php');
 require_once('controllers/portfolio.php');
 require_once('controllers/class.php');
 
@@ -52,7 +51,7 @@ class AssignmentController
 		$assignment->description = $description;
 		$assignment->requirements = $requirements;
 		// Add current User as OWNER
-		$assignment->addOwner($user->id());
+		$assignment->addOwner($user_id->id());
 
 		if (!$assignment->save())
 		{
@@ -376,17 +375,28 @@ class AssignmentController
 	/**
 	 * 	Submit a unit of work (Project or Portfolio) to an AssignmentInstance.
 	 *
-	 * 	Calling User must have submission privileges for the Instance.
+	 * 	Calling User must have SUBMIT privileges for the Instance, and OWNER priviledges on the piece of work.
 	 * 	Instance's due date must not have expired.
 	 *
-	 * 	@param	int		$assign_id			Identifier of the AssignmentInstance to add work to
+	 * 	@param	int		$instance_id		Identifier of the AssignmentInstance to add work to
 	 * 	@param	int		$work_id			Identifier of the piece of work to add
 	 * 	@param	bool	$work_is_portfolio	Whether or not the work is a Portfolio (true=portfolio)
 	 *
 	 * 	@return	bool						True if successful, false otherwise
 	 */
-	public static function submitWorkToAssignmentInstance($assign_id, $work_id, $work_is_portfolio)
+	public static function submitWorkToAssignmentInstance($instance_id, $work_id, $work_is_portfolio)
 	{
+		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+			(!$instance = self::getAssignmentInstance($instance_id)) ||
+			(!($work_is_portfolio) && ($work = PortfolioController::viewPortfolio($work_id))) ||
+			(!(!$work_is_portfolio) && ($work = self::getProject($work_id))) ||
+			(!$work->havePermissionOrHigher(OWNER)) ||		// Calling User must have OWNER permission
+			(!$instance->havePermissionOrHigher(SUBMIT)))	// Calling User must have WRITE permission
+		{
+			return false;
+		}
+
+		return $instance->addWork($work_id, $work_is_portfolio);
 	}
 	
 	public static function approveChildOfInstance($instance_id, $child_id)
@@ -421,16 +431,14 @@ class AssignmentController
 	 *								- Value = boolean specifying whether or not the child is a Portfolio or Project
  	 *					  				(true = child is sub-Portfolio, false = child is not sub-Portfolio)
 	 */
-	public static function getUnapprovedChildren($id)
+	public static function getSubmittedChildren($id)
 	{
 		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
-			(!$instance = self::getAssignmentInstance($id)))
+			(!$instance = self::getAssignmentInstance($id)) ||
+			(!$instance->havePermissionOrHigher(WRITE)))	// Calling User must have WRITE permission
 		{
 			return false;
 		}
-		
-		// Check permission level is WRITE or above
-		// $instance->permissions || $instance->owner_user_id
 
 		$result = array();
 		foreach ($instance->children as $child_id=>$arr)
