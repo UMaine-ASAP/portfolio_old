@@ -63,6 +63,11 @@ $app->get('/review_portfolio', function() use ($app) {
 	return $app->render('review_portfolio.html');		
 });
 
+// Portfolio Submitted
+$app->get('/portfolio_submitted', function() use ($app) {					
+	return $app->render('portfolio_submitted.html');		
+});
+
 // Log Out
 $app->get('/logout', function() use ($app) {					
 	return $app->render('logout.html');		
