@@ -31,11 +31,16 @@ class ProjectController
 			return false;
 		}
 
-		$project->addPermissionForUser($user_id, OWNER);
 		$project->title = $title;
 		$project->description = $description;
 		$project->type = $type;
+		if (!$project->save())
+		{
+			return false;
+		}
 
+		// Add permissions for the creator (done after save so that the Project will have an ID)
+		$project->addPermissionForUser($user_id, OWNER);
 		if (!$project->save())
 		{
 			$project->delete();

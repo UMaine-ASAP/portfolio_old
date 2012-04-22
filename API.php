@@ -177,6 +177,8 @@ $app->post('/register', function() use ($app) {
 			{
 				// Login as new User
 				AuthenticationController::attempt_login($_POST['username'], $_POST['password']);
+				// Create User's NMD portfolio
+				$port = PortfolioController::createPortfolio("New Media Freshman Portfolio 2012", "New Media Freshman Portfolio 2012", 1);
 				return redirect('/portfolio');
 			}
 		}

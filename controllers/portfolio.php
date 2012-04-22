@@ -41,9 +41,13 @@ class PortfolioController
 		$port->title = $title;
 		$port->description = $description;
 		$port->private = $private;
-		// Add current User as OWNER
-		$port->addPermissionForUser($user, OWNER);
+		if (!$port->save())
+		{
+			return false;
+		}
 
+		// Add current User as OWNER (we need to save prior to this to have an ID associate with the Portfolio)
+		$port->addPermissionForUser($user_id, OWNER);
 		if (!$port->save())
 		{
 			$port->delete();
