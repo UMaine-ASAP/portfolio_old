@@ -17,8 +17,8 @@ class ProjectController
 	 *	Create a new Project object with the specified creator_id, title, abstract, description, and privacy.
 	 *		@param int creator_user_id is the ID of the user creating the project
 	 *		@param string title is the title of the project
-	 *		@param string abstract is the abstract of the project
 	 *		@param string description is the description of the project
+	 *		@param int type is the type of the Project
 	 *
 	 *	@return the created Project object if successful, false otherwise.
 	 */
