@@ -13,6 +13,12 @@
 	
 	<hr>
 	
+	<div id="addProjectButton" style="float:right;">
+		<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/add_project">
+		<INPUT TYPE="submit" VALUE="Add Project">
+		</FORM>
+	</div>
+	
 	<p>
 	{% for proj in projects %}
 		<div id="projects">
