@@ -11,34 +11,28 @@
 	<header>Your Portfolio</header>
 	
 	<hr>
-	
-	<div id="themed" style="float:right;margin-bottom:20px;">
+
+	<div id="themed"style ="margin-left:650px;">
 		<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/project/add">
 		<button type="submit">Add Project</button>
 		</FORM>
 	</div>
 
-<div id="themed"style ="margin-left:650px;">
-	<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/project/add">
-	<button type="submit">Add Project</button>
-	</FORM>
-</div>
+	<div id="projectSpacer" style="margin-top:20px"></div>
 
-<div id="projectSpacer" style="margin-top:20px"></div>
-
-<p>
-	<div id="projects">
-		<div id="type"></div>
-		<div id="title">{{ proj[1] }}</div>
-		</br>
-		<div id="desc">{{ proj[2] }}</div>
+	<p>
+		<div id="projects">
+			<div id="type"></div>
+			<div id="title">{{ proj[1] }}</div>
+			</br>
+			<div id="desc">{{ proj[2] }}</div>
 		
-		<div class"actions" style="float:right;margin-top:-95px;margin-left:850px;">
-			<a href="#"><img style="" src="icon_View.png" border="0" alt="View"></a></br>
-			<a href="#"><img style="" src="icon_Edit.png" border="0" alt="Edit"></a></br>
-			<a href="#"><img style="" src="icon_Delete.png" border="0" alt="Delete"></a>
+			<div class"actions" style="float:right;margin-top:-95px;margin-left:850px;">
+				<a href="#"><img src="{{ flash['web_root'] }}/images/icon_View.png" border="0" alt="View"></a></br>
+				<a href="#"><img src="{{ flash['web_root'] }}/images/icon_Edit.png" border="0" alt="Edit"></a></br>
+				<a href="#"><img src="{{ flash['web_root'] }}/images/icon_Delete.png" border="0" alt="Delete"></a>
+			</div>
 		</div>
-	</div>
-</p>
+	</p>
 
 {% endblock %}
