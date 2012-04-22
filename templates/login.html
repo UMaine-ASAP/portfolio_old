@@ -9,21 +9,21 @@
 	</ul>
 
 	<header>Login</header>
-	
+
+
 	<hr>
-	
 	<div id="themed" class="loginForm">
 		
 		<form id="form" name="form" method="post" action="{{ flash['web_root'] }}/login">
-		
 		<label>Username</label>
 		<input type="text" name="username" id="username" />
 
 		<label>Password	</label>
 		<input type="password" name="password" id="password" />
 
-		<button type="submit">Login</button>
-			
+		<button class='first' type="submit">Login</button>
+		<a class='button' href='{{ flash['web_root'] }}/register'>Register</a>
+
 		<div class="spacer"></div>
 
 		{% if flash['error'] is defined %}

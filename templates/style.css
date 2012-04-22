@@ -162,6 +162,9 @@ body {
 	font-family: "Lucida Grande","Lucida Sans Unicode",Verdana,Arial,Helvetica,sans-serif
 }
 
+.left { float: left;}
+.right { float: right;}
+
 .spacer {
 	clear: both;
 	height: 1px
@@ -215,9 +218,12 @@ body {
 	margin: 2px 0 20px 10px
 }
 
-#themed button {
-	clear: both;
-	margin-left: 150px;
+
+#themed button.first, #themed a.button.first {}
+
+#themed button, #themed a.button {
+	margin-left: 140px;
+	margin-bottom: 10px;
 	background-color: #a5b8da;
 	background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#a5b8da),color-stop(100%,#7089b3));
 	background-image: -webkit-linear-gradient(top,#a5b8da,#7089b3);
@@ -238,14 +244,16 @@ body {
 	color: #fff;
 	font: bold 11px "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
 	line-height: 1;
+	display: inline-block;
 	padding: 8px 0;
 	text-align: center;
 	text-shadow: 0 -1px 1px #64799e;
 	text-transform: uppercase;
-	width: 150px
+	width: 150px;
+	text-decoration: none;
 }
 
-#themed button:hover {
+#themed button:hover, #themed a.button:hover {
 	background-color: #9badcc;
 	background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#9badcc),color-stop(100%,#687fa6));
 	background-image: -webkit-linear-gradient(top,#9badcc,#687fa6);
@@ -263,7 +271,7 @@ body {
 	cursor: pointer
 }
 
-#themed button:active {
+#themed button:active, #themed a.button:active {
 	border: 1px solid #546685;
 	-webkit-box-shadow: inset 0 0 8px 2px #7e8da6,0 1px 0 0 #eee;
 	-moz-box-shadow: inset 0 0 8px 2px #7e8da6,0 1px 0 0 #eee;
