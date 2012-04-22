@@ -232,8 +232,8 @@ $app->get('/project/add', function() use ($app) {
 	{
 		return $app->render('edit_project.html', 
 			array('project_id' => -1,
-				'title' => "TEST title",
-				'description' => "TEST desc"));
+				'title' => "",
+				'description' => ""));
 	}
 	else
 	{
@@ -305,8 +305,11 @@ $app->post('/project/:id/edit', function($id) use ($app) {
 				$proj = ProjectController::createProject($_POST['title'],
 					(isset($_POST['description']) ? $_POST['description'] : NULL),
 					1);
-				$nmd_port = getNMDPortfolio();
-				PortfolioController::addProjectToPortfolio($nmd_port->id(), $proj->id());
+				if ((!$nmd_port = getNMDPortfolio()) ||
+					(PortfolioController::addProjectToPortfolio($nmd_port->id(), $proj->id())))
+				{
+					$proj->delete();
+				}
 				$id = $proj->id();
 			}
 		}
@@ -320,7 +323,7 @@ $app->post('/project/:id/edit', function($id) use ($app) {
 				$app->flashNow('error', true);
 			}
 		}
-		return redirect('project/'.$id);
+		return redirect('/project/'.$id);
 	}
 	else
 	{
