@@ -4,6 +4,7 @@
 
 {% block content %}
 
+<<<<<<< HEAD
 <ul class="menu sgray fade" id="menu">
 	<li><a href="{{ flash['web_root'] }}">New Media Portfolio 2012</a></li>
 	<li class="floatr"><a href="{{ flash['web_root'] }}/logout">Log Out</a></li>
@@ -12,6 +13,22 @@
 <header>Your Portfolio</header>
 
 <hr>
+=======
+	<ul class="menu sgray fade" id="menu">
+		<li><a href="{{ flash['web_root'] }}">New Media Portfolio 2012</a></li>
+		<li class="floatr"><a href="{{ flash['web_root'] }}/logout">Log Out</a></li>
+	</ul>
+
+	<header>Your Portfolio</header>
+	
+	<hr>
+	
+	<div id="themed" style="float:right;margin-bottom:20px;">
+		<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/project/add">
+		<button type="submit">Add Project</button>
+		</FORM>
+	</div>
+>>>>>>> 9a19d81c4d83711c7908a67194d33625a933b0a4
 
 <div id="themed"style ="margin-left:650px;">
 	<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/project/add">

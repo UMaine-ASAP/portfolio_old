@@ -17,6 +17,7 @@ require_once 'controllers/authentication.php';
 require_once 'controllers/portfolio.php';
 require_once 'controllers/project.php';
 require_once 'controllers/media.php';
+require_once 'controllers/user.php';
 
 // Library configuration
 TwigView::$twigDirectory = __DIR__ . '/libraries/Twig/lib/Twig/';
@@ -26,8 +27,34 @@ ORM::configure('username', $USERNAME);
 ORM::configure('password', $PASSWORD);
 
 
-function redirect( $destination ){
+/****************************************
+ * HELPER FUNCTIONS						*
+ ***************************************/
+
+function getNMDPortfolio()
+{
+	$port = PortfolioController::getOwnedPortfolios();
+	$nmd_port = null;
+	foreach ($port as $p)
+	{
+		if ($p->title == "New Media Freshman Portfolio 2012")
+		{
+			$nmd_port = $p;
+			break;
+		}
+	}
+	
+	return $nmd_port;
+}
+
+function redirect($destination)
+{
 	$GLOBALS['app']->redirect($GLOBALS['web_root'] . $destination);
+}
+
+function permission_denied()
+{
+	$GLOBALS['app']->render('permission_denied.html');
 }
 
 
@@ -52,11 +79,11 @@ $app->flashNow('web_root', $GLOBALS['web_root']);
 $app->get('/', function() use ($app) {
 	if (AuthenticationController::check_login())
 	{
-		$app->redirect($GLOBALS['web_root'].'/view_portfolio');
+		return redirect('/portfolio');
 	}
 	else
 	{
-		$app->redirect($GLOBALS['web_root'].'/login');
+		return redirect('/login');
 	}
 });
 
@@ -67,7 +94,7 @@ $app->get('/', function() use ($app) {
 $app->get('/login', function() use ($app) {
 	if (AuthenticationController::check_login())
 	{	// User is already logged in
-		$app->redirect($GLOBALS['web_root'].'/view_portfolio');
+		return redirect('/portfolio');
 	}
 	else
 	{
@@ -79,7 +106,7 @@ $app->post('/login', function() use ($app) {
 	if (isset($_POST['username']) && isset($_POST['password']) &&
 		AuthenticationController::attempt_login($_POST['username'], $_POST['password']))
 	{	// Success!
-		$app->redirect($GLOBALS['web_root'].'/view_portfolio');
+		return redirect('/portfolio');
 	}
 	else
 	{	// Fail :(
@@ -107,17 +134,56 @@ $app->get('/register', function() use ($app) {
 	}
 	else
 	{
-		$app->redirect($GLOBALS['web_root'].'/view_portfolio');
+		return redirect('/portfolio');
 	}
 });
 
 $app->post('/register', function() use ($app) {
-	if (true)
+	if (true /* Reserved for Timothy D. Baker */ )
 	{
-		// Reserved for Timothy D. Baker
+		if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['email'])
+			|| !preg_match('/[a-z\.]\@umit\.maine\.edu/', $fc))
+
+		{	// Reject, form invalid
+			$app->flashNow('error', true);
+			return redirect('/register');	//TODO: Save partial title/desc on return to form
+		}
+		else
+		{
+			// Form name from FC email
+			$fc = preg_split('/\@umit\.maine\.edu/', $_POST['email']);
+			$name = explode('.', $fc[0]);
+			$first = $name[0];
+			$middle = NULL;
+			for ($i = 1; $i < count($name)-1; $i++)
+			{
+				$middle = $middle." ".ucfirst($name[$i]);
+			}
+			$last = ucfirst($name[count($name)-1]);
+			// Create new User
+			if (!$user = UserController::createUser($_POST['username'],
+				$_POST['password'],
+				$first,
+				$middle,
+				$last,
+				$email,
+				1,
+				NULL, NULL, NULL, NULL, NULL, NULL, 2))
+			{
+				$app->flashNow('error', "Username is already in use");
+				return redirect('/register');
+			}
+			else
+			{
+				// Login as new User
+				AuthenticationController::do_login($user->id());
+				return redirect('/portfolio');
+			}
+		}
 	}
 	else
 	{
+		$app->flashNow('error', false);	//TODO
 	}
 });
 
@@ -125,7 +191,7 @@ $app->post('/register', function() use ($app) {
 /**
  *	View Portfolio
  */
-$app->get('/view_portfolio', function() use ($app) {					
+$app->get('/portfolio', function() use ($app) {
 	if (AuthenticationController::check_login())
 	{
 		$nmd_port = getNMDPortfolio();
@@ -145,7 +211,7 @@ $app->get('/view_portfolio', function() use ($app) {
 	}
 	else
 	{
-		$app->redirect($GLOBALS['web_root'].'/login');
+		return redirect('/login');
 	}
 });
 
@@ -153,15 +219,15 @@ $app->get('/view_portfolio', function() use ($app) {
 /**
  *	Add Project
  */
-$app->get('/add_project', function() use ($app) {
+$app->get('/project/add', function() use ($app) {
 	//TODO: Handle error messages from failes adds
 	if (AuthenticationController::check_login())
 	{
-		$app->render('edit_project.html', array('project' => -1));	//TODO: Deal with this better
+		return $app->render('edit_project.html', array('project' => -1));	//TODO: Deal with this better
 	}
 	else
 	{
-		$app->redirect($GLOBALS['web_root'].'/login');
+		return redirect('/login');
 	}
 });
 
@@ -169,22 +235,22 @@ $app->get('/add_project', function() use ($app) {
 /**
  *	View Project
  */
-$app->get('/view_project/:id', function($id) use ($app) {
+$app->get('/project/:id', function($id) use ($app) {
 	//TODO: Handle error messages from failed edits
 	if (AuthenticationController::check_login())
 	{
 		if (!$proj = ProjectController::viewProject($id))
 		{	// User does not have permission to view this Project
-			$app->render('permission_denied.html');
+			return permission_denied();
 		}
 		else
 		{
-			$app->render('view_project.html');	//TODO: Add Project details
+			return $app->render('view_project.html');	//TODO: Add Project details
 		}
 	}
 	else
 	{
-		$app->redirect($GLOBALS['web_root'].'/login');
+		return redirect('/login');
 	}
 });
 
@@ -192,13 +258,13 @@ $app->get('/view_project/:id', function($id) use ($app) {
 /**
  *	Edit Project
  */
-$app->get('/edit_project/:id', function($id) use ($app) {					
+$app->get('/project/:id/edit', function($id) use ($app) {					
 	if (AuthenticationController::check_login())
 	{
 		if ((!$proj = ProjectController::viewProject($id) ||
 			(!$proj->havePermissionOrHigher(OWNER))))
 		{	// User does not have permission to edit this Project
-			return $app->render('permission_denied.html');
+			return permission_denied();
 		}
 		else
 		{
@@ -207,19 +273,19 @@ $app->get('/edit_project/:id', function($id) use ($app) {
 	}
 	else
 	{
-		$app->redirect($GLOBALS['web_root'].'/login');
+		return redirect('/login');
 	}
 });
 
-$app->post('/edit_project/:id', function($id) use ($app) {
+$app->post('/project/:id/edit', function($id) use ($app) {
 	if (AuthenticationController::check_login())
 	{
 		if ($id == -1)
 		{	// Sent from add_project, we need to create a Project
 			if (!isset($_POST['title']))
-			{
+			{	// Reject, form invalid
 				$app->flashNow('error', true);
-				$app->redirect($GLOBALS['web_root'].'/add_project');	//TODO: Save partial title/desc on return to form
+				return redirect('/project/add');	//TODO: Save partial title/desc on return to form
 			}
 			else
 			{
@@ -241,11 +307,36 @@ $app->post('/edit_project/:id', function($id) use ($app) {
 				$app->flashNow('error', true);
 			}
 		}
-		$app->redirect($GLOBALS['web_root'].'/view_project/'.$id);
+		$app->redirect($GLOBALS['web_root'].'/project/'.$id);
 	}
 	else
 	{
-		$app->redirect($GLOBALS['web_root'].'/login');
+		return redirect('/login');
+	}
+});
+
+
+
+/**
+ *	Delete Project
+ */
+$app->post('/project/:id/delete', function($id) use ($app) {
+	if (AuthenticationController::check_login())
+	{
+		if ((!$proj = ProjectController::viewProject($id) ||
+			(!$proj->havePermissionOrHigher(OWNER))))
+		{	// User does not have permission to edit this Project
+			return permission_denied();
+		}
+		else
+		{
+			ProjectController::deleteProject($id);
+			return redirect('/portfolio');
+		}
+	}
+	else
+	{
+		return redirect('/login');
 	}
 });
 
@@ -253,15 +344,37 @@ $app->post('/edit_project/:id', function($id) use ($app) {
 /**
  *	Add Media
  */
-$app->get('/project/:id/add_media', function($id) use ($app) {
+$app->get('/project/:id/media/add', function($id) use ($app) {
 	//TODO: Handle error messages from failed adds
 	if (AuthenticationController::check_login())
-	{
-		$app->render('edit_media.html', array('media' => -1));	//TODO: Deal with this better
+	{	// Check if we own the project?
+		return $app->render('edit_media.html', array('media' => -1));	//TODO: Deal with this better
 	}
 	else
 	{
-		$app->redirect($GLOBALS['web_root'].'/login');
+		return redirect('/login');
+	}
+});
+
+
+/**
+ *	View Media
+ */
+$app->get('project/:pid/media/:id', function($pid, $id) use ($app) {
+	if (AuthneticationController::check_login())
+	{
+		if (!$media = MediaController::viewMedia($id))
+		{
+			return permission_denied();
+		}
+		else
+		{
+			return $app->render('view_media.html', array('media' => $id));	//TODO: Pass content
+		}
+	}
+	else
+	{
+		return redirect('/login');
 	}
 });
 
@@ -269,24 +382,31 @@ $app->get('/project/:id/add_media', function($id) use ($app) {
 /**
  *	Edit Media
  */
-$app->get('project/:pid/edit_media/:id', function($pid, $id) use ($app) {
+$app->get('project/:pid/media/:id/edit', function($pid, $id) use ($app) {
 	if (AuthenticationController::check_login())
 	{
-		$app->render('edit_media.html', array('media' => $id));
+		if (!$media = MediaController::viewMedia($id))
+		{
+			return permission_denied();
+		}
+		else
+		{
+			return $app->render('edit_media.html', array('media' => $id));	//TODO: Pass content
+		}
 	}
 	else
 	{
-		$app->redirect($GLOBALS['web_root'].'/login');
+		return redirect('/login');
 	}
 });
 
-$app->post('project/:pid/edit_media/:id', function($pid, $id) use ($app) {
+$app->post('project/:pid/media/:id/edit', function($pid, $id) use ($app) {
 	if (AuthenticationController::check_login())
 	{
 		if ((!$proj = ProjectController::viewProject($pid)) ||
 			(!$proj->havePermissionOrHigher(OWNER)))
 		{
-			$app->render('permission_denied.html');
+			return permission_denied();
 		}
 		else
 		{
@@ -294,9 +414,9 @@ $app->post('project/:pid/edit_media/:id', function($pid, $id) use ($app) {
 			{	// Sent from add_media, we need to create a New Media (hehehe)
 				if (!isset($_POST['title']) || !isset($_POST['filename']) || !isset($_POST['filesize']) ||
 					!isset($_POST['md5']) || !isset($_POST['extension']) || !isset($_POST['type']))
-				{
+				{	// Reject, form invalid
 					$app->flashNow('error', true);
-					$app->redirect($GLOBALS['web_root'].'/add_media');	//TODO: Save partial fields on return to form
+					$app->redirect($GLOBALS['web_root'].'/project/:id/media/add');	//TODO: Save partial fields on return to form
 				}
 				else
 				{
@@ -311,7 +431,7 @@ $app->post('project/:pid/edit_media/:id', function($pid, $id) use ($app) {
 					$id = $media->id();
 				}
 			}
-			else
+			else	// We are editing an existing piece of Media
 			{
 				if (!MediaController::editMedia($id,
 					(isset($_POST['type']) ? $_POST['type'] : NULL),
@@ -322,47 +442,52 @@ $app->post('project/:pid/edit_media/:id', function($pid, $id) use ($app) {
 					(isset($_POST['md5']) ? $_POST['md5'] : NULL),
 					(isset($_POST['extension']) ? $_POST['extension'] : NULL)))
 				{
-					$app->flashNow('error', true);
+					return permission_denied();
 				}
 			}
-			$app->redirect($GLOBALS['web_root'].'/view_project/'.$id);
+			$app->redirect($GLOBALS['web_root'].'/project/'.$id);
 		}
 	}
 	else
 	{
-		$app->redirect($GLOBALS['web_root'].'/login');
+		return redirect('/login');
 	}
-
-
 });
+
+
+/**
+ *	Delete Media
+ */
+$app->post('/project/:pid/media/:id/delete', function($pid, $id) use ($app) {
+});	//TODO
 
 
 /**
  *	Review Portfolio
  */
-$app->get('/review_portfolio', function() use ($app) {					
+$app->get('/portfolio/review', function() use ($app) {					
 	if (AuthenticationController::check_login())
 	{
 		return $app->render('review_portfolio.html');		
 	}
 	else
 	{
-		$app->redirect($GLOBALS['web_root'].'/login');
+		return redirect('/login');
 	}
 });
 
 
 /**
- *	Portfolio Submitted
+ *	Portfolio Submission
  */
-$app->get('/portfolio_submitted', function() use ($app) {					
+$app->get('/portfolio/submit', function() use ($app) {					
 	if (AuthenticationController::check_login())
 	{
 		return $app->render('portfolio_submitted.html');		
 	}
 	else
 	{
-		$app->redirect($GLOBALS['web_root'].'/login');
+		return redirect('/login');
 	}
 });
 
@@ -374,24 +499,5 @@ $app->run();
 
 
 
-/****************************************
- * HELPER FUNCTIONS						*
- ***************************************/
-
-function getNMDPortfolio()
-{
-	$port = PortfolioController::getOwnedPortfolios();
-	$nmd_port = null;
-	foreach ($port as $p)
-	{
-		if ($p->title == "New Media Freshman Portfolio 2012")
-		{
-			$nmd_port = $p;
-			break;
-		}
-	}
-	
-	return $nmd_port;
-}
 
 ?>
