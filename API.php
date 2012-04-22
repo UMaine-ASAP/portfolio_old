@@ -124,7 +124,6 @@ $app->get('/logout', function() use ($app) {
 	AuthenticationController::log_out();
 	$app->flash('header', 'You have been successfully logged out.');
 	return redirect('/login');
-//	return $app->render('logout.html');		
 });
 
 
@@ -232,8 +231,8 @@ $app->get('/project/add', function() use ($app) {
 	{
 		return $app->render('edit_project.html', 
 			array('project_id' => -1,
-				'title' => "",
-				'description' => ""));
+				'title' => "TEST title",
+				'description' => "TEST desc"));
 	}
 	else
 	{
@@ -305,11 +304,8 @@ $app->post('/project/:id/edit', function($id) use ($app) {
 				$proj = ProjectController::createProject($_POST['title'],
 					(isset($_POST['description']) ? $_POST['description'] : NULL),
 					1);
-				if ((!$nmd_port = getNMDPortfolio()) ||
-					(PortfolioController::addProjectToPortfolio($nmd_port->id(), $proj->id())))
-				{
-					$proj->delete();
-				}
+				$nmd_port = getNMDPortfolio();
+				PortfolioController::addProjectToPortfolio($nmd_port->id(), $proj->id());
 				$id = $proj->id();
 			}
 		}
@@ -323,7 +319,7 @@ $app->post('/project/:id/edit', function($id) use ($app) {
 				$app->flashNow('error', true);
 			}
 		}
-		return redirect('/project/'.$id);
+		return redirect('project/'.$id);
 	}
 	else
 	{
@@ -529,6 +525,3 @@ $app->run();
 
 
 
-
-
-?>
