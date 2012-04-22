@@ -16,6 +16,7 @@ require_once 'Views/TwigView.php';
 require_once 'controllers/authentication.php';
 require_once 'controllers/portfolio.php';
 require_once 'controllers/project.php';
+require_once 'controllers/media.php';
 
 // Library configuration
 TwigView::$twigDirectory = __DIR__ . '/libraries/Twig/lib/Twig/';
@@ -100,24 +101,23 @@ $app->get('/logout', function() use ($app) {
  *	Register
  */
 $app->get('/register', function() use ($app) {					
-	if (AuthenticationController::check_login())
+	if (!AuthenticationController::check_login())
 	{
 		return $app->render('register.html');		
 	}
 	else
 	{
-		$app->redirect($GLOBALS['web_root'].'/login');
+		$app->redirect($GLOBALS['web_root'].'/view_portfolio');
 	}
 });
 
 $app->post('/register', function() use ($app) {
-	if (AuthenticationController::check_login())
+	if (true)
 	{
-
+		// Reserved for Timothy D. Baker
 	}
 	else
 	{
-		$app->redirect($GLOBALS['web_root'].'/login');
 	}
 });
 
@@ -153,47 +153,11 @@ $app->get('/view_portfolio', function() use ($app) {
 /**
  *	Add Project
  */
-$app->get('/add_project', function() use ($app) {					
+$app->get('/add_project', function() use ($app) {
+	//TODO: Handle error messages from failes adds
 	if (AuthenticationController::check_login())
 	{
-		return $app->render('add_project.html');		
-	}
-	else
-	{
-		$app->redirect($GLOBALS['web_root'].'/login');
-	}
-});
-
-$app->post('/add_project', function() use ($app) {
-	if (AuthenticationController::check_login())
-	{
-		if (!isset($_POST['title']) || !isset($_POST['description']))
-		{
-			$app->flashNow('error', true);
-			$app->redirect($GLOBALS['web_root'].'/add_project');
-		}
-		else
-		{
-			$proj = ProjectController::createProject($_POST['title'], $_POST['description'], 1);
-			$nmd_port = getNMDPortfolio();
-			PortfolioController::addProjectToPortfolio($nmd_port->id(), $proj->id());
-			$app->redirect($GLOBALS['web_root'].'/view_project/'.$proj->id());
-		}
-	}
-	else
-	{
-		$app->redirect($GLOBALS['web_root'].'/login');
-	}
-});
-
-
-/**
- *	Edit Project
- */
-$app->get('/edit_project', function() use ($app) {					
-	if (AuthenticationController::check_login())
-	{
-		return $app->render('edit_project.html');		
+		$app->render('edit_project.html', array('project' => -1));	//TODO: Deal with this better
 	}
 	else
 	{
@@ -206,14 +170,170 @@ $app->get('/edit_project', function() use ($app) {
  *	View Project
  */
 $app->get('/view_project/:id', function($id) use ($app) {
+	//TODO: Handle error messages from failed edits
 	if (AuthenticationController::check_login())
 	{
-
+		if (!$proj = ProjectController::viewProject($id))
+		{	// User does not have permission to view this Project
+			$app->render('permission_denied.html');
+		}
+		else
+		{
+			$app->render('view_project.html');	//TODO: Add Project details
+		}
 	}
 	else
 	{
 		$app->redirect($GLOBALS['web_root'].'/login');
 	}
+});
+
+
+/**
+ *	Edit Project
+ */
+$app->get('/edit_project/:id', function($id) use ($app) {					
+	if (AuthenticationController::check_login())
+	{
+		if ((!$proj = ProjectController::viewProject($id) ||
+			(!$proj->havePermissionOrHigher(OWNER))))
+		{	// User does not have permission to edit this Project
+			return $app->render('permission_denied.html');
+		}
+		else
+		{
+			return $app->render('edit_project.html');	//TODO: Add Project details
+		}
+	}
+	else
+	{
+		$app->redirect($GLOBALS['web_root'].'/login');
+	}
+});
+
+$app->post('/edit_project/:id', function($id) use ($app) {
+	if (AuthenticationController::check_login())
+	{
+		if ($id == -1)
+		{	// Sent from add_project, we need to create a Project
+			if (!isset($_POST['title']))
+			{
+				$app->flashNow('error', true);
+				$app->redirect($GLOBALS['web_root'].'/add_project');	//TODO: Save partial title/desc on return to form
+			}
+			else
+			{
+				$proj = ProjectController::createProject($_POST['title'],
+					(isset($_POST['description']) ? $_POST['description'] : NULL),
+					1);
+				$nmd_port = getNMDPortfolio();
+				PortfolioController::addProjectToPortfolio($nmd_port->id(), $proj->id());
+				$id = $proj->id();
+			}
+		}
+		else
+		{
+			if (!ProjectController::editProject($id, 
+				(isset($_POST['title']) ? $_POST['title'] : NULL),
+				(isset($_POST['description']) ? $_POST['description'] : NULL),
+				NULL))
+			{
+				$app->flashNow('error', true);
+			}
+		}
+		$app->redirect($GLOBALS['web_root'].'/view_project/'.$id);
+	}
+	else
+	{
+		$app->redirect($GLOBALS['web_root'].'/login');
+	}
+});
+
+
+/**
+ *	Add Media
+ */
+$app->get('/project/:id/add_media', function($id) use ($app) {
+	//TODO: Handle error messages from failed adds
+	if (AuthenticationController::check_login())
+	{
+		$app->render('edit_media.html', array('media' => -1));	//TODO: Deal with this better
+	}
+	else
+	{
+		$app->redirect($GLOBALS['web_root'].'/login');
+	}
+});
+
+
+/**
+ *	Edit Media
+ */
+$app->get('project/:pid/edit_media/:id', function($pid, $id) use ($app) {
+	if (AuthenticationController::check_login())
+	{
+		$app->render('edit_media.html', array('media' => $id));
+	}
+	else
+	{
+		$app->redirect($GLOBALS['web_root'].'/login');
+	}
+});
+
+$app->post('project/:pid/edit_media/:id', function($pid, $id) use ($app) {
+	if (AuthenticationController::check_login())
+	{
+		if ((!$proj = ProjectController::viewProject($pid)) ||
+			(!$proj->havePermissionOrHigher(OWNER)))
+		{
+			$app->render('permission_denied.html');
+		}
+		else
+		{
+			if ($id == -1)
+			{	// Sent from add_media, we need to create a New Media (hehehe)
+				if (!isset($_POST['title']) || !isset($_POST['filename']) || !isset($_POST['filesize']) ||
+					!isset($_POST['md5']) || !isset($_POST['extension']) || !isset($_POST['type']))
+				{
+					$app->flashNow('error', true);
+					$app->redirect($GLOBALS['web_root'].'/add_media');	//TODO: Save partial fields on return to form
+				}
+				else
+				{
+					$media = MediaController::createMedia($_POST['type'],
+						$_POST['title'],
+						(isset($_POST['description']) ? $_POST['description'] : NULL),
+						$_POST['filename'],
+						$_POST['filesize'],
+						$_POST['md5'],
+						$_POST['extension']);
+					ProjectController::addMediaToProject($proj->id(), $media->id());
+					$id = $media->id();
+				}
+			}
+			else
+			{
+				if (!MediaController::editMedia($id,
+					(isset($_POST['type']) ? $_POST['type'] : NULL),
+					(isset($_POST['title']) ? $_POST['title'] : NULL),
+					(isset($_POST['description']) ? $_POST['description'] : NULL),
+					(isset($_POST['filename']) ? $_POST['filename'] : NULL),
+					(isset($_POST['filesize']) ? $_POST['filesize'] : NULL),
+					(isset($_POST['md5']) ? $_POST['md5'] : NULL),
+					(isset($_POST['extension']) ? $_POST['extension'] : NULL)))
+				{
+					$app->flashNow('error', true);
+				}
+			}
+			$app->redirect($GLOBALS['web_root'].'/view_project/'.$id);
+		}
+	}
+	else
+	{
+		$app->redirect($GLOBALS['web_root'].'/login');
+	}
+
+
 });
 
 

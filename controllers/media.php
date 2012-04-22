@@ -28,7 +28,7 @@ class MediaController
 	 *
 	 *	@return object|bool						The created Media object if successful, false otherwise.
 	 */
-	static function createMedia($type, $title, $description, $filename)
+	static function createMedia($type, $title, $description, $filename, $filesize, $md5, $ext)
 	{
 		// Check Media creation privileges (for now, User must only be logged in)
 		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
@@ -66,14 +66,17 @@ class MediaController
 	 *	@param 	string	$description	The description of the Media. The description will not be changed if an empty string is passed
 	 *									(2^16 character max)
 	 *	@param	string	$filename		The path where the media file is stored (2^16 character max)
+	 *	@param	int		$filesize		Size of the file uploaded
+	 *	@param	string	$md5			MD5 hash of the uploaded file (32 characters exactly)
+	 *	@param	string	$ext			Extension of the file (10 character max)
 	 *
 	 *	@return bool					True if the media was successfully edited, false otherwise
 	 */
-	static function editMedia($id, $type = NULL, $title = NULL, $description = NULL, $filename = NULL)
+	static function editMedia($id, $type = NULL, $title = NULL, $description = NULL, $filename = NULL, $filesize = NULL, $md5 = NULL, $ext = NULL)
 	{
 		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
-			(!$media = self::getMedia($id))
-			(!$media->havePermissionOrHigher(EDIT))	// User must have EDIT privileges
+			(!$media = self::getMedia($id)) ||
+			(!$media->havePermissionOrHigher(EDIT)))	// User must have EDIT privileges
 		{
 			return false;
 		}
@@ -82,6 +85,9 @@ class MediaController
 		if (!is_null($title))		{ $media->title = $title; }
 		if (!is_null($description))	{ $media->description = $description; }
 		if (!is_null($filename))	{ $media->filename = $filename; }
+		if (!is_null($filesize))	{ $media->filesize = $filesize; }
+		if (!is_null($md5))			{ $media->md5 = $md5; }
+		if (!is_null($ext))			{ $media->extension = $ext; }
 		$media->edited = date("Y-m-d H:i:s");
 
 		return $media->save();
@@ -120,7 +126,7 @@ class MediaController
 	static function viewMedia($id)
 	{
 		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
-			(!$media = self::getMedia($id))
+			(!$media = self::getMedia($id)) ||
 			(!$media->havePermissionOrHigher(READ)))	// Calling User must have READ permissions
 		{
 			return false;
