@@ -13,15 +13,17 @@
 	
 	<hr>
 	
-	<div id="addProjectButton" style="float:right;margin-bottom:20px;">
+	<div id="themed" style="float:right;margin-bottom:20px;">
 		<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/add_project">
 		<button type="submit">Add Project</button>
 		</FORM>
 	</div>
-	
+
+	<div id="random" style="margin-top:20px"></div>
+
 	<p>
 	{% for proj in projects %}
-		<div id="projects">
+		<div id="projects" style="margin-top:20px">
 			<div id="type"></div>
 			<div id="title">{{ proj[1] }}</div>
 			</br>
