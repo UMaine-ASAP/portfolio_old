@@ -52,7 +52,7 @@ $app->flashNow('web_root', $GLOBALS['web_root']);
 $app->get('/', function() use ($app) {
 	if (AuthenticationController::check_login())
 	{
-		$app->redirect($GLOBALS['web_root'].'/view_portfolio');
+		$app->redirect($GLOBALS['web_root'].'/portfolio');
 	}
 	else
 	{
@@ -67,7 +67,7 @@ $app->get('/', function() use ($app) {
 $app->get('/login', function() use ($app) {
 	if (AuthenticationController::check_login())
 	{	// User is already logged in
-		$app->redirect($GLOBALS['web_root'].'/view_portfolio');
+		$app->redirect($GLOBALS['web_root'].'/portfolio');
 	}
 	else
 	{
@@ -79,7 +79,7 @@ $app->post('/login', function() use ($app) {
 	if (isset($_POST['username']) && isset($_POST['password']) &&
 		AuthenticationController::attempt_login($_POST['username'], $_POST['password']))
 	{	// Success!
-		$app->redirect($GLOBALS['web_root'].'/view_portfolio');
+		$app->redirect($GLOBALS['web_root'].'/portfolio');
 	}
 	else
 	{	// Fail :(
@@ -107,7 +107,7 @@ $app->get('/register', function() use ($app) {
 	}
 	else
 	{
-		$app->redirect($GLOBALS['web_root'].'/view_portfolio');
+		$app->redirect($GLOBALS['web_root'].'/portfolio');
 	}
 });
 
@@ -125,7 +125,7 @@ $app->post('/register', function() use ($app) {
 /**
  *	View Portfolio
  */
-$app->get('/view_portfolio', function() use ($app) {					
+$app->get('/portfolio', function() use ($app) {					
 	if (AuthenticationController::check_login())
 	{
 		$nmd_port = getNMDPortfolio();
@@ -153,7 +153,7 @@ $app->get('/view_portfolio', function() use ($app) {
 /**
  *	Add Project
  */
-$app->get('/add_project', function() use ($app) {
+$app->get('/project/add', function() use ($app) {
 	//TODO: Handle error messages from failes adds
 	if (AuthenticationController::check_login())
 	{
@@ -169,7 +169,7 @@ $app->get('/add_project', function() use ($app) {
 /**
  *	View Project
  */
-$app->get('/view_project/:id', function($id) use ($app) {
+$app->get('/project/:id', function($id) use ($app) {
 	//TODO: Handle error messages from failed edits
 	if (AuthenticationController::check_login())
 	{
@@ -192,7 +192,7 @@ $app->get('/view_project/:id', function($id) use ($app) {
 /**
  *	Edit Project
  */
-$app->get('/edit_project/:id', function($id) use ($app) {					
+$app->get('/project/:id/edit', function($id) use ($app) {					
 	if (AuthenticationController::check_login())
 	{
 		if ((!$proj = ProjectController::viewProject($id) ||
@@ -211,7 +211,7 @@ $app->get('/edit_project/:id', function($id) use ($app) {
 	}
 });
 
-$app->post('/edit_project/:id', function($id) use ($app) {
+$app->post('/project/:id/edit', function($id) use ($app) {
 	if (AuthenticationController::check_login())
 	{
 		if ($id == -1)
@@ -219,7 +219,7 @@ $app->post('/edit_project/:id', function($id) use ($app) {
 			if (!isset($_POST['title']))
 			{
 				$app->flashNow('error', true);
-				$app->redirect($GLOBALS['web_root'].'/add_project');	//TODO: Save partial title/desc on return to form
+				$app->redirect($GLOBALS['web_root'].'/project/add');	//TODO: Save partial title/desc on return to form
 			}
 			else
 			{
@@ -241,7 +241,32 @@ $app->post('/edit_project/:id', function($id) use ($app) {
 				$app->flashNow('error', true);
 			}
 		}
-		$app->redirect($GLOBALS['web_root'].'/view_project/'.$id);
+		$app->redirect($GLOBALS['web_root'].'/project/'.$id);
+	}
+	else
+	{
+		$app->redirect($GLOBALS['web_root'].'/login');
+	}
+});
+
+
+
+/**
+ *	Delete Project
+ */
+$app->post('/project/:id/delete', function($id) use ($app) {
+	if (AuthenticationController::check_login())
+	{
+		if ((!$proj = ProjectController::viewProject($id) ||
+			(!$proj->havePermissionOrHigher(OWNER))))
+		{	// User does not have permission to edit this Project
+			return $app->render('permission_denied.html');
+		}
+		else
+		{
+			ProjectController::deleteProject($id);
+			$app->redirect($GLOBALS['web_root'].'/portfolio');
+		}
 	}
 	else
 	{
@@ -253,7 +278,7 @@ $app->post('/edit_project/:id', function($id) use ($app) {
 /**
  *	Add Media
  */
-$app->get('/project/:id/add_media', function($id) use ($app) {
+$app->get('/project/:id/media/add', function($id) use ($app) {
 	//TODO: Handle error messages from failed adds
 	if (AuthenticationController::check_login())
 	{
@@ -267,9 +292,16 @@ $app->get('/project/:id/add_media', function($id) use ($app) {
 
 
 /**
+ *	View Media
+ */
+$app->get('project/:pid/media/:id', function($pid, $id) use ($app) {
+});	//TODO
+
+
+/**
  *	Edit Media
  */
-$app->get('project/:pid/edit_media/:id', function($pid, $id) use ($app) {
+$app->get('project/:pid/media/:id/edit', function($pid, $id) use ($app) {
 	if (AuthenticationController::check_login())
 	{
 		$app->render('edit_media.html', array('media' => $id));
@@ -280,7 +312,7 @@ $app->get('project/:pid/edit_media/:id', function($pid, $id) use ($app) {
 	}
 });
 
-$app->post('project/:pid/edit_media/:id', function($pid, $id) use ($app) {
+$app->post('project/:pid/media/:id/edit', function($pid, $id) use ($app) {
 	if (AuthenticationController::check_login())
 	{
 		if ((!$proj = ProjectController::viewProject($pid)) ||
@@ -296,7 +328,7 @@ $app->post('project/:pid/edit_media/:id', function($pid, $id) use ($app) {
 					!isset($_POST['md5']) || !isset($_POST['extension']) || !isset($_POST['type']))
 				{
 					$app->flashNow('error', true);
-					$app->redirect($GLOBALS['web_root'].'/add_media');	//TODO: Save partial fields on return to form
+					$app->redirect($GLOBALS['web_root'].'/project/:id/media/add');	//TODO: Save partial fields on return to form
 				}
 				else
 				{
@@ -325,22 +357,27 @@ $app->post('project/:pid/edit_media/:id', function($pid, $id) use ($app) {
 					$app->flashNow('error', true);
 				}
 			}
-			$app->redirect($GLOBALS['web_root'].'/view_project/'.$id);
+			$app->redirect($GLOBALS['web_root'].'/project/'.$id);
 		}
 	}
 	else
 	{
 		$app->redirect($GLOBALS['web_root'].'/login');
 	}
-
-
 });
+
+
+/**
+ *	Delete Media
+ */
+$app->post('/project/:pid/media/:id/delete', function($pid, $id) use ($app) {
+});	//TODO
 
 
 /**
  *	Review Portfolio
  */
-$app->get('/review_portfolio', function() use ($app) {					
+$app->get('/portfolio/review', function() use ($app) {					
 	if (AuthenticationController::check_login())
 	{
 		return $app->render('review_portfolio.html');		
@@ -353,9 +390,9 @@ $app->get('/review_portfolio', function() use ($app) {
 
 
 /**
- *	Portfolio Submitted
+ *	Portfolio Submission
  */
-$app->get('/portfolio_submitted', function() use ($app) {					
+$app->get('/portfolio/submit', function() use ($app) {					
 	if (AuthenticationController::check_login())
 	{
 		return $app->render('portfolio_submitted.html');		
