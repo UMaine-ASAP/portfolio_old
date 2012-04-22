@@ -37,7 +37,6 @@ class MediaController
 			return false;
 		}
 
-		$media->addPermissionForUser($user_id, OWNER);
 		$media->title = $title;
 		$media->description = $description;
 		$media->filename = $filename;
@@ -45,7 +44,13 @@ class MediaController
 		$media->md5 = $md5;
 		$media->extension = $ext;
 		$media->created = date("Y-m-d H:i:s");
+		if (!$media->save())
+		{
+			return false;
+		}
 
+		// Done after save so that the Media has an ID
+		$media->addPermissionForUser($user_id, OWNER);
 		if (!$media->save())
 		{
 			$media->delete();	// Assume this succeeds
