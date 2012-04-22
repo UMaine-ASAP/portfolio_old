@@ -21,11 +21,12 @@
 	<div id="projectSpacer" style="margin-top:20px"></div>
 
 	<p>
+	{% for project in projects %}
 		<div id="projects">
 			<div id="type"></div>
-			<div id="title">{{ proj[1] }}</div>
+			<div id="title">{{ project['title'] }}</div>
 			</br>
-			<div id="desc">{{ proj[2] }}</div>
+			<div id="desc">{{ project['description'] }}</div>
 		
 			<div class"actions" style="float:right;margin-top:-95px;margin-left:850px;">
 				<a href="#"><img src="{{ flash['web_root'] }}/images/icon_View.png" border="0" alt="View"></a></br>
@@ -33,6 +34,7 @@
 				<a href="#"><img src="{{ flash['web_root'] }}/images/icon_Delete.png" border="0" alt="Delete"></a>
 			</div>
 		</div>
+	{% endfor %}
 	</p>
 
 {% endblock %}
