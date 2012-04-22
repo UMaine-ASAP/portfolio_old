@@ -203,11 +203,11 @@ $app->get('/portfolio', function() use ($app) {
 			foreach ($nmd_port->children as $child_id=>$arr)
 			{
 				$proj = ProjectController::viewProject($child_id);	// assume all children are Projects
-				$projects[] = array($proj->id(), $proj->title, $proj->description, $proj->type);
+				$projects[] = array("proj_id" => $proj->id(), "title" => $proj->title, "description" => $proj->description, "type" => $proj->type);
 			}
 		}
 		
-		return $app->render('view_portfolio.html', array('projects' => $projects));		
+		return $app->render('view_portfolio.html', array('projects' => $projects));
 	}
 	else
 	{
