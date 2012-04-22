@@ -20,7 +20,7 @@ class UserController
 	 *	Nullable fields will be either set to their defaults or set to NULL in the system.
 	 *	
 	 *	@param	string		$username		Plain-text username of the User (255 character max)
-	 *	@param	string		$pass			Hashed password of the User (255 character max)
+	 *	@param	string		$pass			Plain-text password of the User (255 character max)
 	 *	@param	string		$first			Plain-text firstname of the User (255 character max)
 	 *	@param	string|null	$middle			Plain-text middle name of the User  (255 character max, optional)
 	 *	@param	string		$last			Plain-text last name of the User (255 character max)
@@ -39,7 +39,9 @@ class UserController
 	 */
 	public static function createUser($username, $pass, $first, $middle, $last, $email, $email_priv, $addn_contact, $bio, $user_pic, $major, $minor, $grad_year, $type_id)
 	{
-		if (!$user = Model::factory('User')->create())
+		// Check if a User already exists with this usernmae
+		if (($conflict = Model::factory('User')->where('username', $username)->find_one()) ||
+			(!$user = Model::factory('User')->create()))
 		{
 			return false;
 		}
@@ -82,13 +84,13 @@ class UserController
 	 *
 	 *	Does not check privileges to retrieve the User.
 	 *
-	 *	@param	int		$userID		The identifier of the User to be retrieved.
+	 *	@param	int		$user_id		The identifier of the User to be retrieved.
 	 *
 	 *	@return object|bool			The User object if successful, false otherwise.
 	 */
-	public static function getUser($userID)
+	public static function getUser($user_id)
 	{
-		return Model::factory('User')->find_one($userID);
+		return Model::factory('User')->find_one($user_id);
 	}
 
 	/**
@@ -97,9 +99,9 @@ class UserController
 	 *	Edits an existing User object in the system with the specified parameters.
 	 *	Checks permissions on whether or not the current User has permissions to edit
 	 *	the specified User (aka, *is* the specified User).
-	 *	Any field(aside from $userID) may be specified as NULL to skip editing it.
+	 *	Any field(aside from $user_id) may be specified as NULL to skip editing it.
 	 *	
-	 *	@param	int			$userID			Identifier of the User being edited
+	 *	@param	int			$user_id			Identifier of the User being edited
 	 *	@param	string|null	$username		Plain-text username of the User (255 character max)
 	 *	@param	string|null	$pass			Hashed password of the User (255 character max)
 	 *	@param	string|null	$first			Plain-text firstname of the User (255 character max)
@@ -118,21 +120,22 @@ class UserController
 	 *
 	 *	@return	bool						True if successful, false otherwise
 	 */
-	public static function editUser($userID, $username = NULL, $pass = NULL, $first = NULL, $middle = NULL, $last = NULL, $email = NULL, $email_priv = NULL, $addn_contact = NULL, $bio = NULL, $user_pic = NULL, $major = NULL, $minor = NULL, $grad_year = NULL, $type_id = NULL)
+	public static function editUser($user_id, $username = NULL, $pass = NULL, $first = NULL, $middle = NULL, $last = NULL, $email = NULL, $email_priv = NULL, $addn_contact = NULL, $bio = NULL, $user_pic = NULL, $major = NULL, $minor = NULL, $grad_year = NULL, $type_id = NULL)
 	{
-		//Checks to see if a user is logged in. DOES NOT CHECK PERMISSIONS.
-		if (!$currentUser = AuthenticationController::get_current_user_id())
-		{
-			return false;
-		}
-
-		if (!$user = self::getUser($userID))
+		//Checks to see if a user is logged in, and if the user we are editing is this User.
+		//(Only a User may edit themselves)
+		if ((!$currentUser = AuthenticationController::get_current_user_id()) ||
+			($currentUser != $user_id) ||
+			(!$user = self::getUser($user_id)))
 		{
 			return false;
 		}
 
 		if (!is_null($username))	{ $user->username = $username; }
-		if (!is_null($pass))		{ $user->pass = $pass; }
+		if ((!is_null($pass)) && ($password = AuthenticationController::create_hash($pass)))
+		{
+			$user->pass = $password;
+		}
 		if (!is_null($first))		{ $user->first = $first; }
 		if (!is_null($middle))		{ $user->middle = $middle; }
 		if (!is_null($last))		{ $user->last = $last; }
@@ -156,11 +159,11 @@ class UserController
 	 *	NOTE: Doesn't truly delete the User from the system, only deactivates the User's account.
 	 *	This is done to preserve links to this User by works in the system.
 	 *
-	 *	@param	int		$userID		Identifier of the User to be deactivated
+	 *	@param	int		$user_id		Identifier of the User to be deactivated
 	 *
 	 *	@return	bool				True if successful, false otherwise.
 	 */
-	public static function deactivateUser($userID)
+	public static function deactivateUser($user_id)
 	{
 		if (!$currentUser = AuthenticationController::get_current_user_id())
 		{
@@ -169,7 +172,7 @@ class UserController
 
 		// Check any credentials here
 
-		if (!$user = self::getUser($userID))
+		if (!$user = self::getUser($user_id))
 		{
 			return false;
 		}
@@ -184,11 +187,11 @@ class UserController
 	 *
 	 *	Checks whether the currently logged in User has permissions to reactivate the User.
 	 *
-	 *	@param	int		$userID		Identifier of the User to be reactivated
+	 *	@param	int		$user_id		Identifier of the User to be reactivated
 	 *
 	 *	@return	bool				True if successful, false otherwise.
 	 */
-	public static function reactivateUser($userID)
+	public static function reactivateUser($user_id)
 	{
 		if (!$currentUser = AuthenticationController::get_current_user_id())
 		{
@@ -196,7 +199,7 @@ class UserController
 		}
 
 		// Check any credentials here
-		if (!$user = self::getUser($userID))
+		if (!$user = self::getUser($user_id))
 		{
 			return false;
 		}
