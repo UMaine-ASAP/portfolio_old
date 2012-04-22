@@ -142,7 +142,7 @@ $app->post('/register', function() use ($app) {
 	if (true /* Reserved for Timothy D. Baker */ )
 	{
 		if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['email'])
-			|| !preg_match('/[a-z\.]\@umit\.maine\.edu/', $fc))
+			|| !preg_match('/[a-z\.]\@umit\.maine\.edu/', $_POST['email']))
 
 		{	// Reject, form invalid
 			$app->flashNow('error', true);
@@ -166,7 +166,7 @@ $app->post('/register', function() use ($app) {
 				$first,
 				$middle,
 				$last,
-				$email,
+				$_POST['email'],
 				1,
 				NULL, NULL, NULL, NULL, NULL, NULL, 2))
 			{
@@ -176,7 +176,7 @@ $app->post('/register', function() use ($app) {
 			else
 			{
 				// Login as new User
-				AuthenticationController::do_login($user->id());
+				AuthenticationController::attempt_login($_POST['username'], $_POST['password']);
 				return redirect('/portfolio');
 			}
 		}
@@ -223,7 +223,10 @@ $app->get('/project/add', function() use ($app) {
 	//TODO: Handle error messages from failes adds
 	if (AuthenticationController::check_login())
 	{
-		return $app->render('edit_project.html', array('project' => -1));	//TODO: Deal with this better
+		return $app->render('edit_project.html', 
+			array('project_id' => -1,
+				'title' => "TEST title",
+				'description' => "TEST desc"));
 	}
 	else
 	{
@@ -245,7 +248,10 @@ $app->get('/project/:id', function($id) use ($app) {
 		}
 		else
 		{
-			return $app->render('view_project.html');	//TODO: Add Project details
+			return $app->render('view_project.html',
+				array('project_id' => $proj->id(),
+					'title' => $proj->title,
+					'description' => $proj->description));
 		}
 	}
 	else
@@ -307,7 +313,7 @@ $app->post('/project/:id/edit', function($id) use ($app) {
 				$app->flashNow('error', true);
 			}
 		}
-		$app->redirect($GLOBALS['web_root'].'/project/'.$id);
+		return redirect('project/'.$id);
 	}
 	else
 	{
@@ -416,7 +422,7 @@ $app->post('project/:pid/media/:id/edit', function($pid, $id) use ($app) {
 					!isset($_POST['md5']) || !isset($_POST['extension']) || !isset($_POST['type']))
 				{	// Reject, form invalid
 					$app->flashNow('error', true);
-					$app->redirect($GLOBALS['web_root'].'/project/:id/media/add');	//TODO: Save partial fields on return to form
+					return redirect('project/:id/media/add');	//TODO: Save partial fields on return to form
 				}
 				else
 				{
@@ -445,7 +451,7 @@ $app->post('project/:pid/media/:id/edit', function($pid, $id) use ($app) {
 					return permission_denied();
 				}
 			}
-			$app->redirect($GLOBALS['web_root'].'/project/'.$id);
+			return redirect('project/'.$pid);
 		}
 	}
 	else
@@ -459,6 +465,21 @@ $app->post('project/:pid/media/:id/edit', function($pid, $id) use ($app) {
  *	Delete Media
  */
 $app->post('/project/:pid/media/:id/delete', function($pid, $id) use ($app) {
+	if (AuthenticationController::check_login())
+	{
+		if (!$media = MediaController::deleteMedia($id))
+		{
+			return permission_denied();
+		}
+		else
+		{
+			return redirect('/project/'.$pid);
+		}
+	}
+	else
+	{
+		return redirect('/login');
+	}
 });	//TODO
 
 

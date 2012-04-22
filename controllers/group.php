@@ -34,7 +34,7 @@ class GroupController
 
 		if (!is_null($name))	{ $newGroup->name = $name; }
 		if (!is_null($private))	{ $newGroup->private = $private; }
-		$newGroup->owner_user_id = $user->user_id;
+		$newGroup->owner_user_id = $user_id;
 		$newGroup->description = $description;
 
 		if (!$newGroup->save())

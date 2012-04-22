@@ -150,8 +150,9 @@ class AccessMapModel extends Model
 		{
 			return false;
 		}
-		
-		$map->port_id = $this->id();
+
+		print "Setting ".static::$_id_column." to ".$this->id();
+		$map->__set(static::$_id_column, $this->id());
 		$map->group_id = $group_id;
 		$map->access_type = $perm_id;
 

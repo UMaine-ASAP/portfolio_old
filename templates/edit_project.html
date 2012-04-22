@@ -13,7 +13,23 @@
 	
 	<hr>
 	
-	<p>Stuff goes here</p>
+	<div id="themed">
+	
+		<form id="form" name="form" method="post" action="{{ flash['web_root'] }}/project/{{ project_id }}/edit">
+		
+		<label>Title</label>
+		<input type="text" name="title" id="title" value="{{ title }}" />
+
+		<label>Description</label>
+		<input type="text" name="description" id="description" value="{{ description }}" />
+
+		<button type="submit">Submit</button>
+			
+		<div class="spacer"></div>
+
+		</form>
+
+	</div>
 
 
 {% endblock %}
