@@ -15,9 +15,11 @@
 	
 	<p>
 	{% for proj in projects %}
-		<div id="project_listing" class="projects">
-			<project_title>{{ proj[1] }}</project_title>
-			<project_desc>{{ proj[2] }}</project_desc>
+		<div id="projects">
+			<div id="type"></div>
+			<div id="title">{{ proj[1] }}</div>
+			</br>
+			<div id="desc">{{ proj[2] }}</div>
 		</div>
 	{% endfor %}
 	</p>

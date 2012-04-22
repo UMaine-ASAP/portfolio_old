@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block page_title %}New Media Portfolio - Permission Denied{% endblock %}
+
+{% block content %}
+
+	<ul class="menu sgray fade" id="menu">
+		<li><a href="{{ flash['web_root'] }}">New Media Portfolio 2012</a></li>
+		<li class="floatr"><a href="{{ flash['web_root'] }}/logout">Log Out</a></li>
+	</ul>
+
+	<header>You do not have adequate permissions to access this page.</header>
+
+{% endblock %}
