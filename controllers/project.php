@@ -156,7 +156,7 @@ class ProjectController
 	{
 		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
 			(!$project = self::getProject($proj_id)) ||
-			(!$media = MediaController::getMedia($media_id))
+			(!$media = MediaController::getMedia($media_id)) ||
 			(!$media->havePermissionOrHigher(WRITE)) ||	// User must have WRITE permission on parent
 			(!in_array($media_id, $project->media)))
 		{

@@ -14,16 +14,16 @@ require_once('models/accesslevel.php');
 class AuthenticationController
 {
 	/**
-	 * Gets the user who is currently logged in. Since it calls check_login, it will log the user
+	 * Gets the ID of the User who is currently logged in. Since it calls check_login, it will log the user
 	 * out if their session has expired or their IP has changed during their current session.
 	 *
-	 *		@return The logged in user as an ORM object, or false if no user is logged in.
+	 *		@return The logged in user's ID, or false if no user is logged in.
 	 */
 	static function get_current_user_id()
 	{
 		if (self::check_login())
 		{
-			return UserController::getUser(intval($_SESSION['UserID']));
+			return intval($_SESSION['UserID']);
 		}
 
 		return false;

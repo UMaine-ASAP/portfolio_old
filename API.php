@@ -14,6 +14,8 @@ require_once 'Views/TwigView.php';
 
 // Controllers
 require_once 'controllers/authentication.php';
+require_once 'controllers/portfolio.php';
+require_once 'controllers/project.php';
 
 // Library configuration
 TwigView::$twigDirectory = __DIR__ . '/libraries/Twig/lib/Twig/';
@@ -126,7 +128,30 @@ $app->post('/register', function() use ($app) {
 $app->get('/view_portfolio', function() use ($app) {					
 	if (AuthenticationController::check_login())
 	{
-		return $app->render('view_portfolio.html');		
+		// Get user's Projects
+		$port = PortfolioController::getOwnedPortfolios();
+		$nmd_port = null;
+		foreach ($port as $p)
+		{
+			if ($p->title == "New Media Freshman Portfolio 2012")
+			{
+				$nmd_port = $p;
+				break;
+			}
+		}
+
+		// Create multi-dimensional array of Project properties
+		$projects = array();
+		if ($nmd_port)
+		{
+			foreach ($nmd_port->children as $child_id=>$arr)
+			{
+				$proj = ProjectController::viewProject($child_id);	// assume all children are Projects
+				$projects[] = array($proj->id(), $proj->title, $proj->description, $proj->type);
+			}
+		}
+		
+		return $app->render('view_portfolio.html', array('projects' => $projects));		
 	}
 	else
 	{

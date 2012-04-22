@@ -13,6 +13,11 @@
 	
 	<hr>
 	
-	<p>Stuff goes here</p>
+	{% for proj in projects %}
+		<p>
+		<label>{{ proj[1] }}</label>
+		<label>{{ proj[2] }}</label>
+		</p>
+	{% endfor %}
 
 {% endblock %}

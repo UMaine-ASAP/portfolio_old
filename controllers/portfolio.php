@@ -169,12 +169,12 @@ class PortfolioController
 				->table_alias('access')
 				->select('access.port_id')
 				->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
-				->where('access.access_level', OWNER)
-				->where('AUTH_Group_user_map.user_id', $userID)
+				->where('access.access_type', OWNER)
+				->where('AUTH_Group_user_map.user_id', $user_id)
 				->find_many();
-			foreach ($result as $port_id)
+			foreach ($result as $row)
 			{
-				$return[] = self::getPortfolio($port_id);
+				$return[] = self::getPortfolio($row->port_id);
 			}
 		}
 

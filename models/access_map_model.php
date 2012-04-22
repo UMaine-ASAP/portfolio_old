@@ -71,7 +71,7 @@ class AccessMapModel extends Model
 	 */
 	public function havePermissionOrHigher($perm)
 	{
-		return array_reduce($this->permissions, function($reduced, $p) {
+		return array_reduce($this->permissions, function($reduced, $p) use ($perm) {
 			return ($reduced || ($p <= $perm));
 		});
 	}
