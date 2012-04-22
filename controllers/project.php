@@ -28,6 +28,7 @@ class ProjectController
 		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
 			(!$project = Model::factory('Project')->create()))
 		{
+			echo "Fail";
 			return false;
 		}
 

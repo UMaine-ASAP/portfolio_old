@@ -33,9 +33,9 @@ ORM::configure('password', $PASSWORD);
 
 function getNMDPortfolio()
 {
-	$port = PortfolioController::getOwnedPortfolios();
+	$ports = PortfolioController::getOwnedPortfolios();
 	$nmd_port = null;
-	foreach ($port as $p)
+	foreach ($ports as $p)
 	{
 		if ($p->title == "New Media Freshman Portfolio 2012")
 		{
@@ -301,9 +301,10 @@ $app->post('/project/:id/edit', function($id) use ($app) {
 					(isset($_POST['description']) ? $_POST['description'] : NULL),
 					1);
 				if ((!$nmd_port = getNMDPortfolio()) ||
-					(PortfolioController::addProjectToPortfolio($nmd_port->id(), $proj->id())))
+					(!PortfolioController::addProjectToPortfolio($nmd_port->id(), $proj->id())))
 				{
 					$proj->delete();
+					return permission_denied();
 				}
 				$id = $proj->id();
 			}
