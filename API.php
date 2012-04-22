@@ -47,8 +47,14 @@ function getNMDPortfolio()
 	return $nmd_port;
 }
 
-function redirect( $destination ){
-	$GLOBALS['app']->redirect($GLOBALS['web_root'] . $destination);
+function return redirect($destination)
+{
+	$GLOBALS['app']->return redirect($GLOBALS['web_root'] . $destination);
+}
+
+function permission_denied()
+{
+	$GLOBALS['app']->render('permission_denied.html');
 }
 
 
@@ -73,11 +79,11 @@ $app->flashNow('web_root', $GLOBALS['web_root']);
 $app->get('/', function() use ($app) {
 	if (AuthenticationController::check_login())
 	{
-		redirect('/portfolio');
+		return redirect('/portfolio');
 	}
 	else
 	{
-		redirect('/login');
+		return redirect('/login');
 	}
 });
 
@@ -88,7 +94,7 @@ $app->get('/', function() use ($app) {
 $app->get('/login', function() use ($app) {
 	if (AuthenticationController::check_login())
 	{	// User is already logged in
-		redirect('/portfolio');
+		return redirect('/portfolio');
 	}
 	else
 	{
@@ -100,7 +106,7 @@ $app->post('/login', function() use ($app) {
 	if (isset($_POST['username']) && isset($_POST['password']) &&
 		AuthenticationController::attempt_login($_POST['username'], $_POST['password']))
 	{	// Success!
-		redirect('/portfolio');
+		return redirect('/portfolio');
 	}
 	else
 	{	// Fail :(
@@ -128,7 +134,7 @@ $app->get('/register', function() use ($app) {
 	}
 	else
 	{
-		redirect('/portfolio');
+		return redirect('/portfolio');
 	}
 });
 
@@ -140,7 +146,7 @@ $app->post('/register', function() use ($app) {
 
 		{	// Reject, form invalid
 			$app->flashNow('error', true);
-			redirect('/register');	//TODO: Save partial title/desc on return to form
+			return redirect('/register');	//TODO: Save partial title/desc on return to form
 		}
 		else
 		{
@@ -165,13 +171,13 @@ $app->post('/register', function() use ($app) {
 				NULL, NULL, NULL, NULL, NULL, NULL, 2))
 			{
 				$app->flashNow('error', "Username is already in use");
-				redirect('/register');
+				return redirect('/register');
 			}
 			else
 			{
 				// Login as new User
 				AuthenticationController::do_login($user->id());
-				redirect('/portfolio');
+				return redirect('/portfolio');
 			}
 	}
 	else
@@ -204,7 +210,7 @@ $app->get('/portfolio', function() use ($app) {
 	}
 	else
 	{
-		redirect('/login');
+		return redirect('/login');
 	}
 });
 
@@ -216,11 +222,11 @@ $app->get('/project/add', function() use ($app) {
 	//TODO: Handle error messages from failes adds
 	if (AuthenticationController::check_login())
 	{
-		$app->render('edit_project.html', array('project' => -1));	//TODO: Deal with this better
+		return $app->render('edit_project.html', array('project' => -1));	//TODO: Deal with this better
 	}
 	else
 	{
-		redirect('/login');
+		return redirect('/login');
 	}
 });
 
@@ -234,16 +240,16 @@ $app->get('/project/:id', function($id) use ($app) {
 	{
 		if (!$proj = ProjectController::viewProject($id))
 		{	// User does not have permission to view this Project
-			$app->render('permission_denied.html');
+			return permission_denied();
 		}
 		else
 		{
-			$app->render('view_project.html');	//TODO: Add Project details
+			return $app->render('view_project.html');	//TODO: Add Project details
 		}
 	}
 	else
 	{
-		redirect('/login');
+		return redirect('/login');
 	}
 });
 
@@ -257,7 +263,7 @@ $app->get('/project/:id/edit', function($id) use ($app) {
 		if ((!$proj = ProjectController::viewProject($id) ||
 			(!$proj->havePermissionOrHigher(OWNER))))
 		{	// User does not have permission to edit this Project
-			return $app->render('permission_denied.html');
+			return permission_denied();
 		}
 		else
 		{
@@ -266,7 +272,7 @@ $app->get('/project/:id/edit', function($id) use ($app) {
 	}
 	else
 	{
-		redirect('/login');
+		return redirect('/login');
 	}
 });
 
@@ -278,7 +284,7 @@ $app->post('/project/:id/edit', function($id) use ($app) {
 			if (!isset($_POST['title']))
 			{	// Reject, form invalid
 				$app->flashNow('error', true);
-				redirect('/project/add');	//TODO: Save partial title/desc on return to form
+				return redirect('/project/add');	//TODO: Save partial title/desc on return to form
 			}
 			else
 			{
@@ -300,11 +306,11 @@ $app->post('/project/:id/edit', function($id) use ($app) {
 				$app->flashNow('error', true);
 			}
 		}
-		$app->redirect($GLOBALS['web_root'].'/project/'.$id);
+		$app->return redirect($GLOBALS['web_root'].'/project/'.$id);
 	}
 	else
 	{
-		redirect('/login');
+		return redirect('/login');
 	}
 });
 
@@ -319,17 +325,17 @@ $app->post('/project/:id/delete', function($id) use ($app) {
 		if ((!$proj = ProjectController::viewProject($id) ||
 			(!$proj->havePermissionOrHigher(OWNER))))
 		{	// User does not have permission to edit this Project
-			return $app->render('permission_denied.html');
+			return permission_denied();
 		}
 		else
 		{
 			ProjectController::deleteProject($id);
-			redirect('/portfolio');
+			return redirect('/portfolio');
 		}
 	}
 	else
 	{
-		redirect('/login');
+		return redirect('/login');
 	}
 });
 
@@ -340,12 +346,12 @@ $app->post('/project/:id/delete', function($id) use ($app) {
 $app->get('/project/:id/media/add', function($id) use ($app) {
 	//TODO: Handle error messages from failed adds
 	if (AuthenticationController::check_login())
-	{
-		$app->render('edit_media.html', array('media' => -1));	//TODO: Deal with this better
+	{	// Check if we own the project?
+		return $app->render('edit_media.html', array('media' => -1));	//TODO: Deal with this better
 	}
 	else
 	{
-		redirect('/login');
+		return redirect('/login');
 	}
 });
 
@@ -354,7 +360,22 @@ $app->get('/project/:id/media/add', function($id) use ($app) {
  *	View Media
  */
 $app->get('project/:pid/media/:id', function($pid, $id) use ($app) {
-});	//TODO
+	if (AuthneticationController::check_login())
+	{
+		if (!$media = MediaController::viewMedia($id))
+		{
+			return permission_denied();
+		}
+		else
+		{
+			return $app->render('view_media.html', array('media' => $id));	//TODO: Pass content
+		}
+	}
+	else
+	{
+		return redirect('/login');
+	}
+});
 
 
 /**
@@ -363,11 +384,18 @@ $app->get('project/:pid/media/:id', function($pid, $id) use ($app) {
 $app->get('project/:pid/media/:id/edit', function($pid, $id) use ($app) {
 	if (AuthenticationController::check_login())
 	{
-		$app->render('edit_media.html', array('media' => $id));
+		if (!$media = MediaController::viewMedia($id))
+		{
+			return permission_denied();
+		}
+		else
+		{
+			return $app->render('edit_media.html', array('media' => $id));	//TODO: Pass content
+		}
 	}
 	else
 	{
-		redirect('/login');
+		return redirect('/login');
 	}
 });
 
@@ -377,7 +405,7 @@ $app->post('project/:pid/media/:id/edit', function($pid, $id) use ($app) {
 		if ((!$proj = ProjectController::viewProject($pid)) ||
 			(!$proj->havePermissionOrHigher(OWNER)))
 		{
-			$app->render('permission_denied.html');
+			return permission_denied();
 		}
 		else
 		{
@@ -387,7 +415,7 @@ $app->post('project/:pid/media/:id/edit', function($pid, $id) use ($app) {
 					!isset($_POST['md5']) || !isset($_POST['extension']) || !isset($_POST['type']))
 				{	// Reject, form invalid
 					$app->flashNow('error', true);
-					$app->redirect($GLOBALS['web_root'].'/project/:id/media/add');	//TODO: Save partial fields on return to form
+					$app->return redirect($GLOBALS['web_root'].'/project/:id/media/add');	//TODO: Save partial fields on return to form
 				}
 				else
 				{
@@ -413,15 +441,15 @@ $app->post('project/:pid/media/:id/edit', function($pid, $id) use ($app) {
 					(isset($_POST['md5']) ? $_POST['md5'] : NULL),
 					(isset($_POST['extension']) ? $_POST['extension'] : NULL)))
 				{
-					$app->flashNow('error', true);
+					return permission_denied();
 				}
 			}
-			$app->redirect($GLOBALS['web_root'].'/project/'.$id);
+			$app->return redirect($GLOBALS['web_root'].'/project/'.$id);
 		}
 	}
 	else
 	{
-		redirect('/login');
+		return redirect('/login');
 	}
 });
 
@@ -443,7 +471,7 @@ $app->get('/portfolio/review', function() use ($app) {
 	}
 	else
 	{
-		redirect('/login');
+		return redirect('/login');
 	}
 });
 
@@ -458,7 +486,7 @@ $app->get('/portfolio/submit', function() use ($app) {
 	}
 	else
 	{
-		redirect('/login');
+		return redirect('/login');
 	}
 });
 
