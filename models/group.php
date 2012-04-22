@@ -71,7 +71,7 @@ class Group extends Model
 			return false;
 		}
 		$map->group_id = $this->id();
-		$map->user_id = id;
+		$map->user_id = $id;
 
 		return $map->save();
 	}

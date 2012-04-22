@@ -171,7 +171,6 @@ class PortfolioController
 		{
 			$result = ORM::for_table('REPO_Portfolio_access_map')
 				->table_alias('access')
-				->select('access.port_id')
 				->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
 				->where('access.access_type', OWNER)
 				->where('AUTH_Group_user_map.user_id', $user_id)

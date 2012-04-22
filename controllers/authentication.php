@@ -40,21 +40,21 @@ class AuthenticationController
 	{
 		if(isset($_SESSION['UserID']))
 		{
-			$latestAccess = time();
+			//$latestAccess = time();
 
-			if ($latestAccess - $_SESSION['LastAccess'] > $GLOBALS["session_timeout"])
-			{
-				self::log_out();
-				return false;
-			}
+			//if ($latestAccess - $_SESSION['LastAccess'] > $GLOBALS["session_timeout"])
+			//{
+			//	self::log_out();
+			//	return false;
+			//}
 
-			if (strcmp($_SESSION['RemoteIP'], $_SERVER['REMOTE_ADDR']) != 0)
-			{
-				self::log_out();
-				return false;
-			}
+			//if (strcmp($_SESSION['RemoteIP'], $_SERVER['REMOTE_ADDR']) != 0)
+			//{
+			//	self::log_out();
+			//	return false;
+			//}
 
-			$_SESSION['LastAccess'] = $latestAccess;
+			//$_SESSION['LastAccess'] = $latestAccess;
 			return true;
 		}
 
