@@ -13,11 +13,13 @@
 	
 	<hr>
 	
+	<p>
 	{% for proj in projects %}
-		<p>
-		<label>{{ proj[1] }}</label>
-		<label>{{ proj[2] }}</label>
-		</p>
+		<div id="project_listing" class="projects">
+			<project_title>{{ proj[1] }}</project_title>
+			<project_desc>{{ proj[2] }}</project_desc>
+		</div>
 	{% endfor %}
+	</p>
 
 {% endblock %}
