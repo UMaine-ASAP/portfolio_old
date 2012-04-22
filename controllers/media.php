@@ -132,8 +132,6 @@ class MediaController
 			return false;
 		}
 
-		// Check for viewing permissions
-		
 		return $media;
 	}
 

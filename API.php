@@ -47,9 +47,9 @@ function getNMDPortfolio()
 	return $nmd_port;
 }
 
-function return redirect($destination)
+function redirect($destination)
 {
-	$GLOBALS['app']->return redirect($GLOBALS['web_root'] . $destination);
+	$GLOBALS['app']->redirect($GLOBALS['web_root'] . $destination);
 }
 
 function permission_denied()
@@ -179,6 +179,7 @@ $app->post('/register', function() use ($app) {
 				AuthenticationController::do_login($user->id());
 				return redirect('/portfolio');
 			}
+		}
 	}
 	else
 	{
@@ -306,7 +307,7 @@ $app->post('/project/:id/edit', function($id) use ($app) {
 				$app->flashNow('error', true);
 			}
 		}
-		$app->return redirect($GLOBALS['web_root'].'/project/'.$id);
+		$app->redirect($GLOBALS['web_root'].'/project/'.$id);
 	}
 	else
 	{
@@ -415,7 +416,7 @@ $app->post('project/:pid/media/:id/edit', function($pid, $id) use ($app) {
 					!isset($_POST['md5']) || !isset($_POST['extension']) || !isset($_POST['type']))
 				{	// Reject, form invalid
 					$app->flashNow('error', true);
-					$app->return redirect($GLOBALS['web_root'].'/project/:id/media/add');	//TODO: Save partial fields on return to form
+					$app->redirect($GLOBALS['web_root'].'/project/:id/media/add');	//TODO: Save partial fields on return to form
 				}
 				else
 				{
@@ -444,7 +445,7 @@ $app->post('project/:pid/media/:id/edit', function($pid, $id) use ($app) {
 					return permission_denied();
 				}
 			}
-			$app->return redirect($GLOBALS['web_root'].'/project/'.$id);
+			$app->redirect($GLOBALS['web_root'].'/project/'.$id);
 		}
 	}
 	else
