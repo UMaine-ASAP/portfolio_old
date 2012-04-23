@@ -350,9 +350,11 @@ $app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 		$size = getimagesize($_FILES['thumbnail']['tmp_name']);
 		$max_width = 100;
 		$max_height = 100;
+		if( file_exists($thumb_path) ) {
+			unlink($thumb_path);			
+		}
 		if (//($size[0] > $max_width || $size[1] > $max_height) ||
 			(!($ext == "jpg") && !($ext == "jpeg") && !($ext == "png") && !($ext == "gif")) ||
-			(!unlink($thumb_path)) ||
 			(!move_uploaded_file($_FILES['thumbnail']['tmp_name'], $thumb_path)))
 		{
 			$thumb_path = NULL;
