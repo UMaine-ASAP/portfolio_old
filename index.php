@@ -251,10 +251,26 @@ $app->get('/project/:id', $authcheck_student, function($id) use ($app) {
 	}
 	else
 	{
+		$media = array();
+		foreach ($proj->media as $media_id)
+		{
+			$m = MediaController::viewMedia($media_id);
+			$media[] = array('media_id' => $m->id(),
+				'mimetype' => $m->mimetype,
+				'title' => $m->title,
+				'description' => $m->description,
+				'created' => $m->created,
+				'edited' => $m->edited,
+				'filename' => $m->filename,
+				'filesize' => $m->filesize,
+				'md5' => $m->md5,
+				'extension' => $m->extension);
+		}
 		return $app->render('view_project.html',
 			array('project_id' => $proj->id(),
 				'title' => $proj->title,
-				'description' => $proj->description));
+				'description' => $proj->description,
+				'media_items' => $media));
 	}
 });
 
