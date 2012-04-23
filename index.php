@@ -502,7 +502,7 @@ $app->get('/project/:pid/media/:id', $authcheck_student, function($pid, $id) use
  *	Edit Media
  */
 
-function postMediaData() {}
+function postMediaData($pid, $id) {
 	if ((!$proj = ProjectController::viewProject($pid)) ||
 		(!$proj->havePermissionOrHigher(OWNER)))
 	{
@@ -547,16 +547,17 @@ function postMediaData() {}
 		}
 		return redirect('/project/'.$pid);
 	}
+}
 
 $app->post('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {	
-	postMediaData();
+	postMediaData($pid, $id);
 });
 
 
 $app->get('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {
 	if( isset( $GLOBALS['specialUpload'] ) ) {
 		$_POST = $GLOBALS['specialUpload']['uploadForm'];
-		postMediaData();
+		postMediaData($pid, $id);
 	}
 
 	if ((!$media = MediaController::viewMedia($id)) ||
