@@ -207,8 +207,7 @@ header {
 	font-weight: bold;
 	text-align: right;
 	width: 140px;
-	float: left;
-	font-size: 12px;
+	float: left
 }
 
 #themed .small {
@@ -276,9 +275,6 @@ header {
 	text-decoration: none;
 }
 
-#themed button.reset, #themed a.button.reset {
-	margin-left: 0;
-}
 
 #themed button:hover, #themed a.button:hover {
 	background-color: #9badcc;
@@ -306,7 +302,6 @@ header {
 }
 
 .container {
-	
 }
 
 .menu,.menu ul {
@@ -620,11 +615,6 @@ header {
 	margin-bottom: 5px;
 	border-radius: 5px;
 	-moz-border-radius: 5px
-}
-
-#projects img {
-	max-height: 80%;
-	mergin-left: 10px;
 }
 
 #title {
