@@ -342,7 +342,7 @@ $app->get('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 $app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 	// Handle thumbnail upload
 	$thumb_path = NULL;
-	if ($_FILES['thumbnail'] != '' )
+	if ($_FILES['thumbnail']['name'] != '' )
 	{
 		// Get extention
 		$ext = end( explode('.', $_FILES['thumbnail']['name']) );//substr(strrchr($_FILES['thumbnail']['name'], '.'), 1);
@@ -496,6 +496,7 @@ $app->get('/project/:pid/media/:id', $authcheck_student, function($pid, $id) use
  *	Edit Media
  */
 $app->get('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {
+	session_start();
 	if ((!$media = MediaController::viewMedia($id)) ||
 		(!$media->havePermissionOrHigher(OWNER)) ||
 		(!$project = ProjectController::viewProject($pid)) ||
