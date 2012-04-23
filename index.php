@@ -63,21 +63,6 @@ function permission_denied()
 	$GLOBALS['app']->render('permission_denied.html');
 }
 
-function string_truncate($string, $desired_length)
-{
-  $parts = preg_split('/([\s\n\r]+)/', $string, null, PREG_SPLIT_DELIM_CAPTURE);
-  $parts_count = count($parts);
-
-  $length = 0;
-  $last_part = 0;
-  for (; $last_part < $parts_count; ++$last_part) 
-  {
-    $length += strlen($parts[$last_part]);
-    if ($length > $desired_length) { break; }
-  }
-
-  return implode(array_slice($parts, 0, $last_part));
-}
 
 /************************************************
  * ROUTING!!									*
@@ -241,10 +226,10 @@ $app->get('/portfolio', $authcheck_student, function() use ($app) {
 		{
 			$proj = ProjectController::viewProject($child_id);	// assume all children are Projects
 			// Trim title if it is too long
-			$t = string_truncate($proj->description, 50);
+			$t = substr($proj->title, 0, 50);
 			if (strlen($t) < strlen($proj->title)) { $t = $t . "..."; }
 			// Trim description if it is too long
-			$desc = string_truncate($proj->description, 500);
+			$desc = substr($proj->description, 0, 590);
 			if (strlen($desc) < strlen($proj->description)) { $desc = $desc . "..."; }
 			$projects[] = array("project_id" => $proj->id(), "title" => $t, "description" => $desc, "type" => $proj->type);
 		}
@@ -396,10 +381,16 @@ $app->get('/project/:id/delete', $authcheck_student, function($id) use ($app) {
 	}
 	else
 	{
+		// Trim title if it is too long
+		$t = substr($proj->title, 0, 50);
+		if (strlen($t) < strlen($proj->title)) { $t = $t . "..."; }
+		// Trim description if it is too long
+		$desc = substr($proj->description, 0, 590);
+		if (strlen($desc) < strlen($proj->description)) { $desc = $desc . "..."; }
 		return $app->render('delete_project.html',
 			array('project_id' => $id,
-				'title' => $proj->title,
-				'description' => $proj->description));
+				'title' => $t,
+				'description' => $desc));
 	}
 });
 
