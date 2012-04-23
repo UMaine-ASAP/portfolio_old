@@ -334,7 +334,6 @@ $app->post('/project/:id/edit', function($id) use ($app) {
 });
 
 
-
 /**
  *	Delete Project
  */
