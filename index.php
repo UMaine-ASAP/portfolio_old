@@ -270,9 +270,9 @@ $app->get('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 	}
 	else
 	{
-
-		foreach ($proj->media as $m)
+		foreach ($proj->media as $media_id)
 		{
+			$m = MediaController::viewMedia($media_id);
 			$media[] = array('media_id' => $m->id(),
 				'mimetype' => $m->mimetype,
 				'title' => $m->title,
