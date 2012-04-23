@@ -414,13 +414,14 @@ $app->post('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $i
 			}
 			else
 			{
-				$media = MediaController::createMedia($_POST['type'],
+				$media = MediaController::createMedia(
+					(isset($_POST['mimetype']) ? $_POST['mimetype'] : NULL),
 					$_POST['title'],
 					(isset($_POST['description']) ? $_POST['description'] : NULL),
-					$_POST['filename'],
-					$_POST['filesize'],
-					$_POST['md5'],
-					$_POST['extension']);
+					(isset($_POST['filename']) ? $_POST['filename'] : NULL),
+					(isset($_POST['filesize']) ? $_POST['filesize'] : NULL),
+					(isset($_POST['md5']) ? $_POST['md5'] : NULL),
+					(isset($_POST['extension']) ? $_POST['extension'] : NULL));
 				ProjectController::addMediaToProject($proj->id(), $media->id());
 				$id = $media->id();
 			}
@@ -428,7 +429,7 @@ $app->post('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $i
 		else	// We are editing an existing piece of Media
 		{
 			if (!MediaController::editMedia($id,
-				(isset($_POST['type']) ? $_POST['type'] : NULL),
+				(isset($_POST['mimetype']) ? $_POST['mimetype'] : NULL),
 				(isset($_POST['title']) ? $_POST['title'] : NULL),
 				(isset($_POST['description']) ? $_POST['description'] : NULL),
 				(isset($_POST['filename']) ? $_POST['filename'] : NULL),

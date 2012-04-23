@@ -18,13 +18,13 @@ class MediaController
 	 *
 	 *	Calling User must exist.
 	 *
-	 *	@param	int			$type				Identifier of the MediaType of this Media object
+	 *	@param	int			$type				Mimetype of this Media object
 	 *	@param 	string 		$title				The title of the Media object (255 character max)
 	 *	@param 	string|null	$description		The description of the Media object (2^16 character max, optional)
-	 *	@param	string		$filename			Filename where the Media is stored on the server, sans extension (2^16 character max)
-	 *	@param	int			$filesize			Size of the file uploaded
-	 *	@param	string		$md5				MD5 hash of the uploaded file (32 characters exactly)
-	 *	@param	string		$ext				Extension of the file (10 character max)
+	 *	@param	string|null	$filename			Filename where the Media is stored on the server, sans extension (2^16 character max)
+	 *	@param	int|null	$filesize			Size of the file uploaded
+	 *	@param	string|null	$md5				MD5 hash of the uploaded file (32 characters exactly)
+	 *	@param	string|null	$ext				Extension of the file (10 character max)
 	 *
 	 *	@return object|bool						The created Media object if successful, false otherwise.
 	 */
@@ -37,6 +37,7 @@ class MediaController
 			return false;
 		}
 
+		$media->mimetype = $type;
 		$media->title = $title;
 		$media->description = $description;
 		$media->filename = $filename;
