@@ -12,7 +12,10 @@
 
 
 	<hr>
-	<div id="themed" class="loginForm">
+	{% if flash['error'] is defined %}
+		<h3>Login failed, please retype your username and password below...</h3>
+	{% endif %}
+	<div id="themed" class="loginForm" style="margin-left:250px;">
 		
 		<form id="form" name="form" method="post" action="{{ flash['web_root'] }}/login">
 		<label>Username</label>
@@ -25,10 +28,6 @@
 		<a class='button' href='{{ flash['web_root'] }}/register'>Register</a>
 
 		<div class="spacer"></div>
-
-		{% if flash['error'] is defined %}
-			<label>Login failed, please retype username and password</label>
-		{% endif %}
 
 		</form>
 
