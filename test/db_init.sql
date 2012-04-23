@@ -357,7 +357,7 @@ DROP TABLE IF EXISTS `REPO_Media`;
 		
 CREATE TABLE `REPO_Media` (
   `media_id` INTEGER NOT NULL AUTO_INCREMENT,
-  `type` INTEGER NOT NULL,
+  `mimetype` VARCHAR(255) NOT NULL,
   `title` VARCHAR(255) NOT NULL,
   `description` TEXT NULL DEFAULT NULL,
   `created` DATETIME NOT NULL,
@@ -368,20 +368,6 @@ CREATE TABLE `REPO_Media` (
   `extension` VARCHAR(10) NOT NULL,
   PRIMARY KEY (`media_id`)
 ) COMMENT='Unit of media contained within a body of work';
-
--- ---
--- 'REPO_Media_types'
--- Specification of types of media in the system (video, text, picture, pdf, etc.)
--- ---
-
-DROP TABLE IF EXISTS `REPO_Media_types`;
-		
-CREATE TABLE `REPO_Media_types` (
-  `type_id` INTEGER NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(255) NOT NULL,
-  `description` TEXT NULL DEFAULT NULL,
-  PRIMARY KEY (`type_id`)
-) COMMENT='Types of media in the system (video, text, etc.)';
 
 -- ---
 -- 'REPO_Media_access_map'
@@ -581,7 +567,6 @@ ALTER TABLE `EVAL_Evaluation_types` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=u
 ALTER TABLE `EVAL_Component_categories` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 ALTER TABLE `EVAL_Statuses` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 ALTER TABLE `EVAL_Component_types` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-ALTER TABLE `REPO_Media_types` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 ALTER TABLE `REPO_Project_types` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 ALTER TABLE `REPO_Assignment_access_map` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 ALTER TABLE `REPO_Project_access_map` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
@@ -647,8 +632,6 @@ ALTER TABLE `REPO_Portfolio_access_map` ADD FOREIGN KEY (access_type) REFERENCES
 ALTER TABLE `REPO_Portfolio_project_map` ADD FOREIGN KEY (port_id) REFERENCES `REPO_Portfolios` (`port_id`);
 
 ALTER TABLE `AUTH_Users` ADD FOREIGN KEY (type_id) REFERENCES `AUTH_User_types` (`type_id`);
-
-ALTER TABLE `REPO_Media` ADD FOREIGN KEY (type) REFERENCES `REPO_Media_types` (`type_id`);
 
 ALTER TABLE `REPO_Media_access_map` ADD FOREIGN KEY (media_id) REFERENCES `REPO_Media` (`media_id`);
 ALTER TABLE `REPO_Media_access_map` ADD FOREIGN KEY (group_id) REFERENCES `AUTH_Groups` (`group_id`);
