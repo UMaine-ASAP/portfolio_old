@@ -380,10 +380,16 @@ $app->get('/project/:id/delete', $authcheck_student, function($id) use ($app) {
 	}
 	else
 	{
+		// Trim title if it is too long
+		$t = substr($proj->title, 0, 50);
+		if (strlen($t) < strlen($proj->title)) { $t = $t . "..."; }
+		// Trim description if it is too long
+		$desc = substr($proj->description, 0, 590);
+		if (strlen($desc) < strlen($proj->description)) { $desc = $desc . "..."; }
 		return $app->render('delete_project.html',
 			array('project_id' => $id,
-				'title' => $proj->title,
-				'description' => $proj->description));
+				'title' => $t,
+				'description' => $desc));
 	}
 });
 
