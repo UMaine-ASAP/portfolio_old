@@ -613,6 +613,7 @@ CREATE TABLE IF NOT EXISTS `REPO_Projects` (
   `proj_id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) CHARACTER SET latin1 NOT NULL,
   `description` text CHARACTER SET latin1,
+  `thumbnail` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
   `type` int(11) NOT NULL,
   PRIMARY KEY (`proj_id`),
   KEY `type` (`type`)

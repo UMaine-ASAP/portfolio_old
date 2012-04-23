@@ -358,6 +358,7 @@ $app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 		{
 			$proj = ProjectController::createProject($_POST['title'],
 				(isset($_POST['description']) ? $_POST['description'] : NULL),
+				NULL,	//TODO: Thumbnail goes here
 				1);
 			if ((!$nmd_port = getNMDPortfolio()) ||
 				(!PortfolioController::addProjectToPortfolio($nmd_port->id(), $proj->id())))
@@ -373,6 +374,7 @@ $app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 		if (!ProjectController::editProject($id, 
 			(isset($_POST['title']) ? $_POST['title'] : NULL),
 			(isset($_POST['description']) ? $_POST['description'] : NULL),
+			NULL,	//TODO: Thumbnail goes here
 			NULL))
 		{
 			$app->flashNow('error', true);

@@ -17,12 +17,13 @@ class ProjectController
 	 *	Create a new Project object with the specified creator_id, title, abstract, description, and privacy.
 	 *		@param int creator_user_id is the ID of the user creating the project
 	 *		@param string title is the title of the project
-	 *		@param string description is the description of the project
+	 *		@param string|null description is the description of the project
+	 *		@param string|null filename of the thumbnail for this Project
 	 *		@param int type is the type of the Project
 	 *
 	 *	@return the created Project object if successful, false otherwise.
 	 */
-	public static function createProject($title, $description, $type)
+	public static function createProject($title, $description, $thumbnail, $type)
 	{
 		// Check for creation privileges (for now, only that a User is logged in)
 		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
@@ -34,6 +35,7 @@ class ProjectController
 
 		$project->title = $title;
 		$project->description = $description;
+		$project->thumbnail = $thumbnail;
 		$project->type = $type;
 		if (!$project->save())
 		{
@@ -54,12 +56,11 @@ class ProjectController
 	/**
 	 *	Edit a specific project, if the current user has permissions.
 	 * 		@param int id is the ID of the project being edited
-	 *		@param string abstract is the abstract of the project. The abstract will not be changed if an empty string is passed.
 	 *		@param string is the description of the project. The description will not be changed if an empty string is passed
 	 *
 	 *	@return true if the project was successfully edited, false otherwise
 	 */
-	public static function editProject($id, $title = NULL, $description = NULL, $type = NULL)
+	public static function editProject($id, $title = NULL, $description = NULL, $thumbnail = NULL, $type = NULL)
 	{
 		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
 			(!$project = self::getProject($id)) ||
@@ -70,6 +71,7 @@ class ProjectController
 
 		if (!is_null($title))		{ $project->title = $title; }
 		if (!is_null($description))	{ $project->description = $description;	}
+		if (!is_null($thumbnail))	{ $project->thumbnail = $thumbnail; }
 		if (!is_null($type))		{ $project->type = $type; }
 
 		return $project->save();
