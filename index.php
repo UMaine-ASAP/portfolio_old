@@ -493,21 +493,29 @@ $app->get('/project/:pid/media/:id', $authcheck_student, function($pid, $id) use
  *	Edit Media
  */
 $app->get('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {
-	if (!$media = MediaController::viewMedia($id))
+	if ((!$media = MediaController::viewMedia($id)) ||
+		(!$media->havePermissionOrHigher(OWNER)) ||
+		(!$project = ProjectController::viewProject($pid)) ||
+		(!$project->havePermissionOrHigher(OWNER)))
 	{
 		return permission_denied();
 	}
 	else
 	{
-		$proj = ProjectController::viewProject($pid);
 		setBreadcrumb( array( 
 				array(	'name'=>"New Media Portfolio",
 						'url'=>'/portfolio'),
-				array(	'name'=>$proj->title,
+				array(	'name'=>$project->title,
 						'url'=>'/project/'.$pid),
 				));
 
-		return $app->render('edit_media.html', array('media' => $id));	//TODO: Pass content
+		return $app->render('edit_media.html', 
+			array('media_id' => $id,
+				'project_id' => $pid,
+				'title' => $media->title,
+				'description' => $media->description,
+				'mimetype' => $media->mimetype,
+				'filename' => $media->filename));
 	}
 });
 
