@@ -14,6 +14,7 @@ require_once 'Views/TwigView.php';
 
 // Controllers
 require_once 'controllers/authentication.php';
+require_once 'controllers/assignment.php';
 require_once 'controllers/portfolio.php';
 require_once 'controllers/project.php';
 require_once 'controllers/media.php';
@@ -45,6 +46,11 @@ function getNMDPortfolio()
 	}
 	
 	return $nmd_port;
+}
+
+function portfolioIsSubmitted()
+{
+
 }
 
 function redirect($destination)
@@ -465,8 +471,27 @@ $app->get('/portfolio/review', $authcheck_student, function() use ($app) {
 /**
  *	Portfolio Submission
  */
-$app->get('/portfolio/submit', $authcheck_student, function() use ($app) {					
-	return $app->render('portfolio_submitted.html');		
+$app->get('/portfolio/submit', function() use ($app) {					
+	if (AuthenticationController::check_login())
+	{
+		return $app->render('submit_portfolio.html');		
+	}
+	else
+	{
+		return redirect('/login');
+	}
+});
+
+$app->post('/portfolio/submit', function() use ($app) {
+	if (AuthenticationController::check_login())
+	{
+
+		return $app->render('portfolio_submitted.html');
+	}
+	else
+	{
+		return redirect('/login');
+	}
 });
 
 
