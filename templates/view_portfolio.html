@@ -27,9 +27,10 @@
 	<p>
 	{% for project in projects %}
 		<div class="project">
+
 			<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}"><div class="type">
 					{% if project['thumbnail'] != NULL %}
-					<img src="{{ flash['web_root'] }}/{{ project['thumbnail'] }}" border="0" alt="Thumb">
+					<img src="{{ flash['web_root'] }}/{{ project['thumbnail'] }}" border="0" width='100' height='100' alt="Thumb">
 					{% endif %}
 					</div></a>
 			<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}"><div class="title">{{ project['title'] }}</div></a>
