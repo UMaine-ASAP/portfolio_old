@@ -37,7 +37,7 @@
 		<div class='spacer'></div>
 
 		<label>Thumbnail (80 X 80)</label>
-		<input name="projectThumbnail" type="file" /><label></label>
+		<input name="thumbnail" type="file" /><label></label>
 
 		<div class='spacer'></div>
 
@@ -55,8 +55,8 @@
 				<div class="title">{{ media.title }}</div>
 				<div class="desc">{{ media.description }}</div>
 				<div class="actions">
-					<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}/media/{{ media.id }}/edit"><img src="{{ flash['web_root'] }}/templates/images/icon_Edit.png" border="0" alt="Edit"></a></br>
-					<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}/media/{{ media.id }}/delete"><img src="{{ flash['web_root'] }}/templates/images/icon_Delete.png" border="0" alt="Delete"></a>
+					<a href="{{ flash['web_root'] }}/project/{{ project_id }}/media/{{ media.media_id }}/edit"><img src="{{ flash['web_root'] }}/templates/images/icon_Edit.png" border="0" alt="Edit"></a></br>
+					<a href="{{ flash['web_root'] }}/project/{{ project_id }}/media/{{ media.media_id }}/delete"><img src="{{ flash['web_root'] }}/templates/images/icon_Delete.png" border="0" alt="Delete"></a>
 				</div>
 			</div>
 
