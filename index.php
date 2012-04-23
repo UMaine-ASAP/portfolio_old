@@ -1,4 +1,10 @@
 <?php
+session_start();
+if( isset( $_SESSION['uploadForm']) ) {
+	$GLOBALS['specialUpload'] = $_SESSION;
+}
+session_destroy();
+
 set_include_path(get_include_path() . PATH_SEPARATOR . "./libraries");
 
 error_reporting(E_ALL);
@@ -495,38 +501,8 @@ $app->get('/project/:pid/media/:id', $authcheck_student, function($pid, $id) use
 /**
  *	Edit Media
  */
-$app->get('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {
 
-	if ((!$media = MediaController::viewMedia($id)) ||
-		(!$media->havePermissionOrHigher(OWNER)) ||
-		(!$project = ProjectController::viewProject($pid)) ||
-		(!$project->havePermissionOrHigher(OWNER)))
-	{
-		return permission_denied();
-	}
-	else
-	{
-		setBreadcrumb( array( 
-				array(	'name'=>"New Media Portfolio",
-						'url'=>'/portfolio'),
-				array(	'name'=>$project->title,
-						'url'=>'/project/'.$pid),
-				));
-
-		return $app->render('edit_media.html', 
-			array('SID' => session_id(),
-				'media_id' => $id,
-				'project_id' => $pid,
-				'title' => $media->title,
-				'description' => $media->description,
-				'mimetype' => $media->mimetype,
-				'filename' => $media->filename));
-	}
-});
-
-$app->post('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {
-	session_id( $_POST['SID'] );
-
+function postMediaData() {}
 	if ((!$proj = ProjectController::viewProject($pid)) ||
 		(!$proj->havePermissionOrHigher(OWNER)))
 	{
@@ -571,7 +547,45 @@ $app->post('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $i
 		}
 		return redirect('/project/'.$pid);
 	}
+
+$app->post('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {	
+	postMediaData();
 });
+
+
+$app->get('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {
+	if( isset( $GLOBALS['specialUpload'] ) ) {
+		$_POST = $GLOBALS['specialUpload']['uploadForm'];
+		postMediaData();
+	}
+
+	if ((!$media = MediaController::viewMedia($id)) ||
+		(!$media->havePermissionOrHigher(OWNER)) ||
+		(!$project = ProjectController::viewProject($pid)) ||
+		(!$project->havePermissionOrHigher(OWNER)))
+	{
+		return permission_denied();
+	}
+	else
+	{
+		setBreadcrumb( array( 
+				array(	'name'=>"New Media Portfolio",
+						'url'=>'/portfolio'),
+				array(	'name'=>$project->title,
+						'url'=>'/project/'.$pid),
+				));
+
+		return $app->render('edit_media.html', 
+			array('SID' => session_id(),
+				'media_id' => $id,
+				'project_id' => $pid,
+				'title' => $media->title,
+				'description' => $media->description,
+				'mimetype' => $media->mimetype,
+				'filename' => $media->filename));
+	}
+});
+
 
 
 /**
