@@ -361,7 +361,6 @@ $app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 	{	// Sent from add_project, we need to create a Project
 		if (!isset($_POST['title']))
 		{	// Reject, form invalid
-			
 			$app->flash('error', true);
 			return redirect('/project/add');	//TODO: Save partial title/desc on return to form
 		}
