@@ -342,7 +342,7 @@ $app->get('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 $app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 	// Handle thumbnail upload
 	$thumb_path = NULL;
-	if ($_FILES['thumbnail'] != '' )
+	if ($_FILES['thumbnail']['name'] != '' )
 	{
 		// Get extention
 		$ext = end( explode('.', $_FILES['thumbnail']['name']) );//substr(strrchr($_FILES['thumbnail']['name'], '.'), 1);
