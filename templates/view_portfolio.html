@@ -27,7 +27,7 @@
 	<p>
 	{% for project in projects %}
 		<div class="project">
-			<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}"><div class="type"><img src="{{ flash['web_root'] }}/{{ project['thumbnail'] }}" border="0" alt="Thumb"></div></a>
+			<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}"><div class="type"><img src="{{ flash['web_root'] }}/{{ project['thumbnail'] }}" width='100px' height='100px' border="0" alt="Thumb"></div></a>
 			<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}"><div class="title">{{ project['title'] }}</div></a>
 			</br>
 			<div class="desc">{{ project['description'] }}</div>
