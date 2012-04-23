@@ -685,6 +685,6 @@ header {
 	white-space: normal;
 }
 
-.media {
+.media, .media img {
 	max-width: 100%;
 }
