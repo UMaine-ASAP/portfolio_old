@@ -270,7 +270,7 @@ $app->get('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 	}
 	else
 	{
-		$media = array();
+
 		foreach ($proj->media as $m)
 		{
 			$media[] = array('media_id' => $m->id(),
