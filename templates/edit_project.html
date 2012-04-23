@@ -36,7 +36,7 @@
 
 		<div class='spacer'></div>
 
-		<label>Thumbnail (100x100)</label>
+		<label>Thumbnail</label>
 		<input name="thumbnail" type="file"/>
 
 		<div class='spacer'></div>
@@ -58,7 +58,7 @@
 			<div class='media' style='position:relative'>
 				<div class="title">{{ media.title }}</div>
 				<div class="desc">{{ media.description }}</div>
-				<div class="actions">
+				<div class="actions" style="margin-top:5px">
 					<a href="{{ flash['web_root'] }}/project/{{ project_id }}/media/{{ media.media_id }}/edit"><img src="{{ flash['web_root'] }}/templates/images/icon_Edit.png" border="0" alt="Edit"></a></br>
 					<a href="{{ flash['web_root'] }}/project/{{ project_id }}/media/{{ media.media_id }}/delete"><img src="{{ flash['web_root'] }}/templates/images/icon_Delete.png" border="0" alt="Delete"></a>
 				</div>

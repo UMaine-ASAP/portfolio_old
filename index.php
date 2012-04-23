@@ -235,7 +235,7 @@ $app->get('/portfolio', $authcheck_student, function() use ($app) {
 			$t = substr($proj->title, 0, 50);
 			if (strlen($t) < strlen($proj->title)) { $t = $t . "..."; }
 			// Trim description if it is too long
-			$desc = substr($proj->description, 0, 590);
+			$desc = substr($proj->description, 0, 410);
 			if (strlen($desc) < strlen($proj->description)) { $desc = $desc . "..."; }
 			$projects[] = array("project_id" => $proj->id(), "title" => $t, "description" => $desc, "thumbnail" => $proj->thumbnail, "type" => $proj->type);
 		}
@@ -429,7 +429,7 @@ $app->get('/project/:id/delete', $authcheck_student, function($id) use ($app) {
 		$t = substr($proj->title, 0, 50);
 		if (strlen($t) < strlen($proj->title)) { $t = $t . "..."; }
 		// Trim description if it is too long
-		$desc = substr($proj->description, 0, 590);
+		$desc = substr($proj->description, 0, 410);
 		if (strlen($desc) < strlen($proj->description)) { $desc = $desc . "..."; }
 		return $app->render('delete_project.html',
 			array('project_id' => $id,
@@ -573,7 +573,7 @@ $app->get('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id
 				array(	'name'=>"New Media Portfolio",
 						'url'=>'/portfolio'),
 				array(	'name'=>$project->title,
-						'url'=>'/project/'.$pid),
+						'url'=>'/project/'.$pid.'/edit'),
 				));
 
 		return $app->render('edit_media.html', 
@@ -591,16 +591,36 @@ $app->get('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id
 /**
  *	Delete Media
  */
-$app->post('/project/:pid/media/:id/delete', $authcheck_student, function($pid, $id) use ($app) {
-	if (!$media = MediaController::deleteMedia($id))
+$app->get('/project/:pid/media/:id/delete', $authcheck_student, function($pid, $id) use ($app) {
+	if ((!$media = MediaController::viewMedia($id)) ||
+		(!$media->havePermissionOrHigher(OWNER)) ||
+		(!$project = ProjectController::viewProject($pid)) ||
+		(!$project->havePermissionOrHigher(OWNER)))
 	{
 		return permission_denied();
 	}
 	else
 	{
-		return redirect('/project/'.$pid);
+		$app->render('delete_media.html', 
+			array("media_id" => $id,
+				"project_id" => $pid,
+				"title" => $media->title,
+				"description" => $media->description,
+				"mimetype" => $media->mimetype,
+				"filename" => $media->filename));
 	}
-});	//TODO
+});
+
+$app->post('/project/:pid/media/:id/delete', $authcheck_student, function($pid, $id) use ($app) {
+	if (!MediaController::deleteMedia($id))
+	{
+		return permission_denied();
+	}
+	else
+	{
+		return redirect('/project/'.$pid.'/edit');
+	}
+});
 
 
 /**
@@ -615,11 +635,12 @@ $app->get('/portfolio/review', $authcheck_student, function() use ($app) {
  *	Portfolio Submission
  */
 $app->get('/portfolio/submit', $authcheck_student, function() use ($app) {					
-		return $app->render('submit_portfolio.html');		
+	return $app->render('submit_portfolio.html');		
 });
 
 $app->post('/portfolio/submit', $authcheck_student, function() use ($app) {
-		return $app->render('portfolio_submitted.html');
+	return redirect('/portfolio');
+	//return $app->render('portfolio_submitted.html');
 });
 
 
