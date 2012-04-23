@@ -16,23 +16,29 @@
 	<div class='media_items'>
 	{% for media in media_items %}
 		<div class='media'>
-			{% if media.mimetype == 'png' %}
+			{% if media.mimetype in ['image/png', 'image/jpeg', 'image/gif'] %}
 			<!-- Image -->
-
 			<div class="title">{{ media.title }}</div>
-			<div> Image </div>
+			<img src="{{ flash['web_root'] }}/media/{{ media.filename }}"/>
 			<div class="desc">{{ media.description }}</div>
 
-			{% elseif media.mimetype == 'audio/mp3' %}
+			{% elseif media.mimetype in ['audio/mp32'] %}
 			<!-- Audio -->
 			<div class="title">{{ media.title }}</div>
 			<div> Audio </div>
 			<div class="desc">{{ media.description }}</div>
-			{% elseif media.mimetype == 'test' %}
+			{% elseif media.mimetype in ['video/mp4', 'video/ogv', 'video/webm'] %}
 			<!-- Video -->
-			<div class="title">{{ media.title }}</div>
-			<div> Video </div>
-			<div class="desc">{{ media.description }}</div>
+			<video controls="controls"> 
+				<div class="title">{{ media.title }}</div>
+				<source src="{{ flash['web_root'] }}/media/{{ media.filename }}" type="{{ media.mimetype }}" /> 				
+				<!--
+				<source src="" type="video/mp4" /> 
+				<source src="" type="video/ogv" /> 
+				<source src="" type="video/webm" />
+  				-->
+				Your browser does not support the video tag </video>
+				<div class="desc">{{ media.description }}</div>
 
 			{% elseif media.mimetype == '' %}
 			<!-- Text -->
@@ -42,7 +48,7 @@
 			{% else %}
 			<!-- A generic file -->
 			<div class="title">{{ media.title }}</div>
-			<div> A file </div>
+			<div>File: <a href="{{ flash['web_root'] }}/media/{{ media.filename }}">{{ media.title }}</a></div>
 			<div class="desc">{{ media.description }}</div>
 
 			{% endif %}
