@@ -316,7 +316,7 @@ $app->get('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 		setBreadcrumb( array( 
 				array(	'name'=>"New Media Portfolio",
 						'url'=>'/portfolio'),
-				array(	'name'=>$proj->title,
+				array(	'name'=>"Project: " . $proj->title,
 						'url'=>'/project/'.$id),
 				));
 
@@ -421,7 +421,7 @@ $app->get('/project/:id/delete', $authcheck_student, function($id) use ($app) {
 		setBreadcrumb( array( 
 				array(	'name'=>"New Media Portfolio",
 						'url'=>'/portfolio'),
-				array(	'name'=>$proj->title,
+				array(	'name'=>"Project: " . $proj->title,
 						'url'=>'/project/'.$id),
 				));
 
@@ -468,7 +468,7 @@ $app->get('/project/:id/media/add', $authcheck_student, function($id) use ($app)
 		setBreadcrumb( array( 
 				array(	'name'=>"New Media Portfolio",
 						'url'=>'/portfolio'),
-				array(	'name'=>$proj->title,
+				array(	'name'=>"Project: " . $proj->title,
 						'url'=>'/project/'.$id),
 				));
 
@@ -572,7 +572,7 @@ $app->get('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id
 		setBreadcrumb( array( 
 				array(	'name'=>"New Media Portfolio",
 						'url'=>'/portfolio'),
-				array(	'name'=>$project->title,
+				array(	'name'=>"Project: " . $project->title,
 						'url'=>'/project/'.$pid.'/edit'),
 				));
 
