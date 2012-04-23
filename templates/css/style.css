@@ -154,7 +154,7 @@ pre code {
 }
 
 a {
-	color: #70a23e
+	color: #5C6F91;
 }
 
 header {
@@ -181,6 +181,13 @@ header {
 	width: 400px;
 	padding: 14px
 }
+
+.editForm {
+	margin: 0 auto;
+	width: 800px;
+	padding: 14px
+}
+
 
 #themed h1 {
 	font-size: 14px;
@@ -227,6 +234,10 @@ header {
 	font-weight: normal;
 	font-style: normal;
 	text-decoration: none;
+}
+
+#themed input.medium, textarea.medium {
+	width: 400px;
 }
 
 #themed button.first, #themed a.button.first {

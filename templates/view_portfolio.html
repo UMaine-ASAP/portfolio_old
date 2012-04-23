@@ -11,6 +11,12 @@
 	<header>Your Portfolio</header>
 	
 	<hr>
+	
+	<div id="themed"style ="margin-left:-10px;">
+		<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/portfolio/submit">
+		<button type="submit">Submit Portfolio</button>
+		</FORM>
+	</div>
 
 	<div id="themed"style ="margin-left:650px;">
 		<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/project/add">
@@ -23,15 +29,14 @@
 	<p>
 	{% for project in projects %}
 		<div id="projects">
-			<div id="type"></div>
-			<div id="title">{{ project['title'] }}</div>
+			<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}"><div id="type"></div></a>
+			<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}"><div id="title">{{ project['title'] }}</div></a>
 			</br>
 			<div id="desc">{{ project['description'] }}</div>
 		
 			<div class"actions" style="float:right;margin-top:-95px;margin-left:850px;">
-				<a href="{{ flash['web_root'] }}/project/{{ project['proj_id'] }}"><img src="{{ flash['web_root'] }}/templates/images/icon_View.png" border="0" alt="View"></a></br>
-				<a href="{{ flash['web_root'] }}/project/{{ project['proj_id'] }}/edit"><img src="{{ flash['web_root'] }}/templates/images/icon_Edit.png" border="0" alt="Edit"></a></br>
-				<a href="{{ flash['web_root'] }}/project/{{ project['proj_id'] }}/delete"><img src="{{ flash['web_root'] }}/templates/images/icon_Delete.png" border="0" alt="Delete"></a>
+				<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}/edit"><img src="{{ flash['web_root'] }}/images/icon_Edit.png" border="0" alt="Edit"></a></br>
+				<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}/delete"><img src="{{ flash['web_root'] }}/images/icon_Delete.png" border="0" alt="Delete"></a>
 			</div>
 		</div>
 	{% endfor %}

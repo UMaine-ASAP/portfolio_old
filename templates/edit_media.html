@@ -1,0 +1,50 @@
+{% extends 'layout.html' %}
+
+{% block page_title %}
+	{% if media_id == -1 %}
+	New Media Portfolio - Add Media
+	{% else %}
+	New Media Portfolio - Edit Media
+	{% endif %}	
+{% endblock %}
+
+{% block content %}
+
+	<ul class="menu sgray fade" id="menu">
+		<li><a href="{{ flash['web_root'] }}">New Media Portfolio 2012</a></li>
+		<li class="floatr"><a href="{{ flash['web_root'] }}/logout">Log Out</a></li>
+	</ul>
+
+	<header>
+		{% if media_id == -1 %}
+		Add Media
+		{% else %}
+		Edit Media
+		{% endif %}
+	</header>
+	
+	<hr>
+	
+	<div id="themed" class="loginForm">
+	
+		<form id="form" name="form" method="post" action="{{ flash['web_root'] }}/project/{{ project_id }}/media/{{ media_id }}/edit">
+		
+		<label>Title</label>
+		<input type="text" name="title" id="title" value="{{ title }}" />
+
+		<label>Description</label>
+		<textarea name="description" id="description" value="{{ description }}" rows="5" required></textarea>
+
+		<!-- FILENAME, ETC HERE -->
+
+		<button type="submit">Submit</button>
+			
+		<div class="spacer"></div>
+
+		</form>
+
+	</div>
+
+
+{% endblock %}
+
