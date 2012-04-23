@@ -6,12 +6,9 @@
 
 	<header>{{ title }}</header>
 	
-	<div id="themed" style="margin-left:650px;">
-		<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/project/{{ project_id }}/edit">
-		<button type="submit">Edit Project</button>
-		</FORM>
+	<div id='themed' style='position: absolute; right: 0; margin-top: -50px;' >
+		<a class='button' href="{{ flash['web_root'] }}/project/{{ project_id }}/edit" type="submit">Edit Project</a>
 	</div>
-	
 	<hr>
 	
 	<p>{{ description }}</p>

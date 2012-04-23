@@ -306,7 +306,7 @@ header {
 }
 
 .container {
-	
+	position: relative;
 }
 
 .menu,.menu ul {
