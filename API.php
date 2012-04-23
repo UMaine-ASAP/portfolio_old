@@ -272,14 +272,17 @@ $app->get('/project/:id', function($id) use ($app) {
 $app->get('/project/:id/edit', function($id) use ($app) {					
 	if (AuthenticationController::check_login())
 	{
-		if ((!$proj = ProjectController::viewProject($id) ||
-			(!$proj->havePermissionOrHigher(OWNER))))
+		if ((!$proj = ProjectController::viewProject($id)) ||
+			(!$proj->havePermissionOrHigher(OWNER)))
 		{	// User does not have permission to edit this Project
 			return permission_denied();
 		}
 		else
 		{
-			return $app->render('edit_project.html');	//TODO: Add Project details
+			return $app->render('edit_project.html',
+				array('project_id' => $id,
+					'title' => $proj->title,
+					'description' => $proj->description));
 		}
 	}
 	else
