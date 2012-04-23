@@ -342,15 +342,15 @@ $app->get('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 $app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 	// Handle thumbnail upload
 	$thumb_path = NULL;
-	if (isset($_POST['thumbnail']))
+	if ($_FILES['thumbnail'] != '' )
 	{
 		// Get extention
-		$ext = substr(strrchr($_FILES['thumbnail']['name'], '.'), 1);
+		$ext = end( explode('.', $_FILES['thumbnail']['name']) );//substr(strrchr($_FILES['thumbnail']['name'], '.'), 1);
 		$thumb_path = __DIR__ . $GLOBALS['thumbnail_path'] . $id . "." . $ext;
 		$size = getimagesize($_FILES['thumbnail']['tmp_name']);
 		$max_width = 100;
 		$max_height = 100;
-		if (($size[0] > $max_width || $size[1] > $max_height) ||
+		if (//($size[0] > $max_width || $size[1] > $max_height) ||
 			(!($ext == "jpg") && !($ext == "jpeg") && !($ext == "png") && !($ext == "gif")) ||
 			(!unlink($thumb_path)) ||
 			(!move_uploaded_file($_FILES['thumbnail']['tmp_name'], $thumb_path)))
