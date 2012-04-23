@@ -342,7 +342,7 @@ $app->get('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 $app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 	// Handle thumbnail upload
 	$thumb_path = NULL;
-	if (isset($_POST['thumbnail']))
+	if (is_null($_FILES['thumbnail']))
 	{
 		// Get extention
 		$ext = substr(strrchr($_FILES['thumbnail']['name'], '.'), 1);
@@ -426,7 +426,8 @@ $app->get('/project/:id/delete', $authcheck_student, function($id) use ($app) {
 		return $app->render('delete_project.html',
 			array('project_id' => $id,
 				'title' => $t,
-				'description' => $desc));
+				'description' => $desc,
+				'thumbnail' => $proj->thumbnail));
 	}
 });
 
