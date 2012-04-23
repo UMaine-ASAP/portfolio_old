@@ -270,10 +270,12 @@ $app->get('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 	}
 	else
 	{
+		$media = array( array('title'=>'My audio escapade', 'description'=>"lorem ipsum yada yada"), array('title'=>'My audio escapade', 'description'=>"lorem ipsum yada yada"));
 		return $app->render('edit_project.html',
 			array('project_id' => $id,
 				'title' => $proj->title,
-				'description' => $proj->description));
+				'description' => $proj->description,
+				'media_items' => $media));
 	}
 });
 

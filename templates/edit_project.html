@@ -45,8 +45,14 @@
 		<div class='spacer'></div>
 		<hr>
 
-
-
+		<div class='media_items'>
+		{% for media in media_items %}
+			<div class='media'>
+				<div id="title">{{ media.title }}</div>
+				<div id="desc">{{ media.description }}</div>
+			</div>
+		{% endfor %}
+	</div>
 
 		<div class='spacer'></div>
 
