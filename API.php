@@ -208,7 +208,7 @@ $app->get('/portfolio', function() use ($app) {
 			foreach ($nmd_port->children as $child_id=>$arr)
 			{
 				$proj = ProjectController::viewProject($child_id);	// assume all children are Projects
-				$projects[] = array("proj_id" => $proj->id(), "title" => $proj->title, "description" => $proj->description, "type" => $proj->type);
+				$projects[] = array("project_id" => $proj->id(), "title" => $proj->title, "description" => $proj->description, "type" => $proj->type);
 			}
 		}
 		
@@ -348,7 +348,7 @@ $app->get('/project/:id/delete', function($id) use ($app) {
 		else
 		{
 			return $app->render('delete_project.html',
-				array('proj_id' => $id,
+				array('project_id' => $id,
 					'title' => $proj->title,
 					'description' => $proj->description));
 		}
@@ -386,8 +386,22 @@ $app->post('/project/:id/delete', function($id) use ($app) {
 $app->get('/project/:id/media/add', function($id) use ($app) {
 	//TODO: Handle error messages from failed adds
 	if (AuthenticationController::check_login())
-	{	// Check if we own the project?
-		return $app->render('edit_media.html', array('media' => -1));	//TODO: Deal with this better
+	{	
+		if ((!$proj = ProjectController::viewProject($id)) ||
+			(!$proj->havePermissionOrHigher(OWNER)))
+		{
+			return permission_denied();
+		}
+		else
+		{
+			return $app->render('edit_media.html', 
+				array('project_id' => $id,
+					'media_id' => -1,
+					'title' => "",
+					'description' => "",
+					'filename' => "",
+					'mimetype' => ""));
+		}
 	}
 	else
 	{
