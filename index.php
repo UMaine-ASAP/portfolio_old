@@ -270,10 +270,25 @@ $app->get('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 	}
 	else
 	{
+		$media = array();
+		foreach ($proj->media as $m)
+		{
+			$media[] = array('media_id' => $m->id(),
+				'mimetype' => $m->mimetype,
+				'title' => $m->title,
+				'description' => $m->description,
+				'created' => $m->created,
+				'edited' => $m->edited,
+				'filename' => $m->filename,
+				'filesize' => $m->filesize,
+				'md5' => $m->md5,
+				'extension' => $m->extension);
+		}
 		return $app->render('edit_project.html',
 			array('project_id' => $id,
 				'title' => $proj->title,
-				'description' => $proj->description));
+				'description' => $proj->description,
+				'media' => $media));
 	}
 });
 
@@ -440,7 +455,7 @@ $app->post('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $i
 				return permission_denied();
 			}
 		}
-		return redirect('project/'.$pid);
+		return redirect('/project/'.$pid);
 	}
 });
 
