@@ -371,7 +371,7 @@ $app->get('/project/:id/media/add', $authcheck_student, function($id) use ($app)
 /**
  *	View Media
  */
-$app->get('project/:pid/media/:id', $authcheck_student, function($pid, $id) use ($app) {
+$app->get('/project/:pid/media/:id', $authcheck_student, function($pid, $id) use ($app) {
 	if (!$media = MediaController::viewMedia($id))
 	{
 		return permission_denied();
@@ -386,7 +386,7 @@ $app->get('project/:pid/media/:id', $authcheck_student, function($pid, $id) use 
 /**
  *	Edit Media
  */
-$app->get('project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {
+$app->get('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {
 	if (!$media = MediaController::viewMedia($id))
 	{
 		return permission_denied();
@@ -397,7 +397,7 @@ $app->get('project/:pid/media/:id/edit', $authcheck_student, function($pid, $id)
 	}
 });
 
-$app->post('project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {
+$app->post('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {
 	if ((!$proj = ProjectController::viewProject($pid)) ||
 		(!$proj->havePermissionOrHigher(OWNER)))
 	{
@@ -407,11 +407,10 @@ $app->post('project/:pid/media/:id/edit', $authcheck_student, function($pid, $id
 	{
 		if ($id == -1)
 		{	// Sent from add_media, we need to create a New Media (hehehe)
-			if (!isset($_POST['title']) || !isset($_POST['filename']) || !isset($_POST['filesize']) ||
-				!isset($_POST['md5']) || !isset($_POST['extension']) || !isset($_POST['type']))
+			if (!isset($_POST['title']))
 			{	// Reject, form invalid
-				$app->flashNow('error', true);
-				return redirect('project/:id/media/add');	//TODO: Save partial fields on return to form
+				$app->flash('error', true);
+				return redirect('/project/'.$pid.'/media/add');	//TODO: Save partial fields on return to form
 			}
 			else
 			{

@@ -28,6 +28,11 @@
 	<div id="themed" class="editForm">
 	
 		<form id="form" name="form" method="post" action="{{ flash['web_root'] }}/project/{{ project_id }}/media/{{ media_id }}/edit">
+
+		{% if flash['error'] is defined %}
+			<h3>Error with entered data ...</h3>
+		{% endif %}
+
 		
 		<label>Title</label>
 		<input class='medium' type="text" name="title" id="title" value="{{ title }}" required/>
@@ -35,7 +40,7 @@
 		<div class='spacer'></div>
 
 		<label>Text</label>
-		<textarea class='medium' name="description" id="description" value="{{ description }}" rows="5"></textarea>
+		<textarea class='medium' name="description" id="description" rows="5">{{ description }}</textarea>
 
 		<label>File (Optional)</label>
 		<input />
