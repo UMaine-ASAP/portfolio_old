@@ -665,7 +665,7 @@ INSERT INTO `REPO_Departments` (`dept_id`, `college_id`, `name`, `description`, 
 DROP TABLE IF EXISTS `REPO_Media`;
 CREATE TABLE IF NOT EXISTS `REPO_Media` (
   `media_id` int(11) NOT NULL AUTO_INCREMENT,
-  `type` int(11) NOT NULL,
+  `mimetype` varchar(255) NOT NULL,
   `title` varchar(255) CHARACTER SET latin1 NOT NULL,
   `description` text CHARACTER SET latin1,
   `created` datetime NOT NULL,
@@ -674,24 +674,23 @@ CREATE TABLE IF NOT EXISTS `REPO_Media` (
   `filesize` int(11) NOT NULL,
   `md5` char(32) CHARACTER SET latin1 NOT NULL,
   `extension` varchar(10) CHARACTER SET latin1 NOT NULL,
-  PRIMARY KEY (`media_id`),
-  KEY `type` (`type`)
+  PRIMARY KEY (`media_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Unit of media contained within a body of work' AUTO_INCREMENT=10 ;
 
 --
 -- Dumping data for table `REPO_Media`
 --
 
-INSERT INTO `REPO_Media` (`media_id`, `type`, `title`, `description`, `created`, `edited`, `filename`, `filesize`, `md5`, `extension`) VALUES
-(1, 1, 'NMD302 Touch Wall Tangible', 'Tangible describing the development and implementation of a large-scale multi-touch wall display', '2012-02-03 00:00:00', NULL, '/path/to/file', 23894, '79054025255fb1a26e4bc422aef54eb4', 'txt'),
-(2, 2, 'NMD302 Touch Wall Illustration', 'Illustration of conceptualized touch wall', '2012-02-03 00:00:00', NULL, '/path/to/file', 32652, '79054025255fb1a26e4bc422aef54eb4', 'png'),
-(3, 1, 'NMD302 Scratch Sensor Tangible', 'Tangible describing the research and development of sensors to detech scrathing as input to applications', '2012-02-03 00:00:00', '2012-02-05 00:00:00', '/short/path/to/crazy/intense/file', 3243, '79054025255fb1a26e4bc422aef54eb4', 'txt'),
-(4, 2, 'MAT258 Homework 5', 'Submission', '2012-01-01 00:00:00', NULL, '/math/file', 32479, '79054025255fb1a26e4bc422aef54eb4', 'png'),
-(5, 2, 'MAT258 Homework 5', 'Submission', '2012-02-01 00:00:00', NULL, '/math/file2', 73864, '79054025255fb1a26e4bc422aef54eb4', 'svg'),
-(6, 3, 'Crazy Video of Research', 'CUGR 2012 Submission', '2012-03-02 00:00:00', NULL, '/cugr/sub1', 23472, '79054025255fb1a26e4bc422aef54eb4', 'mpeg'),
-(7, 2, 'Ballmer tongue', NULL, '2012-04-22 21:53:55', NULL, 'test/pics/ballmer1', 35713, '43dd31724c7d816b733f5d1f771284b2', 'jpg'),
-(8, 2, 'Ballmer fingers', NULL, '2012-04-22 16:49:38', NULL, 'test/pics/ballmer2', 53079, 'a0561b20ea970246e4feefb0f549bc17', 'jpg'),
-(9, 2, 'Ballmer thumb', NULL, '2012-04-25 17:39:43', NULL, 'test/pics/ballmer3', 76653, 'a4cf1c256ebc82ef08f499020c1253a2', 'jpg');
+INSERT INTO `REPO_Media` (`media_id`, `mimetype`, `title`, `description`, `created`, `edited`, `filename`, `filesize`, `md5`, `extension`) VALUES
+(1, "text/txt", 'NMD302 Touch Wall Tangible', 'Tangible describing the development and implementation of a large-scale multi-touch wall display', '2012-02-03 00:00:00', NULL, '/path/to/file', 23894, '79054025255fb1a26e4bc422aef54eb4', 'txt'),
+(2, "image/png", 'NMD302 Touch Wall Illustration', 'Illustration of conceptualized touch wall', '2012-02-03 00:00:00', NULL, '/path/to/file', 32652, '79054025255fb1a26e4bc422aef54eb4', 'png'),
+(3, "text/txt", 'NMD302 Scratch Sensor Tangible', 'Tangible describing the research and development of sensors to detech scrathing as input to applications', '2012-02-03 00:00:00', '2012-02-05 00:00:00', '/short/path/to/crazy/intense/file', 3243, '79054025255fb1a26e4bc422aef54eb4', 'txt'),
+(4, "image/png", 'MAT258 Homework 5', 'Submission', '2012-01-01 00:00:00', NULL, '/math/file', 32479, '79054025255fb1a26e4bc422aef54eb4', 'png'),
+(5, "image/svg", 'MAT258 Homework 5', 'Submission', '2012-02-01 00:00:00', NULL, '/math/file2', 73864, '79054025255fb1a26e4bc422aef54eb4', 'svg'),
+(6, "video/mpeg", 'Crazy Video of Research', 'CUGR 2012 Submission', '2012-03-02 00:00:00', NULL, '/cugr/sub1', 23472, '79054025255fb1a26e4bc422aef54eb4', 'mpeg'),
+(7, "image/jpg", 'Ballmer tongue', NULL, '2012-04-22 21:53:55', NULL, 'test/pics/ballmer1', 35713, '43dd31724c7d816b733f5d1f771284b2', 'jpg'),
+(8, "image/jpg", 'Ballmer fingers', NULL, '2012-04-22 16:49:38', NULL, 'test/pics/ballmer2', 53079, 'a0561b20ea970246e4feefb0f549bc17', 'jpg'),
+(9, "image/jpg", 'Ballmer thumb', NULL, '2012-04-25 17:39:43', NULL, 'test/pics/ballmer3', 76653, 'a4cf1c256ebc82ef08f499020c1253a2', 'jpg');
 
 -- --------------------------------------------------------
 
@@ -722,29 +721,6 @@ INSERT INTO `REPO_Media_access_map` (`id`, `media_id`, `group_id`, `access_type`
 (4, 7, 12, 1),
 (5, 8, 12, 1),
 (6, 9, 12, 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `REPO_Media_types`
---
-
-DROP TABLE IF EXISTS `REPO_Media_types`;
-CREATE TABLE IF NOT EXISTS `REPO_Media_types` (
-  `type_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `description` text CHARACTER SET latin1,
-  PRIMARY KEY (`type_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Types of media in the system (video, text, etc.)' AUTO_INCREMENT=4 ;
-
---
--- Dumping data for table `REPO_Media_types`
---
-
-INSERT INTO `REPO_Media_types` (`type_id`, `name`, `description`) VALUES
-(1, 'text', 'Plain text, typically the body of an article'),
-(2, 'picture', 'Picture file'),
-(3, 'video', 'Video file');
 
 -- --------------------------------------------------------
 
@@ -1110,12 +1086,6 @@ ALTER TABLE `REPO_Colleges`
 ALTER TABLE `REPO_Departments`
   ADD CONSTRAINT `repo_departments_ibfk_1` FOREIGN KEY (`college_id`) REFERENCES `REPO_Colleges` (`college_id`),
   ADD CONSTRAINT `repo_departments_ibfk_2` FOREIGN KEY (`owner_user_id`) REFERENCES `AUTH_Groups` (`group_id`);
-
---
--- Constraints for table `REPO_Media`
---
-ALTER TABLE `REPO_Media`
-  ADD CONSTRAINT `repo_media_ibfk_1` FOREIGN KEY (`type`) REFERENCES `REPO_Media_types` (`type_id`);
 
 --
 -- Constraints for table `REPO_Media_access_map`
