@@ -627,27 +627,27 @@ header {
 	mergin-left: 10px;
 }
 
-#title {
+.title {
 	font-size: 24px;
 	font-weight: bold;
 	text-align: left;
 	margin-top: 10px;
-	margin-left: 120px;
 	margin-bottom: 5px;
-	padding-left: 10px
+	padding-left: 10px;
 }
 
-#desc {
+.desc {
 	font-size: 12px;
 	color: #848484;
 	padding-left: 10px;
-	margin-left: 120px;
+
 	width: 700px;
 	white-space: normal;
 }
 
-#type {
+.type {
 	float: left;
+	margin-right: 10px;
 	padding-right: 5px;
 	border: solid 1px #e1e8ec;
 	border-radius: 5px;
@@ -679,4 +679,8 @@ header {
 	position: absolute; 
 	top: 0; 
 	right: 0;
+}
+
+.breadcrumb-trail {
+	margin-top: 8px;
 }

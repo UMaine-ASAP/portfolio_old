@@ -52,8 +52,8 @@
 		<div class='media_items'>
 		{% for media in media_items %}
 			<div class='media' style='position:relative'>
-				<div id="title">{{ media.title }}</div>
-				<div id="desc">{{ media.description }}</div>
+				<div class="title">{{ media.title }}</div>
+				<div class="desc">{{ media.description }}</div>
 				<div class="actions">
 					<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}/media/{{ media.id }}/edit"><img src="{{ flash['web_root'] }}/templates/images/icon_Edit.png" border="0" alt="Edit"></a></br>
 					<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}/media/{{ media.id }}/delete"><img src="{{ flash['web_root'] }}/templates/images/icon_Delete.png" border="0" alt="Delete"></a>
