@@ -21,7 +21,7 @@
 	
 	<hr>
 	
-	<div id="themed" class="editForm">
+	<div id="themed" class="form">
 	
 		<form id="form" name="form" method="post" enctype="multipart/form-data" action="{{ flash['web_root'] }}/project/{{ project_id }}/edit">
 
@@ -41,11 +41,15 @@
 
 		<div class='spacer'></div>
 
+		<button type="submit">Save</button>
+
+		<div class='spacer'></div>
 
 		{% if project_id != -1 %}
+
 		<!-- Editing existing project -->
 		<h1>Media</h1>
-		<a class='button left reset' href="{{ flash['web_root'] }}/project/{{ project_id }}/media/add">Add Media</a>
+
 		<div class='spacer'></div>
 		<hr>
 
@@ -62,6 +66,9 @@
 
 		{% endfor %}
 		</div>
+		<br>
+		<div class='spacer'></div>
+		<a class='button left reset' href="{{ flash['web_root'] }}/project/{{ project_id }}/media/add">Add Media</a>
 
 		{% else %}
 		<!-- Adding new project -->
@@ -71,11 +78,9 @@
 		{% endif %}
 
 		<div class='spacer'></div>
-		<br>
 
 
 		<hr>
-		<button class='right' type="submit">Save</button>
 			
 		<div class="spacer"></div>
 
