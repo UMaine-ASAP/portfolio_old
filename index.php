@@ -169,8 +169,8 @@ $app->get('/register', $redirect_loggedInUser, function() use ($app) {
 $app->post('/register', function() use ($app) {
 	if (true /* Reserved for Timothy D. Baker */ )
 	{
-		if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['email'])
-			|| !preg_match('/[a-z\.]\@umit\.maine\.edu/', $_POST['email']))
+		if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['email']) || !isset($_POST['firstname']) || !isset($_POST['lastname'])
+			)//|| !preg_match('/[a-z\.]\@umit\.maine\.edu/', $_POST['email']))
 
 		{	// Reject, form invalid
 			$app->flash('error', true);
@@ -179,20 +179,20 @@ $app->post('/register', function() use ($app) {
 		else
 		{
 			// Form name from FC email
-			$fc = preg_split('/\@umit\.maine\.edu/', $_POST['email']);
-			$name = explode('.', $fc[0]);
-			$first = $name[0];
-			$middle = NULL;
-			for ($i = 1; $i < count($name)-1; $i++)
-			{
-				$middle = $middle." ".ucfirst($name[$i]);
-			}
-			$last = ucfirst($name[count($name)-1]);
+			//$fc = preg_split('/\@umit\.maine\.edu/', $_POST['email']);
+			//$name = explode('.', $fc[0]);
+			$first = $_POST['firstname'];//$name[0];
+			//$middle = NULL;
+			//for ($i = 1; $i < count($name)-1; $i++)
+			//{
+				//$middle = $middle." ".ucfirst($name[$i]);
+			//}
+			$last =  $_POST['lastname'];//ucfirst($name[count($name)-1]);
 			// Create new User
 			if (!$user = UserController::createUser($_POST['username'],
 				$_POST['password'],
 				$first,
-				$middle,
+				NULL,
 				$last,
 				$_POST['email'],
 				1,
