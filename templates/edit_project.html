@@ -46,7 +46,11 @@
 
 		<div class='media_items'>
 		{% for media in media_items %}
-			<div class='media'>
+			<div class='media' style="float:left;margin-top:30px">
+				<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}/edit"><img src="{{ flash['web_root'] }}/templates/images/icon_Edit.png" border="0" alt="Edit"></a></br>
+				<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}/delete"><img src="{{ flash['web_root'] }}/templates/images/icon_Delete.png" border="0" alt="Delete"></a>
+			</div>
+			<div class"actions" style="float:right;margin-top:-80px;margin-left:850px;">
 				<div id="title">{{ media.title }}</div>
 				<div id="desc">{{ media.description }}</div>
 			</div>
@@ -56,6 +60,7 @@
 		{% endif %}
 
 		<div class='spacer'></div>
+		<br>
 
 
 		<hr>
