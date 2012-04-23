@@ -48,7 +48,6 @@ $(function() {
     	<!--	
 		<form id="form" name="form" method="post" action="{{ flash['web_root'] }}/project/{{ project_id }}/media/{{ media_id }}/edit">
 	    -->
-	    <input name='SID' type='hidden' value='{{ SID }}' />
 	    <input name='upload_origin' type='hidden' value="{{ flash['web_root'] }}/project/{{ project_id }}/media/{{ media_id }}/edit"/>
 		
 		{% if flash['error'] is defined %}

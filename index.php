@@ -520,13 +520,13 @@ function postMediaData($pid, $id) {
 			else
 			{
 				$media = MediaController::createMedia(
-					(isset($_POST['mimetype']) ? $_POST['mimetype'] : NULL),
+					(isset($_POST['file_content_type']) ? $_POST['file_content_type'] : NULL),
 					$_POST['title'],
 					(isset($_POST['description']) ? $_POST['description'] : NULL),
-					(isset($_POST['filename']) ? $_POST['filename'] : NULL),
-					(isset($_POST['filesize']) ? $_POST['filesize'] : NULL),
-					(isset($_POST['md5']) ? $_POST['md5'] : NULL),
-					(isset($_POST['extension']) ? $_POST['extension'] : NULL));
+					(isset($_POST['file_name']) ? $_POST['file_name'] : NULL),
+					(isset($_POST['file_size']) ? $_POST['file_size'] : NULL),
+					(isset($_POST['file_md5']) ? $_POST['file_md5'] : NULL),
+					(isset($_POST['file_name']) ? end(explode('.', $_POST['file_name'])) : NULL));
 				ProjectController::addMediaToProject($proj->id(), $media->id());
 				$id = $media->id();
 			}
@@ -534,13 +534,13 @@ function postMediaData($pid, $id) {
 		else	// We are editing an existing piece of Media
 		{
 			if (!MediaController::editMedia($id,
-				(isset($_POST['mimetype']) ? $_POST['mimetype'] : NULL),
-				(isset($_POST['title']) ? $_POST['title'] : NULL),
-				(isset($_POST['description']) ? $_POST['description'] : NULL),
-				(isset($_POST['filename']) ? $_POST['filename'] : NULL),
-				(isset($_POST['filesize']) ? $_POST['filesize'] : NULL),
-				(isset($_POST['md5']) ? $_POST['md5'] : NULL),
-				(isset($_POST['extension']) ? $_POST['extension'] : NULL)))
+					(isset($_POST['file_content_type']) ? $_POST['file_content_type'] : NULL),
+					(isset($_POST['title']) ? $_POST['title'] : NULL),
+					(isset($_POST['description']) ? $_POST['description'] : NULL),
+					(isset($_POST['file_name']) ? $_POST['file_name'] : NULL),
+					(isset($_POST['file_size']) ? $_POST['file_size'] : NULL),
+					(isset($_POST['file_md5']) ? $_POST['file_md5'] : NULL),
+					(isset($_POST['file_name']) ? end(explode('.', $_POST['file_name'])) : NULL)))
 			{
 				return permission_denied();
 			}
@@ -577,8 +577,7 @@ $app->get('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id
 				));
 
 		return $app->render('edit_media.html', 
-			array('SID' => session_id(),
-				'media_id' => $id,
+			array('media_id' => $id,
 				'project_id' => $pid,
 				'title' => $media->title,
 				'description' => $media->description,
