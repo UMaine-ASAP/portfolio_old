@@ -44,8 +44,11 @@ $(function() {
 	
 	<div id="themed" class="editForm">
 	
+    	<form id="upload" enctype="multipart/form-data" action="/upload/" method="post">
+    	<!--	
 		<form id="form" name="form" method="post" action="{{ flash['web_root'] }}/project/{{ project_id }}/media/{{ media_id }}/edit">
-
+	    -->
+	    <input name='upload_origin' type='hidden' value="{{ flash['web_root'] }}/project/{{ project_id }}/media/{{ media_id }}/edit"/>
 		
 		{% if flash['error'] is defined %}
 			<h3>Error with entered data ...</h3>
@@ -64,20 +67,17 @@ $(function() {
 
 		<label>File (Optional)</label>
 
-<!--
-    	<form id="upload" enctype="multipart/form-data" action="/upload/" method="post">
-	        <input name='upload_origin' type='hidden' value="{{ flash['web_root'] }}/project/{{ project_id }}/media/{{ media_id }}/edit"/>
+
+
+
     	    <input name="file" type="file"/>
-        	<input type="submit" value="Upload"/>
-        </form>
-   		
    		<div id="uploading">
         	<div id="progress" class="bar">
           		<div id="progressbar">&nbsp;</div>
           		<div id="percents"></div>
 	        </div>
     	</div>
--->
+
 		<div class='spacer'></div>
 
 		<button type="submit">Submit</button>
