@@ -3,11 +3,16 @@
 	<head>
 		<title>{% block page_title %} {% endblock %}</title>
 		<meta charset="utf8" />
-		<link rel='stylesheet' type='text/css' href='{{flash['web_root']}}/templates/style.css' />
+		<link rel='stylesheet' type='text/css' href='{{flash['web_root']}}/templates/css/style.css' />
+		<link rel='stylesheet' href='{{flash['web_root']}}/templates/css/lightbox.css' />
+		<link href="{{flash['web_root']}}/templates/css/video-js.css" rel="stylesheet">		
 	</head>
 	<body>
 		<div class="container">
 		{% block content %} {% endblock %}
 		</div>
 	</body>
+	<script src="{{flash['web_root']}}/templates/js/jquery-1.7.2.min.js"></script>
+	<script src="{{flash['web_root']}}/templates/js/lightbox.js"></script>
+	<script src="{{flash['web_root']}}/templates/js/video.js"></script>
 </html>

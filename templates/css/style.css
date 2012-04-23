@@ -200,7 +200,8 @@ header {
 	font-weight: bold;
 	text-align: right;
 	width: 140px;
-	float: left
+	float: left;
+	font-size: 12px;
 }
 
 #themed .small {
@@ -290,6 +291,7 @@ header {
 }
 
 .container {
+	
 }
 
 .menu,.menu ul {
@@ -603,6 +605,11 @@ header {
 	margin-bottom: 5px;
 	border-radius: 5px;
 	-moz-border-radius: 5px
+}
+
+#projects img {
+	max-height: 80%;
+	mergin-left: 10px;
 }
 
 #title {
