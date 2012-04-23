@@ -496,6 +496,7 @@ $app->get('/project/:pid/media/:id', $authcheck_student, function($pid, $id) use
  *	Edit Media
  */
 $app->get('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {
+	session_start();
 	if ((!$media = MediaController::viewMedia($id)) ||
 		(!$media->havePermissionOrHigher(OWNER)) ||
 		(!$project = ProjectController::viewProject($pid)) ||
