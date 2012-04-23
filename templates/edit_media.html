@@ -25,16 +25,21 @@
 	
 	<hr>
 	
-	<div id="themed" class="loginForm">
+	<div id="themed" class="editForm">
 	
 		<form id="form" name="form" method="post" action="{{ flash['web_root'] }}/project/{{ project_id }}/media/{{ media_id }}/edit">
 		
 		<label>Title</label>
-		<input type="text" name="title" id="title" value="{{ title }}" />
+		<input class='medium' type="text" name="title" id="title" value="{{ title }}" required/>
 
-		<label>Description</label>
-		<textarea name="description" id="description" value="{{ description }}" rows="5" required></textarea>
+		<div class='spacer'></div>
 
+		<label>Text</label>
+		<textarea class='medium' name="description" id="description" value="{{ description }}" rows="5"></textarea>
+
+		<label>File (Optional)</label>
+		<input />
+		<input />
 		<!-- FILENAME, ETC HERE -->
 
 		<button type="submit">Submit</button>

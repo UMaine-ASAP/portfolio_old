@@ -28,7 +28,8 @@
 	<div id="themed" class="editForm">
 	
 		<form id="form" name="form" method="post" action="{{ flash['web_root'] }}/project/{{ project_id }}/edit">
-		
+
+
 		<label>Title</label>
 		<input class='medium' type="text" name="title" id="title" value="{{ title }}" />
 
@@ -39,7 +40,19 @@
 
 		<div class='spacer'></div>
 
-		<button type="submit">Submit</button>
+		<h1>Media</h1>
+		<a class='button left reset' href="{{ flash['web_root'] }}/project/{{ project_id }}/media/add">Add Media</a>
+		<div class='spacer'></div>
+		<hr>
+
+
+
+
+		<div class='spacer'></div>
+
+
+		<hr>
+		<button class='right' type="submit">Save</button>
 			
 		<div class="spacer"></div>
 
