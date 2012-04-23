@@ -110,7 +110,9 @@ $app->post('/login', function() use ($app) {
 	}
 	else
 	{	// Fail :(
-		return $app->render('failed_login.html');
+
+		$app->flash('error', 'Username or password was incorrect.');
+		return redirect('/login');
 	}
 });
 
@@ -119,8 +121,9 @@ $app->post('/login', function() use ($app) {
  *	Log Out
  */
 $app->get('/logout', function() use ($app) {
-	AuthenticationController::log_out();	
-	return $app->render('logout.html');		
+	AuthenticationController::log_out();
+	$app->flash('header', 'You have been successfully logged out.');
+	return redirect('/login');
 });
 
 
@@ -145,7 +148,7 @@ $app->post('/register', function() use ($app) {
 			|| !preg_match('/[a-z\.]\@umit\.maine\.edu/', $_POST['email']))
 
 		{	// Reject, form invalid
-			$app->flashNow('error', true);
+			$app->flash('error', true);
 			return redirect('/register');	//TODO: Save partial title/desc on return to form
 		}
 		else
@@ -170,7 +173,7 @@ $app->post('/register', function() use ($app) {
 				1,
 				NULL, NULL, NULL, NULL, NULL, NULL, 2))
 			{
-				$app->flashNow('error', "Username is already in use");
+				$app->flash('error', "Username is already in use");
 				return redirect('/register');
 			}
 			else
@@ -185,7 +188,7 @@ $app->post('/register', function() use ($app) {
 	}
 	else
 	{
-		$app->flashNow('error', false);	//TODO
+		$app->flash('error', false);	//TODO
 	}
 });
 
@@ -525,6 +528,3 @@ $app->run();
 
 
 
-
-
-?>
