@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 22, 2012 at 08:15 PM
+-- Generation Time: Apr 22, 2012 at 09:05 PM
 -- Server version: 5.5.21
 -- PHP Version: 5.3.8
 
@@ -26,6 +26,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `AUTH_Groups`
 --
 
+DROP TABLE IF EXISTS `AUTH_Groups`;
 CREATE TABLE IF NOT EXISTS `AUTH_Groups` (
   `group_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` text CHARACTER SET latin1 NOT NULL,
@@ -33,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `AUTH_Groups` (
   `owner_user_id` int(11) NOT NULL,
   `private` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`group_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Designation and description of groups' AUTO_INCREMENT=14 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Designation and description of groups' AUTO_INCREMENT=15 ;
 
 --
 -- Dumping data for table `AUTH_Groups`
@@ -52,7 +53,8 @@ INSERT INTO `AUTH_Groups` (`group_id`, `name`, `description`, `owner_user_id`, `
 (10, 'Test Project! Permissions', 'Permissions for Test Project!', 3, 1),
 (11, 'Test Permissions', 'Permissions for Test', 3, 1),
 (12, 'Test Project! Permissions', 'Permissions for Test Project!', 3, 1),
-(13, 'Blergh Permissions', 'Permissions for Blergh', 3, 1);
+(13, 'Blergh Permissions', 'Permissions for Blergh', 3, 1),
+(14, 'Another Test Project!! Permissions', 'Permissions for Another Test Project!!', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -60,6 +62,7 @@ INSERT INTO `AUTH_Groups` (`group_id`, `name`, `description`, `owner_user_id`, `
 -- Table structure for table `AUTH_Group_user_map`
 --
 
+DROP TABLE IF EXISTS `AUTH_Group_user_map`;
 CREATE TABLE IF NOT EXISTS `AUTH_Group_user_map` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` int(11) NOT NULL,
@@ -67,7 +70,7 @@ CREATE TABLE IF NOT EXISTS `AUTH_Group_user_map` (
   PRIMARY KEY (`id`),
   KEY `group_id` (`group_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of people to groups' AUTO_INCREMENT=14 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of people to groups' AUTO_INCREMENT=15 ;
 
 --
 -- Dumping data for table `AUTH_Group_user_map`
@@ -86,7 +89,8 @@ INSERT INTO `AUTH_Group_user_map` (`id`, `group_id`, `user_id`) VALUES
 (10, 10, 3),
 (11, 11, 3),
 (12, 12, 3),
-(13, 13, 3);
+(13, 13, 3),
+(14, 14, 3);
 
 -- --------------------------------------------------------
 
@@ -94,6 +98,7 @@ INSERT INTO `AUTH_Group_user_map` (`id`, `group_id`, `user_id`) VALUES
 -- Table structure for table `AUTH_Users`
 --
 
+DROP TABLE IF EXISTS `AUTH_Users`;
 CREATE TABLE IF NOT EXISTS `AUTH_Users` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) CHARACTER SET latin1 NOT NULL,
@@ -123,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `AUTH_Users` (
 INSERT INTO `AUTH_Users` (`user_id`, `username`, `pass`, `first`, `middle`, `last`, `email`, `email_priv`, `addn_contact`, `bio`, `user_pic`, `major`, `minor`, `grad_year`, `type_id`, `deactivated`) VALUES
 (1, 'fergie', 'password1', 'President', 'Paul', 'Ferguson', 'fergaliciousDef@maine.edu', 0, NULL, '', NULL, NULL, NULL, NULL, 1, 0),
 (2, 'asap', 'asap4u', 'ASAP', '', 'Media Services', 'ASAP@maine.edu', 0, NULL, '', NULL, NULL, NULL, NULL, 1, 0),
-(3, 'jkomusin', '$2a$08$rGGmsfcA5woRljxeErIEXebvGz3AwJmHkL6LYvq2/54.yLjvEOf.6', 'joshua', NULL, 'Komusin', 'joshua.komusin@umit.maine.edu', 1, NULL, NULL, NULL, NULL, NULL, NULL, 2, 0);
+(3, 'username', '$2a$08$rGGmsfcA5woRljxeErIEXebvGz3AwJmHkL6LYvq2/54.yLjvEOf.6', 'Anonymous', NULL, 'User', 'anonymous.user@umit.maine.edu', 1, NULL, NULL, NULL, NULL, NULL, NULL, 2, 0);
 
 -- --------------------------------------------------------
 
@@ -131,6 +136,7 @@ INSERT INTO `AUTH_Users` (`user_id`, `username`, `pass`, `first`, `middle`, `las
 -- Table structure for table `AUTH_User_types`
 --
 
+DROP TABLE IF EXISTS `AUTH_User_types`;
 CREATE TABLE IF NOT EXISTS `AUTH_User_types` (
   `type_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET latin1 NOT NULL,
@@ -164,6 +170,7 @@ INSERT INTO `AUTH_User_types` (`type_id`, `name`, `description`) VALUES
 -- Table structure for table `EVAL_Components`
 --
 
+DROP TABLE IF EXISTS `EVAL_Components`;
 CREATE TABLE IF NOT EXISTS `EVAL_Components` (
   `component_id` int(11) NOT NULL AUTO_INCREMENT,
   `type` int(11) NOT NULL,
@@ -195,6 +202,7 @@ INSERT INTO `EVAL_Components` (`component_id`, `type`, `question`, `options`, `r
 -- Table structure for table `EVAL_Component_categories`
 --
 
+DROP TABLE IF EXISTS `EVAL_Component_categories`;
 CREATE TABLE IF NOT EXISTS `EVAL_Component_categories` (
   `category_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET latin1 NOT NULL,
@@ -216,6 +224,7 @@ INSERT INTO `EVAL_Component_categories` (`category_id`, `name`, `description`) V
 -- Table structure for table `EVAL_Component_types`
 --
 
+DROP TABLE IF EXISTS `EVAL_Component_types`;
 CREATE TABLE IF NOT EXISTS `EVAL_Component_types` (
   `type_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET latin1 NOT NULL,
@@ -238,6 +247,7 @@ INSERT INTO `EVAL_Component_types` (`type_id`, `name`, `description`) VALUES
 -- Table structure for table `EVAL_Evaluations`
 --
 
+DROP TABLE IF EXISTS `EVAL_Evaluations`;
 CREATE TABLE IF NOT EXISTS `EVAL_Evaluations` (
   `evaluation_id` int(11) NOT NULL AUTO_INCREMENT,
   `form_id` int(11) NOT NULL,
@@ -272,6 +282,7 @@ INSERT INTO `EVAL_Evaluations` (`evaluation_id`, `form_id`, `assigned_by_user_id
 -- Table structure for table `EVAL_Evaluation_types`
 --
 
+DROP TABLE IF EXISTS `EVAL_Evaluation_types`;
 CREATE TABLE IF NOT EXISTS `EVAL_Evaluation_types` (
   `type_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET latin1 NOT NULL,
@@ -293,6 +304,7 @@ INSERT INTO `EVAL_Evaluation_types` (`type_id`, `name`, `description`) VALUES
 -- Table structure for table `EVAL_Forms`
 --
 
+DROP TABLE IF EXISTS `EVAL_Forms`;
 CREATE TABLE IF NOT EXISTS `EVAL_Forms` (
   `form_id` int(11) NOT NULL AUTO_INCREMENT,
   `type` int(11) DEFAULT NULL,
@@ -320,6 +332,7 @@ INSERT INTO `EVAL_Forms` (`form_id`, `type`, `name`, `description`, `creator_use
 -- Table structure for table `EVAL_Form_component_map`
 --
 
+DROP TABLE IF EXISTS `EVAL_Form_component_map`;
 CREATE TABLE IF NOT EXISTS `EVAL_Form_component_map` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `form_id` int(11) NOT NULL,
@@ -347,6 +360,7 @@ INSERT INTO `EVAL_Form_component_map` (`id`, `form_id`, `component_id`) VALUES
 -- Table structure for table `EVAL_Scores`
 --
 
+DROP TABLE IF EXISTS `EVAL_Scores`;
 CREATE TABLE IF NOT EXISTS `EVAL_Scores` (
   `component_id` int(11) NOT NULL DEFAULT '0',
   `evaluation_id` int(11) NOT NULL DEFAULT '0',
@@ -369,6 +383,7 @@ INSERT INTO `EVAL_Scores` (`component_id`, `evaluation_id`, `value`) VALUES
 -- Table structure for table `EVAL_Statuses`
 --
 
+DROP TABLE IF EXISTS `EVAL_Statuses`;
 CREATE TABLE IF NOT EXISTS `EVAL_Statuses` (
   `status_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET latin1 NOT NULL,
@@ -391,6 +406,7 @@ INSERT INTO `EVAL_Statuses` (`status_id`, `name`, `description`) VALUES
 -- Table structure for table `REPO_Access_levels`
 --
 
+DROP TABLE IF EXISTS `REPO_Access_levels`;
 CREATE TABLE IF NOT EXISTS `REPO_Access_levels` (
   `access_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET latin1 NOT NULL,
@@ -415,6 +431,7 @@ INSERT INTO `REPO_Access_levels` (`access_id`, `name`, `description`) VALUES
 -- Table structure for table `REPO_Assignments`
 --
 
+DROP TABLE IF EXISTS `REPO_Assignments`;
 CREATE TABLE IF NOT EXISTS `REPO_Assignments` (
   `assign_id` int(11) NOT NULL AUTO_INCREMENT,
   `class_id` int(11) DEFAULT NULL,
@@ -440,6 +457,7 @@ INSERT INTO `REPO_Assignments` (`assign_id`, `class_id`, `title`, `description`,
 -- Table structure for table `REPO_Assignment_access_map`
 --
 
+DROP TABLE IF EXISTS `REPO_Assignment_access_map`;
 CREATE TABLE IF NOT EXISTS `REPO_Assignment_access_map` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `assign_id` int(11) NOT NULL,
@@ -465,6 +483,7 @@ INSERT INTO `REPO_Assignment_access_map` (`id`, `assign_id`, `group_id`, `access
 -- Table structure for table `REPO_Assignment_instances`
 --
 
+DROP TABLE IF EXISTS `REPO_Assignment_instances`;
 CREATE TABLE IF NOT EXISTS `REPO_Assignment_instances` (
   `instance_id` int(11) NOT NULL AUTO_INCREMENT,
   `assign_id` int(11) NOT NULL,
@@ -494,6 +513,7 @@ INSERT INTO `REPO_Assignment_instances` (`instance_id`, `assign_id`, `section_id
 -- Table structure for table `REPO_Assignment_instance_access_map`
 --
 
+DROP TABLE IF EXISTS `REPO_Assignment_instance_access_map`;
 CREATE TABLE IF NOT EXISTS `REPO_Assignment_instance_access_map` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `instance_id` int(11) NOT NULL,
@@ -519,6 +539,7 @@ INSERT INTO `REPO_Assignment_instance_access_map` (`id`, `instance_id`, `group_i
 -- Table structure for table `REPO_Classes`
 --
 
+DROP TABLE IF EXISTS `REPO_Classes`;
 CREATE TABLE IF NOT EXISTS `REPO_Classes` (
   `class_id` int(11) NOT NULL AUTO_INCREMENT,
   `dept_id` int(11) NOT NULL,
@@ -556,6 +577,7 @@ INSERT INTO `REPO_Classes` (`class_id`, `dept_id`, `number`, `title`, `descripti
 -- Table structure for table `REPO_Colleges`
 --
 
+DROP TABLE IF EXISTS `REPO_Colleges`;
 CREATE TABLE IF NOT EXISTS `REPO_Colleges` (
   `college_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET latin1 NOT NULL,
@@ -580,6 +602,7 @@ INSERT INTO `REPO_Colleges` (`college_id`, `name`, `description`, `owner_user_id
 -- Table structure for table `REPO_Day_schedules`
 --
 
+DROP TABLE IF EXISTS `REPO_Day_schedules`;
 CREATE TABLE IF NOT EXISTS `REPO_Day_schedules` (
   `sched_id` int(11) NOT NULL AUTO_INCREMENT,
   `days_of_week` varchar(255) CHARACTER SET latin1 NOT NULL,
@@ -606,6 +629,7 @@ INSERT INTO `REPO_Day_schedules` (`sched_id`, `days_of_week`) VALUES
 -- Table structure for table `REPO_Departments`
 --
 
+DROP TABLE IF EXISTS `REPO_Departments`;
 CREATE TABLE IF NOT EXISTS `REPO_Departments` (
   `dept_id` int(11) NOT NULL AUTO_INCREMENT,
   `college_id` int(11) NOT NULL,
@@ -638,6 +662,7 @@ INSERT INTO `REPO_Departments` (`dept_id`, `college_id`, `name`, `description`, 
 -- Table structure for table `REPO_Media`
 --
 
+DROP TABLE IF EXISTS `REPO_Media`;
 CREATE TABLE IF NOT EXISTS `REPO_Media` (
   `media_id` int(11) NOT NULL AUTO_INCREMENT,
   `type` int(11) NOT NULL,
@@ -651,7 +676,7 @@ CREATE TABLE IF NOT EXISTS `REPO_Media` (
   `extension` varchar(10) CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`media_id`),
   KEY `type` (`type`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Unit of media contained within a body of work' AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Unit of media contained within a body of work' AUTO_INCREMENT=10 ;
 
 --
 -- Dumping data for table `REPO_Media`
@@ -663,7 +688,10 @@ INSERT INTO `REPO_Media` (`media_id`, `type`, `title`, `description`, `created`,
 (3, 1, 'NMD302 Scratch Sensor Tangible', 'Tangible describing the research and development of sensors to detech scrathing as input to applications', '2012-02-03 00:00:00', '2012-02-05 00:00:00', '/short/path/to/crazy/intense/file', 3243, '79054025255fb1a26e4bc422aef54eb4', 'txt'),
 (4, 2, 'MAT258 Homework 5', 'Submission', '2012-01-01 00:00:00', NULL, '/math/file', 32479, '79054025255fb1a26e4bc422aef54eb4', 'png'),
 (5, 2, 'MAT258 Homework 5', 'Submission', '2012-02-01 00:00:00', NULL, '/math/file2', 73864, '79054025255fb1a26e4bc422aef54eb4', 'svg'),
-(6, 3, 'Crazy Video of Research', 'CUGR 2012 Submission', '2012-03-02 00:00:00', NULL, '/cugr/sub1', 23472, '79054025255fb1a26e4bc422aef54eb4', 'mpeg');
+(6, 3, 'Crazy Video of Research', 'CUGR 2012 Submission', '2012-03-02 00:00:00', NULL, '/cugr/sub1', 23472, '79054025255fb1a26e4bc422aef54eb4', 'mpeg'),
+(7, 2, 'Ballmer tongue', NULL, '2012-04-22 21:53:55', NULL, 'test/pics/ballmer1', 35713, '43dd31724c7d816b733f5d1f771284b2', 'jpg'),
+(8, 2, 'Ballmer fingers', NULL, '2012-04-22 16:49:38', NULL, 'test/pics/ballmer2', 53079, 'a0561b20ea970246e4feefb0f549bc17', 'jpg'),
+(9, 2, 'Ballmer thumb', NULL, '2012-04-25 17:39:43', NULL, 'test/pics/ballmer3', 76653, 'a4cf1c256ebc82ef08f499020c1253a2', 'jpg');
 
 -- --------------------------------------------------------
 
@@ -671,6 +699,7 @@ INSERT INTO `REPO_Media` (`media_id`, `type`, `title`, `description`, `created`,
 -- Table structure for table `REPO_Media_access_map`
 --
 
+DROP TABLE IF EXISTS `REPO_Media_access_map`;
 CREATE TABLE IF NOT EXISTS `REPO_Media_access_map` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `media_id` int(11) NOT NULL,
@@ -680,7 +709,7 @@ CREATE TABLE IF NOT EXISTS `REPO_Media_access_map` (
   KEY `media_id` (`media_id`),
   KEY `group_id` (`group_id`),
   KEY `access_type` (`access_type`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of access levels to media for users and groups' AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of access levels to media for users and groups' AUTO_INCREMENT=7 ;
 
 --
 -- Dumping data for table `REPO_Media_access_map`
@@ -689,7 +718,10 @@ CREATE TABLE IF NOT EXISTS `REPO_Media_access_map` (
 INSERT INTO `REPO_Media_access_map` (`id`, `media_id`, `group_id`, `access_type`) VALUES
 (1, 1, 2, 1),
 (2, 2, 2, 1),
-(3, 3, 2, 1);
+(3, 3, 2, 1),
+(4, 7, 12, 1),
+(5, 8, 12, 1),
+(6, 9, 12, 1);
 
 -- --------------------------------------------------------
 
@@ -697,6 +729,7 @@ INSERT INTO `REPO_Media_access_map` (`id`, `media_id`, `group_id`, `access_type`
 -- Table structure for table `REPO_Media_types`
 --
 
+DROP TABLE IF EXISTS `REPO_Media_types`;
 CREATE TABLE IF NOT EXISTS `REPO_Media_types` (
   `type_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET latin1 NOT NULL,
@@ -719,6 +752,7 @@ INSERT INTO `REPO_Media_types` (`type_id`, `name`, `description`) VALUES
 -- Table structure for table `REPO_Portfolios`
 --
 
+DROP TABLE IF EXISTS `REPO_Portfolios`;
 CREATE TABLE IF NOT EXISTS `REPO_Portfolios` (
   `port_id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) CHARACTER SET latin1 NOT NULL,
@@ -745,6 +779,7 @@ INSERT INTO `REPO_Portfolios` (`port_id`, `title`, `description`, `private`) VAL
 -- Table structure for table `REPO_Portfolio_access_map`
 --
 
+DROP TABLE IF EXISTS `REPO_Portfolio_access_map`;
 CREATE TABLE IF NOT EXISTS `REPO_Portfolio_access_map` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `port_id` int(11) NOT NULL,
@@ -773,6 +808,7 @@ INSERT INTO `REPO_Portfolio_access_map` (`id`, `port_id`, `group_id`, `access_ty
 -- Table structure for table `REPO_Portfolio_project_map`
 --
 
+DROP TABLE IF EXISTS `REPO_Portfolio_project_map`;
 CREATE TABLE IF NOT EXISTS `REPO_Portfolio_project_map` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `port_id` int(11) NOT NULL,
@@ -781,7 +817,7 @@ CREATE TABLE IF NOT EXISTS `REPO_Portfolio_project_map` (
   `child_privacy` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `port_id` (`port_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='A map of projects and portfolios to portfolios' AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='A map of projects and portfolios to portfolios' AUTO_INCREMENT=12 ;
 
 --
 -- Dumping data for table `REPO_Portfolio_project_map`
@@ -794,7 +830,7 @@ INSERT INTO `REPO_Portfolio_project_map` (`id`, `port_id`, `child_id`, `child_is
 (4, 2, 4, 0, 2),
 (5, 4, 5, 0, 1),
 (9, 5, 9, 0, 0),
-(10, 5, 10, 0, 0);
+(11, 5, 11, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -802,6 +838,7 @@ INSERT INTO `REPO_Portfolio_project_map` (`id`, `port_id`, `child_id`, `child_is
 -- Table structure for table `REPO_Projects`
 --
 
+DROP TABLE IF EXISTS `REPO_Projects`;
 CREATE TABLE IF NOT EXISTS `REPO_Projects` (
   `proj_id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) CHARACTER SET latin1 NOT NULL,
@@ -809,7 +846,7 @@ CREATE TABLE IF NOT EXISTS `REPO_Projects` (
   `type` int(11) NOT NULL,
   PRIMARY KEY (`proj_id`),
   KEY `type` (`type`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Unit of work, typically done for an assignment' AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Unit of work, typically done for an assignment' AUTO_INCREMENT=12 ;
 
 --
 -- Dumping data for table `REPO_Projects`
@@ -821,8 +858,8 @@ INSERT INTO `REPO_Projects` (`proj_id`, `title`, `description`, `type`) VALUES
 (3, 'MAT258 Homework 5', 'Submission', 1),
 (4, 'MAT258 Homework 5', 'Submission', 1),
 (5, 'Windboard', 'A formal study of the cost-effectiveness of wind-powered keyboards', 1),
-(9, 'Test Project!', 'Test project, bro.', 1),
-(10, 'Blergh', 'Herp derpy', 1);
+(9, 'Test Project!', 'Test project, gnarly!!', 1),
+(11, 'Another Test Project!!', 'Sweet!', 1);
 
 -- --------------------------------------------------------
 
@@ -830,6 +867,7 @@ INSERT INTO `REPO_Projects` (`proj_id`, `title`, `description`, `type`) VALUES
 -- Table structure for table `REPO_Project_access_map`
 --
 
+DROP TABLE IF EXISTS `REPO_Project_access_map`;
 CREATE TABLE IF NOT EXISTS `REPO_Project_access_map` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `proj_id` int(11) NOT NULL,
@@ -839,7 +877,7 @@ CREATE TABLE IF NOT EXISTS `REPO_Project_access_map` (
   KEY `proj_id` (`proj_id`),
   KEY `group_id` (`group_id`),
   KEY `access_type` (`access_type`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of access types to projects for users and groups' AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of access types to projects for users and groups' AUTO_INCREMENT=12 ;
 
 --
 -- Dumping data for table `REPO_Project_access_map`
@@ -852,7 +890,7 @@ INSERT INTO `REPO_Project_access_map` (`id`, `proj_id`, `group_id`, `access_type
 (4, 4, 2, 1),
 (5, 5, 2, 1),
 (9, 9, 12, 1),
-(10, 10, 13, 1);
+(11, 11, 14, 1);
 
 -- --------------------------------------------------------
 
@@ -860,6 +898,7 @@ INSERT INTO `REPO_Project_access_map` (`id`, `proj_id`, `group_id`, `access_type
 -- Table structure for table `REPO_Project_media_map`
 --
 
+DROP TABLE IF EXISTS `REPO_Project_media_map`;
 CREATE TABLE IF NOT EXISTS `REPO_Project_media_map` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `proj_id` int(11) NOT NULL,
@@ -867,7 +906,7 @@ CREATE TABLE IF NOT EXISTS `REPO_Project_media_map` (
   PRIMARY KEY (`id`),
   KEY `proj_id` (`proj_id`),
   KEY `media_id` (`media_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of media to bodies of work' AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of media to bodies of work' AUTO_INCREMENT=10 ;
 
 --
 -- Dumping data for table `REPO_Project_media_map`
@@ -879,7 +918,10 @@ INSERT INTO `REPO_Project_media_map` (`id`, `proj_id`, `media_id`) VALUES
 (3, 2, 3),
 (4, 3, 4),
 (5, 4, 5),
-(6, 5, 6);
+(6, 5, 6),
+(7, 9, 7),
+(8, 9, 8),
+(9, 9, 9);
 
 -- --------------------------------------------------------
 
@@ -887,6 +929,7 @@ INSERT INTO `REPO_Project_media_map` (`id`, `proj_id`, `media_id`) VALUES
 -- Table structure for table `REPO_Project_types`
 --
 
+DROP TABLE IF EXISTS `REPO_Project_types`;
 CREATE TABLE IF NOT EXISTS `REPO_Project_types` (
   `type_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET latin1 NOT NULL,
@@ -908,6 +951,7 @@ INSERT INTO `REPO_Project_types` (`type_id`, `name`, `description`) VALUES
 -- Table structure for table `REPO_Sections`
 --
 
+DROP TABLE IF EXISTS `REPO_Sections`;
 CREATE TABLE IF NOT EXISTS `REPO_Sections` (
   `section_id` int(11) NOT NULL AUTO_INCREMENT,
   `class_id` int(11) NOT NULL,
@@ -939,6 +983,7 @@ INSERT INTO `REPO_Sections` (`section_id`, `class_id`, `section_number`, `day_sc
 -- Table structure for table `REPO_Section_access_map`
 --
 
+DROP TABLE IF EXISTS `REPO_Section_access_map`;
 CREATE TABLE IF NOT EXISTS `REPO_Section_access_map` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `section_id` int(11) NOT NULL,
