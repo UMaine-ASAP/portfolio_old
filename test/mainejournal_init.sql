@@ -666,6 +666,13 @@ CREATE TABLE IF NOT EXISTS `REPO_Project_types` (
   PRIMARY KEY (`type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Types of media (ex: gallery, article, etc.)' AUTO_INCREMENT=1 ;
 
+--
+-- Dumping data for table `REPO_Project_types`
+--
+
+INSERT INTO `REPO_Project_types` (`type_id`, `name`, `description`) VALUES
+(1, "Portfolio project", NULL);
+
 -- --------------------------------------------------------
 
 --
