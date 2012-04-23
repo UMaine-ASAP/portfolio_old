@@ -496,7 +496,7 @@ $app->get('/project/:pid/media/:id', $authcheck_student, function($pid, $id) use
  *	Edit Media
  */
 $app->get('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {
-	session_start();
+
 	if ((!$media = MediaController::viewMedia($id)) ||
 		(!$media->havePermissionOrHigher(OWNER)) ||
 		(!$project = ProjectController::viewProject($pid)) ||
@@ -514,7 +514,8 @@ $app->get('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id
 				));
 
 		return $app->render('edit_media.html', 
-			array('media_id' => $id,
+			array('SID' => session_id(),
+				'media_id' => $id,
 				'project_id' => $pid,
 				'title' => $media->title,
 				'description' => $media->description,
@@ -524,6 +525,8 @@ $app->get('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id
 });
 
 $app->post('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {
+	session_id( $_POST['SID'] );
+
 	if ((!$proj = ProjectController::viewProject($pid)) ||
 		(!$proj->havePermissionOrHigher(OWNER)))
 	{
@@ -619,7 +622,6 @@ $app->post('/portfolio/submit', function() use ($app) {
 		return redirect('/login');
 	}
 });
-
 
 
 // RUN THE THING
