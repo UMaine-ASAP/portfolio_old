@@ -21,7 +21,7 @@
 	
 	<hr>
 	
-	<div id="themed" class="editForm">
+	<div id="themed" class="form">
 	
 		<form id="form" name="form" method="post" enctype="multipart/form-data" action="{{ flash['web_root'] }}/project/{{ project_id }}/edit">
 
@@ -41,19 +41,23 @@
 
 		<div class='spacer'></div>
 
+		<button type="submit">Save</button>
+
+		<div class='spacer'></div>
 
 		{% if project_id != -1 %}
+
 		<!-- Editing existing project -->
 		<h1>Media</h1>
-		<a class='button left reset' href="{{ flash['web_root'] }}/project/{{ project_id }}/media/add">Add Media</a>
+
 		<div class='spacer'></div>
 		<hr>
 
 		<div class='media_items'>
 		{% for media in media_items %}
 			<div class='media' style='position:relative'>
-				<div id="title">{{ media.title }}</div>
-				<div id="desc">{{ media.description }}</div>
+				<div class="title">{{ media.title }}</div>
+				<div class="desc">{{ media.description }}</div>
 				<div class="actions">
 					<a href="{{ flash['web_root'] }}/project/{{ project_id }}/media/{{ media.media_id }}/edit"><img src="{{ flash['web_root'] }}/templates/images/icon_Edit.png" border="0" alt="Edit"></a></br>
 					<a href="{{ flash['web_root'] }}/project/{{ project_id }}/media/{{ media.media_id }}/delete"><img src="{{ flash['web_root'] }}/templates/images/icon_Delete.png" border="0" alt="Delete"></a>
@@ -62,6 +66,9 @@
 
 		{% endfor %}
 		</div>
+		<br>
+		<div class='spacer'></div>
+		<a class='button left reset' href="{{ flash['web_root'] }}/project/{{ project_id }}/media/add">Add Media</a>
 
 		{% else %}
 		<!-- Adding new project -->
@@ -71,11 +78,9 @@
 		{% endif %}
 
 		<div class='spacer'></div>
-		<br>
 
 
 		<hr>
-		<button class='right' type="submit">Save</button>
 			
 		<div class="spacer"></div>
 

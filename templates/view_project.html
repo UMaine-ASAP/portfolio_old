@@ -6,12 +6,9 @@
 
 	<header>{{ title }}</header>
 	
-	<div id="themed"style ="margin-left:650px;">
-		<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/project/{{ project_id }}/edit">
-		<button type="submit">Edit Project</button>
-		</FORM>
+	<div id='themed' style='position: absolute; right: 0; margin-top: -50px;' >
+		<a class='button' href="{{ flash['web_root'] }}/project/{{ project_id }}/edit" type="submit">Edit Project</a>
 	</div>
-	
 	<hr>
 	
 	<p>{{ description }}</p>
@@ -20,16 +17,37 @@
 
 	<div class='media_items'>
 	{% for media in media_items %}
-		{% if media.mimetype == 'audio/mp3' %}
-			<div>Audio File!</div>
-		{% elseif media.mimetype == 'test' %}
-			<div>Test type</div>
-		{% else %}
-			<div>Some other file!</div>
-		{% endif %}
 		<div class='media'>
-			<div id="title">{{ media.title }}</div>
-			<div id="desc">{{ media.description }}</div>
+			{% if media.mimetype == 'png' %}
+			<!-- Image -->
+
+			<div class="title">{{ media.title }}</div>
+			<div> Image </div>
+			<div class="desc">{{ media.description }}</div>
+
+			{% elseif media.mimetype == 'audio/mp3' %}
+			<!-- Audio -->
+			<div class="title">{{ media.title }}</div>
+			<div> Audio </div>
+			<div class="desc">{{ media.description }}</div>
+			{% elseif media.mimetype == 'test' %}
+			<!-- Video -->
+			<div class="title">{{ media.title }}</div>
+			<div> Video </div>
+			<div class="desc">{{ media.description }}</div>
+
+			{% elseif media.mimetype == '' %}
+			<!-- Text -->
+			<div class="title">{{ media.title }}</div>
+			<p class="desc">{{ media.description }}</p>
+
+			{% else %}
+			<!-- A generic file -->
+			<div class="title">{{ media.title }}</div>
+			<div> A file </div>
+			<div class="desc">{{ media.description }}</div>
+
+			{% endif %}
 		</div>
 	{% endfor %}
 	</div>	

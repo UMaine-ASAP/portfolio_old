@@ -306,6 +306,14 @@ $app->get('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 	}
 	else
 	{
+
+		setBreadcrumb( array( 
+				array(	'name'=>"New Media Portfolio",
+						'url'=>'/portfolio'),
+				array(	'name'=>$proj->title,
+						'url'=>'/project/'.$id),
+				));
+
 		$media = array();
 		foreach ($proj->media as $media_id)
 		{
@@ -398,6 +406,13 @@ $app->get('/project/:id/delete', $authcheck_student, function($id) use ($app) {
 	}
 	else
 	{
+		setBreadcrumb( array( 
+				array(	'name'=>"New Media Portfolio",
+						'url'=>'/portfolio'),
+				array(	'name'=>$proj->title,
+						'url'=>'/project/'.$id),
+				));
+
 		// Trim title if it is too long
 		$t = substr($proj->title, 0, 50);
 		if (strlen($t) < strlen($proj->title)) { $t = $t . "..."; }
@@ -437,6 +452,13 @@ $app->get('/project/:id/media/add', $authcheck_student, function($id) use ($app)
 	}
 	else
 	{
+		setBreadcrumb( array( 
+				array(	'name'=>"New Media Portfolio",
+						'url'=>'/portfolio'),
+				array(	'name'=>$proj->title,
+						'url'=>'/project/'.$id),
+				));
+
 		return $app->render('edit_media.html', 
 			array('project_id' => $id,
 				'media_id' => -1,
@@ -473,6 +495,14 @@ $app->get('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id
 	}
 	else
 	{
+		$proj = ProjectController::viewProject($pid);
+		setBreadcrumb( array( 
+				array(	'name'=>"New Media Portfolio",
+						'url'=>'/portfolio'),
+				array(	'name'=>$proj->title,
+						'url'=>'/project/'.$pid),
+				));
+
 		return $app->render('edit_media.html', array('media' => $id));	//TODO: Pass content
 	}
 });
