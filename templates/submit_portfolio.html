@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+
+{% block page_title %}
+	New Media Portfolio - Submit Portfolio
+{% endblock %}
+
+{% block content %}
+
+	<ul class="menu sgray fade" id="menu">
+		<li><a href="{{ flash['web_root'] }}">New Media Portfolio 2012</a></li>
+		<li class="floatr"><a href="{{ flash['web_root'] }}/logout">Log Out</a></li>
+	</ul>
+
+	<header>
+		Submit Portfolio?
+	</header>
+	
+	<hr>
+	
+	<div id="themed" class="loginForm">
+	
+		<form id="form" name="form" method="post" action="{{ flash['web_root'] }}/portfolio/submit">
+		
+		<p>Are you sure you want to submit your portfolio?</p>
+		<br>
+		<p>(This action cannot be undone!)</p>
+
+		<button type="submit">Submit</button>
+			
+		<div class="spacer"></div>
+
+		</form>
+
+	</div>
+
+{% endblock %}
+
+
