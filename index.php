@@ -90,6 +90,12 @@ $app = new Slim(array(
 	'view' => new TwigView
 ));
 
+/**
+ * Sets breadcrumbs for current page
+ */
+function setBreadcrumb( $breadcrumbs ) {
+	$GLOBALS['app']->flashNow('breadcrumbs', $breadcrumbs);
+}
 
 /** 
  * middleware to check student authentication and redirect to login page 
@@ -265,6 +271,7 @@ $app->get('/project/add', $authcheck_student, function() use ($app) {
  *	View Project
  */
 $app->get('/project/:id', $authcheck_student, function($id) use ($app) {
+
 	//TODO: Handle error messages from failed edits
 	if (!$proj = ProjectController::viewProject($id))
 	{	// User does not have permission to view this Project
@@ -272,6 +279,12 @@ $app->get('/project/:id', $authcheck_student, function($id) use ($app) {
 	}
 	else
 	{
+		setBreadcrumb( array( 
+				array(	'name'=>"New Media Portfolio", 
+						'url'=>'/portfolio')
+				));
+
+
 		$media = array();
 		foreach ($proj->media as $media_id)
 		{
@@ -287,6 +300,7 @@ $app->get('/project/:id', $authcheck_student, function($id) use ($app) {
 				'md5' => $m->md5,
 				'extension' => $m->extension);
 		}
+
 		return $app->render('view_project.html',
 			array('project_id' => $proj->id(),
 				'title' => $proj->title,
