@@ -231,7 +231,7 @@ $app->get('/portfolio', $authcheck_student, function() use ($app) {
 			// Trim description if it is too long
 			$desc = substr($proj->description, 0, 590);
 			if (strlen($desc) < strlen($proj->description)) { $desc = $desc . "..."; }
-			$projects[] = array("project_id" => $proj->id(), "title" => $t, "description" => $desc, "type" => $proj->type);
+			$projects[] = array("project_id" => $proj->id(), "title" => $t, "description" => $desc, "thumbnail" => $proj->thumbnail, "type" => $proj->type);
 		}
 	}
 		
@@ -348,13 +348,18 @@ $app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 		$ext = substr(strrchr($_FILES['thumbnail']['name'], '.'), 1);
 		$thumb_path = __DIR__ . $GLOBALS['thumbnail_path'] . $id . "." . $ext;
 		$size = getimagesize($_FILES['thumbnail']['tmp_name']);
-		$max_width = 80;
-		$max_height = 80;
+		$max_width = 100;
+		$max_height = 100;
 		if (($size[0] > $max_width || $size[1] > $max_height) ||
 			(!($ext == "jpg") && !($ext == "jpeg") && !($ext == "png") && !($ext == "gif")) ||
+			(!unlink($thumb_path)) ||
 			(!move_uploaded_file($_FILES['thumbnail']['tmp_name'], $thumb_path)))
 		{
 			$thumb_path = NULL;
+		}
+		else
+		{
+			$thumb_path = $GLOBALS['thumbnail_path'] . $id . "." . $ext;
 		}
 	}
 	if ($id == -1)
