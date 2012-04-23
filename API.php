@@ -225,7 +225,7 @@ $app->get('/portfolio', function() use ($app) {
  *	Add Project
  */
 $app->get('/project/add', function() use ($app) {
-	//TODO: Handle error messages from failes adds
+	//TODO: Handle error messages from failed adds
 	if (AuthenticationController::check_login())
 	{
 		return $app->render('edit_project.html', 
