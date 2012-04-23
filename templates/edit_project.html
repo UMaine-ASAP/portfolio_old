@@ -1,6 +1,12 @@
 {% extends 'layout.html' %}
 
-{% block page_title %}New Media Portfolio - Edit Project{% endblock %}
+{% block page_title %}
+	{% if project_id == -1 %}
+	New Media Portfolio - Add Project
+	{% else %}
+	New Media Portfolio - Edit Project
+	{% endif %}	
+{% endblock %}
 
 {% block content %}
 
@@ -9,7 +15,13 @@
 		<li class="floatr"><a href="{{ flash['web_root'] }}/logout">Log Out</a></li>
 	</ul>
 
-	<header>Edit Project</header>
+	<header>
+		{% if project_id == -1 %}
+		Add Project
+		{% else %}
+		Edit Project
+		{% endif %}
+	</header>
 	
 	<hr>
 	
