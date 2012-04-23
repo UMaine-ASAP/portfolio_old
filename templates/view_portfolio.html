@@ -4,20 +4,23 @@
 
 {% block content %}
 
-	<div id="themed"style ="position: absolute; right: 0;">
-		<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/portfolio/submit">
-		<button class='right' type="submit">Submit Portfolio</button>
-		</FORM>
+	<div class="header">
+		Your Portfolio
+		
+		<div id="themed" style ="right: 100px;">
+			<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/portfolio/submit">
+			<button class='right' type="submit">Submit Portfolio</button>
+			</FORM>
+		</div>
+		
 	</div>
-
-	<header>Your Portfolio</header>
 	
 	<hr>
 	
 
-	<div id="themed">
+	<div id="themed" style ="right: 100px;">
 		<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/project/add">
-		<button class='left reset' type="submit">Add Project</button>
+		<button class='right' type="submit">Add Project</button>
 		</FORM>
 	</div>
 	<div class='spacer'></div>
@@ -26,7 +29,7 @@
 
 	<p>
 	{% for project in projects %}
-		<div class="project">
+		<div class="projects">
 
 			<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}"><div class="type">
 					{% if project['thumbnail'] != NULL %}
@@ -37,7 +40,7 @@
 			</br>
 			<div class="desc">{{ project['description'] }}</div>
 		
-			<div class"actions" style="float:right;margin-top:-95px;margin-left:850px;">
+			<div class"actions" style="float:right;margin-top:-55px;">
 				<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}/edit"><img src="{{ flash['web_root'] }}/templates/images/icon_Edit.png" border="0" alt="Edit"></a></br>
 				<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}/delete"><img src="{{ flash['web_root'] }}/templates/images/icon_Delete.png" border="0" alt="Delete"></a>
 			</div>

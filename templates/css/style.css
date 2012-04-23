@@ -157,7 +157,7 @@ a {
 	color: #5C6F91;
 }
 
-header {
+.header {
 	padding: 30px 0;
 	text-align: center;
 	font-size: 24px
@@ -601,7 +601,7 @@ header {
 	color: #555
 }
 
-#projects {
+.projects {
 	font-family: Verdana,Geneva,sans-serif;
 	font-size: 11px;
 	height: 111px;
@@ -618,7 +618,7 @@ header {
 	-moz-border-radius: 5px
 }
 
-#title {
+.title {
 	font-size: 24px;
 	font-weight: bold;
 	text-align: left;
@@ -628,7 +628,7 @@ header {
 	padding-left: 11px
 }
 
-#desc {
+.desc {
 	font-size: 11px;
 	color: #848484;
 	padding-left: 11px;
@@ -636,7 +636,7 @@ header {
 	width: 700px
 }
 
-#type {
+.type {
 	float: left;
 	padding-right: 5px;
 	border: solid 1px #e1e8ec;
@@ -647,14 +647,15 @@ header {
 	background-color: #a5a5a5
 }
 
-#actions {
+.actions {
 	height: 105px;
 	width: 72px;
 	margin-bottom: 11px;
 	margin-top: 5px;
 	border: solid 1px #e1e8ec;
 	padding: 5px;
-	margin-bottom: 5px
+	margin-bottom: 5px;
+	float:right;
 }
 
 .breadcrumb-trail {
