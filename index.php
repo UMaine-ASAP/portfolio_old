@@ -596,27 +596,12 @@ $app->get('/portfolio/review', $authcheck_student, function() use ($app) {
 /**
  *	Portfolio Submission
  */
-$app->get('/portfolio/submit', function() use ($app) {					
-	if (AuthenticationController::check_login())
-	{
+$app->get('/portfolio/submit', $authcheck_student, function() use ($app) {					
 		return $app->render('submit_portfolio.html');		
-	}
-	else
-	{
-		return redirect('/login');
-	}
 });
 
-$app->post('/portfolio/submit', function() use ($app) {
-	if (AuthenticationController::check_login())
-	{
-
+$app->post('/portfolio/submit', $authcheck_student, function() use ($app) {
 		return $app->render('portfolio_submitted.html');
-	}
-	else
-	{
-		return redirect('/login');
-	}
 });
 
 
