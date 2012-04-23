@@ -6,4 +6,4 @@ USER=asap
 
 echo "Database: $DB"
 echo "Username: $USER"
-cat $SCRIPTPATH/db_init.sql $SCRIPTPATH/test_data.sql | mysql $DB -u $USER -p
+cat $SCRIPTPATH/mainejournal_init.sql | mysql $DB -u $USER -p
