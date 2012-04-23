@@ -13,7 +13,7 @@
 
 	<header>
 		{% if project_id == -1 %}
-		Add Project
+		Add New Project
 		{% else %}
 		Edit Project
 		{% endif %}
@@ -23,7 +23,7 @@
 	
 	<div id="themed" class="editForm">
 	
-		<form id="form" name="form" method="post" action="{{ flash['web_root'] }}/project/{{ project_id }}/edit">
+		<form id="form" name="form" method="post" enctype="multipart/form-data" action="{{ flash['web_root'] }}/project/{{ project_id }}/edit">
 
 
 		<label>Title</label>
@@ -36,9 +36,14 @@
 
 		<div class='spacer'></div>
 
+		<label>Thumbnail (80 X 80)</label>
+		<input name="projectThumbnail" type="file" /><label></label>
+
+		<div class='spacer'></div>
+
 
 		{% if project_id != -1 %}
-
+		<!-- Editing existing project -->
 		<h1>Media</h1>
 		<a class='button left reset' href="{{ flash['web_root'] }}/project/{{ project_id }}/media/add">Add Media</a>
 		<div class='spacer'></div>
@@ -46,13 +51,23 @@
 
 		<div class='media_items'>
 		{% for media in media_items %}
-			<div class='media'>
+			<div class='media' style='position:relative'>
 				<div id="title">{{ media.title }}</div>
 				<div id="desc">{{ media.description }}</div>
+				<div class="actions">
+					<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}/media/{{ media.id }}/edit"><img src="{{ flash['web_root'] }}/templates/images/icon_Edit.png" border="0" alt="Edit"></a></br>
+					<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}/media/{{ media.id }}/delete"><img src="{{ flash['web_root'] }}/templates/images/icon_Delete.png" border="0" alt="Delete"></a>
+				</div>
 			</div>
+
 		{% endfor %}
 		</div>
 
+		{% else %}
+		<!-- Adding new project -->
+		<h1>Media</h1>
+		<hr>		
+		<div>You must create the project before you can add media.</div>
 		{% endif %}
 
 		<div class='spacer'></div>

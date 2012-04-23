@@ -605,7 +605,7 @@ header {
 	color: #555
 }
 
-#projects {
+.project, .media {
 	font-family: Verdana,Geneva,sans-serif;
 	font-size: 12px;
 	height: 110px;
@@ -622,7 +622,7 @@ header {
 	-moz-border-radius: 5px
 }
 
-#projects img {
+.project img {
 	max-height: 80%;
 	mergin-left: 10px;
 }
@@ -642,7 +642,8 @@ header {
 	color: #848484;
 	padding-left: 10px;
 	margin-left: 120px;
-	width: 700px
+	width: 700px;
+	white-space: normal;
 }
 
 #type {
@@ -656,6 +657,8 @@ header {
 	background-color: #a5a5a5
 }
 
+
+
 #actions {
 	height: 105px;
 	width: 72px;
@@ -664,4 +667,16 @@ header {
 	border: solid 1px #e1e8ec;
 	padding: 5px;
 	margin-bottom: 5px
-}}
+}
+
+.media {
+	width: 800px;
+	height: auto;
+	min-height: 80px;
+}
+
+.actions {
+	position: absolute; 
+	top: 0; 
+	right: 0;
+}

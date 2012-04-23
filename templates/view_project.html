@@ -16,4 +16,20 @@
 	
 	<p>{{ description }}</p>
 
+	<div class='media_items'>
+	{% for media in media_items %}
+		{% if media.mimetype == 'audio/mp3' %}
+			<div>Audio File!</div>
+		{% elseif media.mimetype == 'test' %}
+			<div>Test type</div>
+		{% else %}
+			<div>Some other file!</div>
+		{% endif %}
+		<div class='media'>
+			<div id="title">{{ media.title }}</div>
+			<div id="desc">{{ media.description }}</div>
+		</div>
+	{% endfor %}
+	</div>	
+
 {% endblock %}
