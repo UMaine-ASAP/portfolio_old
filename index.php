@@ -428,7 +428,8 @@ $app->get('/project/:id/delete', $authcheck_student, function($id) use ($app) {
 		return $app->render('delete_project.html',
 			array('project_id' => $id,
 				'title' => $t,
-				'description' => $desc));
+				'description' => $desc,
+				'thumbnail' => $proj->thumbnail));
 	}
 });
 

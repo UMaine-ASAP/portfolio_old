@@ -21,11 +21,15 @@
 
 		<button class='reset' type="submit">Delete</button>
 			
-		<div id="projects">
-			<div id="type"></div>
-			<div id="title">{{ title }}</div>
+		<div class="project">
+			<div class="type">
+				{% if thumbnail != NULL %}
+				<img src="{{ flash['web_root'] }}/{{ thumbnail }}" border="0" alt="Thumb">
+				{% endif %}
+			</div>
+			<div class="title">{{ title }}</div>
 			</br>
-			<div id="desc">{{ description }}</div>
+			<div class="desc">{{ description }}</div>
 		</div>
 
 		<div class="spacer"></div>
