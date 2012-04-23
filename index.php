@@ -235,7 +235,7 @@ $app->get('/portfolio', $authcheck_student, function() use ($app) {
 			$t = substr($proj->title, 0, 50);
 			if (strlen($t) < strlen($proj->title)) { $t = $t . "..."; }
 			// Trim description if it is too long
-			$desc = substr($proj->description, 0, 590);
+			$desc = substr($proj->description, 0, 410);
 			if (strlen($desc) < strlen($proj->description)) { $desc = $desc . "..."; }
 			$projects[] = array("project_id" => $proj->id(), "title" => $t, "description" => $desc, "thumbnail" => $proj->thumbnail, "type" => $proj->type);
 		}
