@@ -269,7 +269,6 @@ $app->get('/project/:id', $authcheck_student, function($id) use ($app) {
 						'url'=>'/portfolio')
 				));
 
-
 		$media = array();
 		foreach ($proj->media as $media_id)
 		{
@@ -290,6 +289,7 @@ $app->get('/project/:id', $authcheck_student, function($id) use ($app) {
 			array('project_id' => $proj->id(),
 				'title' => $proj->title,
 				'description' => $proj->description,
+				'thumbnail' => $proj->thumbnail,
 				'media_items' => $media));
 	}
 });
@@ -340,11 +340,27 @@ $app->get('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 });
 
 $app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
+	// Handle thumbnail upload
+	$thumb_path = NULL;
+	if (isset($_FILES['thumbnail']))
+	{
+		// Get extention
+		$ext = substr(strrchr($_FILES['thumbnail']['name'], '.'), 1);
+		$thumb_path = __DIR__ . $GLOBALS['thumbnail_path'] . $id . "." . $ext;
+		$size = getimagesize($_FILES['thumbnail']['tmp_name']);
+		$max_width = 80;
+		$max_height = 80;
+		if (($size[0] > $max_width || $size[1] > $max_height) ||
+			(!($ext == "jpg") && !($ext == "jpeg") && !($ext == "png") && !($ext == "gif")) ||
+			(!move_uploaded_file($_FILES['thumbnail']['tmp_name'], $thumb_path)))
+		{
+			$thumb_path = NULL;
+		}
+	}
 	if ($id == -1)
 	{	// Sent from add_project, we need to create a Project
 		if (!isset($_POST['title']))
 		{	// Reject, form invalid
-			
 			$app->flash('error', true);
 			return redirect('/project/add');	//TODO: Save partial title/desc on return to form
 		}
@@ -352,7 +368,7 @@ $app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 		{
 			$proj = ProjectController::createProject($_POST['title'],
 				(isset($_POST['description']) ? $_POST['description'] : NULL),
-				NULL,	//TODO: Thumbnail goes here
+				$thumb_path,
 				1);
 			if ((!$nmd_port = getNMDPortfolio()) ||
 				(!PortfolioController::addProjectToPortfolio($nmd_port->id(), $proj->id())))
@@ -368,7 +384,7 @@ $app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 		if (!ProjectController::editProject($id, 
 			(isset($_POST['title']) ? $_POST['title'] : NULL),
 			(isset($_POST['description']) ? $_POST['description'] : NULL),
-			NULL,	//TODO: Thumbnail goes here
+			$thumb_path,
 			NULL))
 		{
 			$app->flashNow('error', true);
