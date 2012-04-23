@@ -36,6 +36,9 @@
 
 		<div class='spacer'></div>
 
+
+		{% if project_id != -1 %}
+
 		<h1>Media</h1>
 		<a class='button left reset' href="{{ flash['web_root'] }}/project/{{ project_id }}/media/add">Add Media</a>
 		<div class='spacer'></div>
@@ -48,7 +51,9 @@
 				<div id="desc">{{ media.description }}</div>
 			</div>
 		{% endfor %}
-	</div>
+		</div>
+
+		{% endif %}
 
 		<div class='spacer'></div>
 
