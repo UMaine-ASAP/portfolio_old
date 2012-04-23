@@ -286,7 +286,6 @@ $app->get('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 	}
 	else
 	{
-		$media = array();
 		foreach ($proj->media as $media_id)
 		{
 			$m = MediaController::viewMedia($media_id);
