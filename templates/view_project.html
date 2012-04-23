@@ -15,42 +15,49 @@
 
 	<div class='media_items'>
 	{% for media in media_items %}
-		<div class='media'>
+
 			{% if media.mimetype in ['image/png', 'image/jpeg', 'image/gif'] %}
 			<!-- Image -->
-			<div class="title">{{ media.title }}</div>
-			<img src="{{ flash['web_root'] }}/media/{{ media.filename }}"/>
-			<div class="desc">{{ media.description }}</div>
-
+			<div class='media image'>
+				<div class="title">{{ media.title }}</div>
+				<img src="{{ flash['web_root'] }}/media/{{ media.filename }}"/>
+				<div class="desc">{{ media.description }}</div>
+			</div>
 			{% elseif media.mimetype in ['audio/mp32'] %}
 			<!-- Audio -->
-			<div class="title">{{ media.title }}</div>
-			<div> Audio </div>
-			<div class="desc">{{ media.description }}</div>
+			<div class='media audio'>
+				<div class="title">{{ media.title }}</div>
+				<div> Audio </div>
+				<div class="desc">{{ media.description }}</div>
+			</div>
 			{% elseif media.mimetype in ['video/mp4', 'video/ogv', 'video/webm'] %}
 			<!-- Video -->
-			<video controls="controls"> 
-				<div class="title">{{ media.title }}</div>
-				<source src="{{ flash['web_root'] }}/media/{{ media.filename }}" type="{{ media.mimetype }}" /> 				
+			<div class='media video'>
+				<video controls="controls"> 
+					<div class="title">{{ media.title }}</div>
+					<source src="{{ flash['web_root'] }}/media/{{ media.filename }}" type="{{ media.mimetype }}" /> 				
 				<!--
 				<source src="" type="video/mp4" /> 
 				<source src="" type="video/ogv" /> 
 				<source src="" type="video/webm" />
   				-->
-				Your browser does not support the video tag </video>
-				<div class="desc">{{ media.description }}</div>
-
+					Your browser does not support the video tag </video>
+					<a href="{{ flash['web_root'] }}/media/{{ media.filename }}">Download the file here</a>
+					<div class="desc">{{ media.description }}</div>
+			</div>
 			{% elseif media.mimetype == '' %}
 			<!-- Text -->
-			<div class="title">{{ media.title }}</div>
-			<p class="desc">{{ media.description }}</p>
-
+			<div class='media text'>
+				<div class="title">{{ media.title }}</div>
+				<p class="desc">{{ media.description }}</p>
+			</div>
 			{% else %}
 			<!-- A generic file -->
-			<div class="title">{{ media.title }}</div>
-			<div>File: <a href="{{ flash['web_root'] }}/media/{{ media.filename }}">{{ media.title }}</a></div>
-			<div class="desc">{{ media.description }}</div>
-
+			<div class='media file'>
+				<div class="title">{{ media.title }}</div>
+				<div>File: <a href="{{ flash['web_root'] }}/media/{{ media.filename }}">{{ media.title }}</a></div>
+				<div class="desc">{{ media.description }}</div>
+			</div>
 			{% endif %}
 		</div>
 	{% endfor %}

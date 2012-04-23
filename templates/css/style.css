@@ -684,3 +684,7 @@ header {
 .media .desc {
 	white-space: normal;
 }
+
+.media {
+	max-width: 100%;
+}
