@@ -683,3 +683,7 @@ header {
 .breadcrumb-trail {
 	margin-top: 8px;
 }
+
+.media .desc {
+	white-space: normal;
+}
