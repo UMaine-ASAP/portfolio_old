@@ -58,7 +58,6 @@ function permission_denied()
 }
 
 
-
 /************************************************
  * ROUTING!!									*
  ***********************************************/
@@ -69,6 +68,35 @@ function permission_denied()
 $app = new Slim(array(
 	'view' => new TwigView
 ));
+
+
+/** 
+ * middleware to check student authentication and redirect to login page 
+ */
+$authcheck_student = function ()
+{	
+	//Redirect to login if not authenticated
+	if ( ! AuthenticationController::check_login() )
+	{
+		redirect('/login');
+		return false;
+	}
+	return true;
+};
+
+/**
+ * Middleware to redirect user based on role to role-specific homepage
+ */
+$redirect_loggedInUser = function () use ($authcheck_student)
+{
+	//@TODO: We will want to get the user role and direct user depending on whether student or faculty ...
+
+	if ( AuthenticationController::check_login() )
+	{	// User is already logged in
+		return redirect('/portfolio');
+	}
+};
+
 // Inform app of the web root for the next HTML request
 $app->flashNow('web_root', $GLOBALS['web_root']);
 
@@ -76,30 +104,16 @@ $app->flashNow('web_root', $GLOBALS['web_root']);
 /**
  *	Webroot
  */
-$app->get('/', function() use ($app) {
-	if (AuthenticationController::check_login())
-	{
-		return redirect('/portfolio');
-	}
-	else
-	{
-		return redirect('/login');
-	}
+$app->get('/', $authcheck_student, function() use ($app) {
+	return redirect('/portfolio');	
 });
 
 
 /**
  *	Login
  */
-$app->get('/login', function() use ($app) {
-	if (AuthenticationController::check_login())
-	{	// User is already logged in
-		return redirect('/portfolio');
-	}
-	else
-	{
-		return $app->render('login.html');
-	}
+$app->get('/login', $redirect_loggedInUser, function() use ($app) {
+	return $app->render('login.html');
 });
 
 $app->post('/login', function() use ($app) {
@@ -130,15 +144,8 @@ $app->get('/logout', function() use ($app) {
 /**
  *	Register
  */
-$app->get('/register', function() use ($app) {					
-	if (!AuthenticationController::check_login())
-	{
-		return $app->render('register.html');		
-	}
-	else
-	{
-		return redirect('/portfolio');
-	}
+$app->get('/register', $redirect_loggedInUser, function() use ($app) {					
+	return $app->render('register.html');
 });
 
 $app->post('/register', function() use ($app) {
@@ -196,72 +203,52 @@ $app->post('/register', function() use ($app) {
 /**
  *	View Portfolio
  */
-$app->get('/portfolio', function() use ($app) {
-	if (AuthenticationController::check_login())
-	{
-		$nmd_port = getNMDPortfolio();
+$app->get('/portfolio', $authcheck_student, function() use ($app) {
+	$nmd_port = getNMDPortfolio();
 
-		// Create multi-dimensional array of Project properties
-		$projects = array();
-		if ($nmd_port)
-		{
-			foreach ($nmd_port->children as $child_id=>$arr)
-			{
-				$proj = ProjectController::viewProject($child_id);	// assume all children are Projects
-				$projects[] = array("project_id" => $proj->id(), "title" => $proj->title, "description" => $proj->description, "type" => $proj->type);
-			}
-		}
-		
-		return $app->render('view_portfolio.html', array('projects' => $projects));
-	}
-	else
+	// Create multi-dimensional array of Project properties
+	$projects = array();
+	if ($nmd_port)
 	{
-		return redirect('/login');
+		foreach ($nmd_port->children as $child_id=>$arr)
+		{
+			$proj = ProjectController::viewProject($child_id);	// assume all children are Projects
+			$projects[] = array("project_id" => $proj->id(), "title" => $proj->title, "description" => $proj->description, "type" => $proj->type);
+		}
 	}
+		
+	return $app->render('view_portfolio.html', array('projects' => $projects));
 });
 
 
 /**
  *	Add Project
  */
-$app->get('/project/add', function() use ($app) {
+$app->get('/project/add', $authcheck_student, function() use ($app) {
 	//TODO: Handle error messages from failed adds
-	if (AuthenticationController::check_login())
-	{
-		return $app->render('edit_project.html', 
-			array('project_id' => -1,
-				'title' => "",
-				'description' => ""));
-	}
-	else
-	{
-		return redirect('/login');
-	}
+	return $app->render('edit_project.html', 
+		array('project_id' => -1,
+			'title' => "",
+			'description' => ""));
+
 });
 
 
 /**
  *	View Project
  */
-$app->get('/project/:id', function($id) use ($app) {
+$app->get('/project/:id', $authcheck_student, function($id) use ($app) {
 	//TODO: Handle error messages from failed edits
-	if (AuthenticationController::check_login())
-	{
-		if (!$proj = ProjectController::viewProject($id))
-		{	// User does not have permission to view this Project
-			return permission_denied();
-		}
-		else
-		{
-			return $app->render('view_project.html',
-				array('project_id' => $proj->id(),
-					'title' => $proj->title,
-					'description' => $proj->description));
-		}
+	if (!$proj = ProjectController::viewProject($id))
+	{	// User does not have permission to view this Project
+		return permission_denied();
 	}
 	else
 	{
-		return redirect('/login');
+		return $app->render('view_project.html',
+			array('project_id' => $proj->id(),
+				'title' => $proj->title,
+				'description' => $proj->description));
 	}
 });
 
@@ -269,113 +256,85 @@ $app->get('/project/:id', function($id) use ($app) {
 /**
  *	Edit Project
  */
-$app->get('/project/:id/edit', function($id) use ($app) {					
-	if (AuthenticationController::check_login())
-	{
-		if ((!$proj = ProjectController::viewProject($id)) ||
-			(!$proj->havePermissionOrHigher(OWNER)))
-		{	// User does not have permission to edit this Project
-			return permission_denied();
-		}
-		else
-		{
-			return $app->render('edit_project.html',
-				array('project_id' => $id,
-					'title' => $proj->title,
-					'description' => $proj->description));
-		}
+$app->get('/project/:id/edit', $authcheck_student, function($id) use ($app) {					
+	if ((!$proj = ProjectController::viewProject($id)) ||
+		(!$proj->havePermissionOrHigher(OWNER)))
+	{	// User does not have permission to edit this Project
+		return permission_denied();
 	}
 	else
 	{
-		return redirect('/login');
+		return $app->render('edit_project.html',
+			array('project_id' => $id,
+				'title' => $proj->title,
+				'description' => $proj->description));
 	}
 });
 
-$app->post('/project/:id/edit', function($id) use ($app) {
-	if (AuthenticationController::check_login())
-	{
-		if ($id == -1)
-		{	// Sent from add_project, we need to create a Project
-			if (!isset($_POST['title']))
-			{	// Reject, form invalid
-				$app->flashNow('error', true);
-				return redirect('/project/add');	//TODO: Save partial title/desc on return to form
-			}
-			else
-			{
-				$proj = ProjectController::createProject($_POST['title'],
-					(isset($_POST['description']) ? $_POST['description'] : NULL),
-					1);
-				if ((!$nmd_port = getNMDPortfolio()) ||
-					(!PortfolioController::addProjectToPortfolio($nmd_port->id(), $proj->id())))
-				{
-					$proj->delete();
-					return permission_denied();
-				}
-				$id = $proj->id();
-			}
+$app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
+	if ($id == -1)
+	{	// Sent from add_project, we need to create a Project
+		if (!isset($_POST['title']))
+		{	// Reject, form invalid
+			$app->flashNow('error', true);
+			return redirect('/project/add');	//TODO: Save partial title/desc on return to form
 		}
 		else
 		{
-			if (!ProjectController::editProject($id, 
-				(isset($_POST['title']) ? $_POST['title'] : NULL),
+			$proj = ProjectController::createProject($_POST['title'],
 				(isset($_POST['description']) ? $_POST['description'] : NULL),
-				NULL))
+				1);
+			if ((!$nmd_port = getNMDPortfolio()) ||
+				(!PortfolioController::addProjectToPortfolio($nmd_port->id(), $proj->id())))
 			{
-				$app->flashNow('error', true);
+				$proj->delete();
+				return permission_denied();
 			}
+			$id = $proj->id();
 		}
-		return redirect('/project/'.$id);
 	}
 	else
 	{
-		return redirect('/login');
+		if (!ProjectController::editProject($id, 
+			(isset($_POST['title']) ? $_POST['title'] : NULL),
+			(isset($_POST['description']) ? $_POST['description'] : NULL),
+			NULL))
+		{
+			$app->flashNow('error', true);
+		}
 	}
+	return redirect('/project/'.$id);
 });
 
 
 /**
  *	Delete Project
  */
-$app->get('/project/:id/delete', function($id) use ($app) {
-	if (AuthenticationController::check_login())
+$app->get('/project/:id/delete', $authcheck_student, function($id) use ($app) {
+	if ((!$proj = ProjectController::viewProject($id)) ||
+		(!$proj->havePermissionOrHigher(OWNER)))
 	{
-		if ((!$proj = ProjectController::viewProject($id)) ||
-			(!$proj->havePermissionOrHigher(OWNER)))
-		{
-			return permission_denied();
-		}
-		else
-		{
-			return $app->render('delete_project.html',
-				array('project_id' => $id,
-					'title' => $proj->title,
-					'description' => $proj->description));
-		}
+		return permission_denied();
 	}
 	else
 	{
-		return redirect('/login');
+		return $app->render('delete_project.html',
+			array('project_id' => $id,
+				'title' => $proj->title,
+				'description' => $proj->description));
 	}
 });
 
-$app->post('/project/:id/delete', function($id) use ($app) {
-	if (AuthenticationController::check_login())
-	{
-		if ((!$proj = ProjectController::viewProject($id) ||
-			(!$proj->havePermissionOrHigher(OWNER))) ||
-			(!ProjectController::deleteProject($id)))
-		{	// User does not have permission to edit this Project
-			return permission_denied();
-		}
-		else
-		{
-			return redirect('/portfolio');
-		}
+$app->post('/project/:id/delete', $authcheck_student, function($id) use ($app) {
+	if ((!$proj = ProjectController::viewProject($id) ||
+		(!$proj->havePermissionOrHigher(OWNER))) ||
+		(!ProjectController::deleteProject($id)))
+	{	// User does not have permission to edit this Project
+		return permission_denied();
 	}
 	else
 	{
-		return redirect('/login');
+		return redirect('/portfolio');
 	}
 });
 
@@ -383,29 +342,22 @@ $app->post('/project/:id/delete', function($id) use ($app) {
 /**
  *	Add Media
  */
-$app->get('/project/:id/media/add', function($id) use ($app) {
+$app->get('/project/:id/media/add', $authcheck_student, function($id) use ($app) {
 	//TODO: Handle error messages from failed adds
-	if (AuthenticationController::check_login())
-	{	
-		if ((!$proj = ProjectController::viewProject($id)) ||
-			(!$proj->havePermissionOrHigher(OWNER)))
-		{
-			return permission_denied();
-		}
-		else
-		{
-			return $app->render('edit_media.html', 
-				array('project_id' => $id,
-					'media_id' => -1,
-					'title' => "",
-					'description' => "",
-					'filename' => "",
-					'mimetype' => ""));
-		}
+	if ((!$proj = ProjectController::viewProject($id)) ||
+		(!$proj->havePermissionOrHigher(OWNER)))
+	{
+		return permission_denied();
 	}
 	else
 	{
-		return redirect('/login');
+		return $app->render('edit_media.html', 
+			array('project_id' => $id,
+				'media_id' => -1,
+				'title' => "",
+				'description' => "",
+				'filename' => "",
+				'mimetype' => ""));
 	}
 });
 
@@ -413,21 +365,14 @@ $app->get('/project/:id/media/add', function($id) use ($app) {
 /**
  *	View Media
  */
-$app->get('project/:pid/media/:id', function($pid, $id) use ($app) {
-	if (AuthneticationController::check_login())
+$app->get('project/:pid/media/:id', $authcheck_student, function($pid, $id) use ($app) {
+	if (!$media = MediaController::viewMedia($id))
 	{
-		if (!$media = MediaController::viewMedia($id))
-		{
-			return permission_denied();
-		}
-		else
-		{
-			return $app->render('view_media.html', array('media' => $id));	//TODO: Pass content
-		}
+		return permission_denied();
 	}
 	else
 	{
-		return redirect('/login');
+		return $app->render('view_media.html', array('media' => $id));	//TODO: Pass content
 	}
 });
 
@@ -435,75 +380,61 @@ $app->get('project/:pid/media/:id', function($pid, $id) use ($app) {
 /**
  *	Edit Media
  */
-$app->get('project/:pid/media/:id/edit', function($pid, $id) use ($app) {
-	if (AuthenticationController::check_login())
+$app->get('project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {
+	if (!$media = MediaController::viewMedia($id))
 	{
-		if (!$media = MediaController::viewMedia($id))
-		{
-			return permission_denied();
-		}
-		else
-		{
-			return $app->render('edit_media.html', array('media' => $id));	//TODO: Pass content
-		}
+		return permission_denied();
 	}
 	else
 	{
-		return redirect('/login');
+		return $app->render('edit_media.html', array('media' => $id));	//TODO: Pass content
 	}
 });
 
-$app->post('project/:pid/media/:id/edit', function($pid, $id) use ($app) {
-	if (AuthenticationController::check_login())
+$app->post('project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {
+	if ((!$proj = ProjectController::viewProject($pid)) ||
+		(!$proj->havePermissionOrHigher(OWNER)))
 	{
-		if ((!$proj = ProjectController::viewProject($pid)) ||
-			(!$proj->havePermissionOrHigher(OWNER)))
-		{
-			return permission_denied();
-		}
-		else
-		{
-			if ($id == -1)
-			{	// Sent from add_media, we need to create a New Media (hehehe)
-				if (!isset($_POST['title']) || !isset($_POST['filename']) || !isset($_POST['filesize']) ||
-					!isset($_POST['md5']) || !isset($_POST['extension']) || !isset($_POST['type']))
-				{	// Reject, form invalid
-					$app->flashNow('error', true);
-					return redirect('project/:id/media/add');	//TODO: Save partial fields on return to form
-				}
-				else
-				{
-					$media = MediaController::createMedia($_POST['type'],
-						$_POST['title'],
-						(isset($_POST['description']) ? $_POST['description'] : NULL),
-						$_POST['filename'],
-						$_POST['filesize'],
-						$_POST['md5'],
-						$_POST['extension']);
-					ProjectController::addMediaToProject($proj->id(), $media->id());
-					$id = $media->id();
-				}
-			}
-			else	// We are editing an existing piece of Media
-			{
-				if (!MediaController::editMedia($id,
-					(isset($_POST['type']) ? $_POST['type'] : NULL),
-					(isset($_POST['title']) ? $_POST['title'] : NULL),
-					(isset($_POST['description']) ? $_POST['description'] : NULL),
-					(isset($_POST['filename']) ? $_POST['filename'] : NULL),
-					(isset($_POST['filesize']) ? $_POST['filesize'] : NULL),
-					(isset($_POST['md5']) ? $_POST['md5'] : NULL),
-					(isset($_POST['extension']) ? $_POST['extension'] : NULL)))
-				{
-					return permission_denied();
-				}
-			}
-			return redirect('project/'.$pid);
-		}
+		return permission_denied();
 	}
 	else
 	{
-		return redirect('/login');
+		if ($id == -1)
+		{	// Sent from add_media, we need to create a New Media (hehehe)
+			if (!isset($_POST['title']) || !isset($_POST['filename']) || !isset($_POST['filesize']) ||
+				!isset($_POST['md5']) || !isset($_POST['extension']) || !isset($_POST['type']))
+			{	// Reject, form invalid
+				$app->flashNow('error', true);
+				return redirect('project/:id/media/add');	//TODO: Save partial fields on return to form
+			}
+			else
+			{
+				$media = MediaController::createMedia($_POST['type'],
+					$_POST['title'],
+					(isset($_POST['description']) ? $_POST['description'] : NULL),
+					$_POST['filename'],
+					$_POST['filesize'],
+					$_POST['md5'],
+					$_POST['extension']);
+				ProjectController::addMediaToProject($proj->id(), $media->id());
+				$id = $media->id();
+			}
+		}
+		else	// We are editing an existing piece of Media
+		{
+			if (!MediaController::editMedia($id,
+				(isset($_POST['type']) ? $_POST['type'] : NULL),
+				(isset($_POST['title']) ? $_POST['title'] : NULL),
+				(isset($_POST['description']) ? $_POST['description'] : NULL),
+				(isset($_POST['filename']) ? $_POST['filename'] : NULL),
+				(isset($_POST['filesize']) ? $_POST['filesize'] : NULL),
+				(isset($_POST['md5']) ? $_POST['md5'] : NULL),
+				(isset($_POST['extension']) ? $_POST['extension'] : NULL)))
+			{
+				return permission_denied();
+			}
+		}
+		return redirect('project/'.$pid);
 	}
 });
 
@@ -511,21 +442,14 @@ $app->post('project/:pid/media/:id/edit', function($pid, $id) use ($app) {
 /**
  *	Delete Media
  */
-$app->post('/project/:pid/media/:id/delete', function($pid, $id) use ($app) {
-	if (AuthenticationController::check_login())
+$app->post('/project/:pid/media/:id/delete', $authcheck_student, function($pid, $id) use ($app) {
+	if (!$media = MediaController::deleteMedia($id))
 	{
-		if (!$media = MediaController::deleteMedia($id))
-		{
-			return permission_denied();
-		}
-		else
-		{
-			return redirect('/project/'.$pid);
-		}
+		return permission_denied();
 	}
 	else
 	{
-		return redirect('/login');
+		return redirect('/project/'.$pid);
 	}
 });	//TODO
 
@@ -533,30 +457,16 @@ $app->post('/project/:pid/media/:id/delete', function($pid, $id) use ($app) {
 /**
  *	Review Portfolio
  */
-$app->get('/portfolio/review', function() use ($app) {					
-	if (AuthenticationController::check_login())
-	{
-		return $app->render('review_portfolio.html');		
-	}
-	else
-	{
-		return redirect('/login');
-	}
+$app->get('/portfolio/review', $authcheck_student, function() use ($app) {					
+	return $app->render('review_portfolio.html');		
 });
 
 
 /**
  *	Portfolio Submission
  */
-$app->get('/portfolio/submit', function() use ($app) {					
-	if (AuthenticationController::check_login())
-	{
-		return $app->render('portfolio_submitted.html');		
-	}
-	else
-	{
-		return redirect('/login');
-	}
+$app->get('/portfolio/submit', $authcheck_student, function() use ($app) {					
+	return $app->render('portfolio_submitted.html');		
 });
 
 
