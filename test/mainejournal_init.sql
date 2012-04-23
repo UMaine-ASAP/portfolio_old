@@ -507,15 +507,15 @@ INSERT INTO `REPO_Departments` (`dept_id`, `college_id`, `name`, `description`, 
 DROP TABLE IF EXISTS `REPO_Media`;
 CREATE TABLE IF NOT EXISTS `REPO_Media` (
   `media_id` int(11) NOT NULL AUTO_INCREMENT,
-  `mimetype` varchar(255) CHARACTER SET latin1 NOT NULL,
+  `mimetype` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
   `title` varchar(255) CHARACTER SET latin1 NOT NULL,
-  `description` text CHARACTER SET latin1,
+  `description` text CHARACTER SET latin1 DEFAULT NULL,
   `created` datetime NOT NULL,
   `edited` datetime DEFAULT NULL,
-  `filename` text CHARACTER SET latin1 NOT NULL,
-  `filesize` int(11) NOT NULL,
-  `md5` char(32) CHARACTER SET latin1 NOT NULL,
-  `extension` varchar(10) CHARACTER SET latin1 NOT NULL,
+  `filename` text CHARACTER SET latin1 DEFAULT NULL,
+  `filesize` int(11) DEFAULT NULL,
+  `md5` char(32) CHARACTER SET latin1 DEFAULT NULL,
+  `extension` varchar(10) CHARACTER SET latin1 DEFAULT NULL,
   PRIMARY KEY (`media_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Unit of media contained within a body of work' AUTO_INCREMENT=1 ;
 
