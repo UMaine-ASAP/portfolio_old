@@ -639,7 +639,7 @@ $app->get('/portfolio/submit', $authcheck_student, function() use ($app) {
 });
 
 $app->post('/portfolio/submit', $authcheck_student, function() use ($app) {
-	return redirect('/portfolio');
+	return permission_denied();
 	//return $app->render('portfolio_submitted.html');
 });
 
