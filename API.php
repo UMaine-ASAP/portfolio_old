@@ -338,17 +338,39 @@ $app->post('/project/:id/edit', function($id) use ($app) {
 /**
  *	Delete Project
  */
+$app->get('/project/:id/delete', function($id) use ($app) {
+	if (AuthenticationController::check_login())
+	{
+		if ((!$proj = ProjectController::viewProject($id)) ||
+			(!$proj->havePermissionOrHigher(OWNER)))
+		{
+			return permission_denied();
+		}
+		else
+		{
+			return $app->render('delete_project.html',
+				array('proj_id' => $id,
+					'title' => $proj->title,
+					'description' => $proj->description));
+		}
+	}
+	else
+	{
+		return redirect('/login');
+	}
+});
+
 $app->post('/project/:id/delete', function($id) use ($app) {
 	if (AuthenticationController::check_login())
 	{
 		if ((!$proj = ProjectController::viewProject($id) ||
-			(!$proj->havePermissionOrHigher(OWNER))))
+			(!$proj->havePermissionOrHigher(OWNER))) ||
+			(!ProjectController::deleteProject($id)))
 		{	// User does not have permission to edit this Project
 			return permission_denied();
 		}
 		else
 		{
-			ProjectController::deleteProject($id);
 			return redirect('/portfolio');
 		}
 	}
