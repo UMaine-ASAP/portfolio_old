@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 22, 2012 at 09:05 PM
+-- Generation Time: Apr 22, 2012 at 11:12 PM
 -- Server version: 5.5.21
 -- PHP Version: 5.3.8
 
@@ -34,27 +34,15 @@ CREATE TABLE IF NOT EXISTS `AUTH_Groups` (
   `owner_user_id` int(11) NOT NULL,
   `private` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`group_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Designation and description of groups' AUTO_INCREMENT=15 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Designation and description of groups' AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `AUTH_Groups`
 --
 
 INSERT INTO `AUTH_Groups` (`group_id`, `name`, `description`, `owner_user_id`, `private`) VALUES
-(1, 'asap', 'ASAP Media Services', 1, 0),
-(2, 'NMD302 Group 4', 'Developing a touch wall', 1, 1),
-(3, 'CUGR Showcase', 'Yearly showcase of undergraduate research', 1, 0),
-(4, 'MAT258 Group 2', 'Studying something related to mathematics', 1, 1),
-(5, 'New Media Freshman Portfolio 2012 Permissions', 'Permissions for New Media Freshman Portfolio 2012', 3, 1),
-(6, 'Test Project! Permissions', 'Permissions for Test Project!', 3, 1),
-(7, 'Test project! Permissions', 'Permissions for Test project!', 3, 1),
-(8, 'TEST PORT Permissions', 'Permissions for TEST PORT', 2, 1),
-(9, 'Test Project! Permissions', 'Permissions for Test Project!', 3, 1),
-(10, 'Test Project! Permissions', 'Permissions for Test Project!', 3, 1),
-(11, 'Test Permissions', 'Permissions for Test', 3, 1),
-(12, 'Test Project! Permissions', 'Permissions for Test Project!', 3, 1),
-(13, 'Blergh Permissions', 'Permissions for Blergh', 3, 1),
-(14, 'Another Test Project!! Permissions', 'Permissions for Another Test Project!!', 3, 1);
+(1, 'Administrators', 'Sysadmins', 1, 1),
+(2, 'New Media 2012 Freshman', 'New Media majors that were freshman in Spring 2012', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -70,27 +58,14 @@ CREATE TABLE IF NOT EXISTS `AUTH_Group_user_map` (
   PRIMARY KEY (`id`),
   KEY `group_id` (`group_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of people to groups' AUTO_INCREMENT=15 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of people to groups' AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `AUTH_Group_user_map`
 --
 
 INSERT INTO `AUTH_Group_user_map` (`id`, `group_id`, `user_id`) VALUES
-(1, 1, 2),
-(2, 2, 2),
-(3, 3, 1),
-(4, 4, 2),
-(5, 5, 3),
-(6, 6, 3),
-(7, 7, 3),
-(8, 8, 2),
-(9, 9, 3),
-(10, 10, 3),
-(11, 11, 3),
-(12, 12, 3),
-(13, 13, 3),
-(14, 14, 3);
+(1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -119,16 +94,14 @@ CREATE TABLE IF NOT EXISTS `AUTH_Users` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `username` (`username`),
   KEY `type_id` (`type_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='All registered users of the system' AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='All registered users of the system' AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `AUTH_Users`
 --
 
 INSERT INTO `AUTH_Users` (`user_id`, `username`, `pass`, `first`, `middle`, `last`, `email`, `email_priv`, `addn_contact`, `bio`, `user_pic`, `major`, `minor`, `grad_year`, `type_id`, `deactivated`) VALUES
-(1, 'fergie', 'password1', 'President', 'Paul', 'Ferguson', 'fergaliciousDef@maine.edu', 0, NULL, '', NULL, NULL, NULL, NULL, 1, 0),
-(2, 'asap', 'asap4u', 'ASAP', '', 'Media Services', 'ASAP@maine.edu', 0, NULL, '', NULL, NULL, NULL, NULL, 1, 0),
-(3, 'username', '$2a$08$rGGmsfcA5woRljxeErIEXebvGz3AwJmHkL6LYvq2/54.yLjvEOf.6', 'Anonymous', NULL, 'User', 'anonymous.user@umit.maine.edu', 1, NULL, NULL, NULL, NULL, NULL, NULL, 2, 0);
+(1, 'admin', 'nothing', 'Admin', NULL, 'Instrator', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -142,27 +115,16 @@ CREATE TABLE IF NOT EXISTS `AUTH_User_types` (
   `name` varchar(255) CHARACTER SET latin1 NOT NULL,
   `description` text CHARACTER SET latin1,
   PRIMARY KEY (`type_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Types of users in the system' AUTO_INCREMENT=15 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Types of users in the system' AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `AUTH_User_types`
 --
 
 INSERT INTO `AUTH_User_types` (`type_id`, `name`, `description`) VALUES
-(1, 'admin', 'Administrator'),
-(2, 'staff', 'University staff'),
-(3, 'monkey', 'Primates'),
-(4, 'human', 'Us'),
-(5, 'mainejournal', 'MaineJournal staff'),
-(6, 'undergrad', 'Undergraduates'),
-(7, 'graduate', 'Graduate students'),
-(8, 'alumni', 'Alumni of UMO'),
-(9, 'faculty', 'University faculty'),
-(10, 'janitor', 'University janitorial team'),
-(11, 'lackey', ''),
-(12, 'president', 'Presidents of various things...'),
-(13, 'community', 'Greater University community'),
-(14, 'asap', 'ASAP Media Services staff');
+(0, 'Admin', 'Sysadmin'),
+(1, 'Faculty', 'Members of the faculty'),
+(2, 'Undergraduates', NULL);
 
 -- --------------------------------------------------------
 
@@ -185,16 +147,7 @@ CREATE TABLE IF NOT EXISTS `EVAL_Components` (
   KEY `type` (`type`),
   KEY `category` (`category`),
   KEY `creator_user_id` (`creator_user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=4 ;
-
---
--- Dumping data for table `EVAL_Components`
---
-
-INSERT INTO `EVAL_Components` (`component_id`, `type`, `question`, `options`, `required`, `weight`, `category`, `private`, `creator_user_id`) VALUES
-(1, 1, 'On a scale of 1-10, how readable was code produced?', '1,2,3,4,5,6,7,8,9,10', 1, 100, 1, 0, 1),
-(2, 2, 'Check all that apply', 'Team meetings were worth attending,Valuable critique was given to group members,Some members did all the work,I feel my contribution to the team was valuable', 0, 100, 2, 1, 1),
-(3, 3, 'Additional comments', NULL, 0, 0, 2, 0, 1);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -208,15 +161,7 @@ CREATE TABLE IF NOT EXISTS `EVAL_Component_categories` (
   `name` varchar(255) CHARACTER SET latin1 NOT NULL,
   `description` text CHARACTER SET latin1,
   PRIMARY KEY (`category_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Possible categories of components to be grouped together' AUTO_INCREMENT=3 ;
-
---
--- Dumping data for table `EVAL_Component_categories`
---
-
-INSERT INTO `EVAL_Component_categories` (`category_id`, `name`, `description`) VALUES
-(1, 'Coders', 'Components related to the evaluation of a programmer'),
-(2, 'Teamwork', 'Components related to evaluating aspects of teamwork as a group');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Possible categories of components to be grouped together' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -230,16 +175,7 @@ CREATE TABLE IF NOT EXISTS `EVAL_Component_types` (
   `name` varchar(255) CHARACTER SET latin1 NOT NULL,
   `description` text CHARACTER SET latin1,
   PRIMARY KEY (`type_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Different types of components (radio buttons, etc.)' AUTO_INCREMENT=4 ;
-
---
--- Dumping data for table `EVAL_Component_types`
---
-
-INSERT INTO `EVAL_Component_types` (`type_id`, `name`, `description`) VALUES
-(1, 'radio button', 'Component giving the user the option of a single choice from many'),
-(2, 'check boxes', 'Component giving the user the option of multiple choices from many'),
-(3, 'text box', 'Component giving the user the ability to enter a textual answer');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Different types of components (radio buttons, etc.)' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -265,16 +201,7 @@ CREATE TABLE IF NOT EXISTS `EVAL_Evaluations` (
   KEY `evaluator_user_id` (`evaluator_user_id`),
   KEY `status` (`status`),
   KEY `type` (`type`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=4 ;
-
---
--- Dumping data for table `EVAL_Evaluations`
---
-
-INSERT INTO `EVAL_Evaluations` (`evaluation_id`, `form_id`, `assigned_by_user_id`, `created`, `due_date`, `completed_date`, `evaluator_user_id`, `evaluated_id`, `status`, `type`) VALUES
-(1, 1, 1, '2012-02-01', '2012-02-06', NULL, 1, 2, 1, 1),
-(2, 3, 1, '2012-01-11', NULL, NULL, 2, 1, 2, 1),
-(3, 2, 2, '2012-03-02', '2012-03-14', '2012-03-08', 2, 1, 3, 2);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -288,15 +215,7 @@ CREATE TABLE IF NOT EXISTS `EVAL_Evaluation_types` (
   `name` varchar(255) CHARACTER SET latin1 NOT NULL,
   `description` text CHARACTER SET latin1,
   PRIMARY KEY (`type_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Different types of evaluation targets or objects' AUTO_INCREMENT=3 ;
-
---
--- Dumping data for table `EVAL_Evaluation_types`
---
-
-INSERT INTO `EVAL_Evaluation_types` (`type_id`, `name`, `description`) VALUES
-(1, 'User', 'Used to evaluate a user of the system (student, etc.)'),
-(2, 'Project', 'Used to evaluate a project in the system');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Different types of evaluation targets or objects' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -315,16 +234,7 @@ CREATE TABLE IF NOT EXISTS `EVAL_Forms` (
   PRIMARY KEY (`form_id`),
   KEY `type` (`type`),
   KEY `creator_user_id` (`creator_user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=4 ;
-
---
--- Dumping data for table `EVAL_Forms`
---
-
-INSERT INTO `EVAL_Forms` (`form_id`, `type`, `name`, `description`, `creator_user_id`, `private`) VALUES
-(1, 1, 'NMD302 Peer Review', 'Review between students on in-class assignments', 1, 1),
-(2, 2, 'NMD302 Instructor Review', 'Review of students work by instructor', 1, 1),
-(3, 1, 'General Peer Review', 'Review between students on in-class assignments', 1, 0);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -340,19 +250,7 @@ CREATE TABLE IF NOT EXISTS `EVAL_Form_component_map` (
   PRIMARY KEY (`id`),
   KEY `form_id` (`form_id`),
   KEY `component_id` (`component_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=7 ;
-
---
--- Dumping data for table `EVAL_Form_component_map`
---
-
-INSERT INTO `EVAL_Form_component_map` (`id`, `form_id`, `component_id`) VALUES
-(1, 1, 1),
-(2, 1, 2),
-(3, 1, 3),
-(4, 2, 1),
-(5, 3, 2),
-(6, 3, 3);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -369,14 +267,6 @@ CREATE TABLE IF NOT EXISTS `EVAL_Scores` (
   KEY `evaluation_id` (`evaluation_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- Dumping data for table `EVAL_Scores`
---
-
-INSERT INTO `EVAL_Scores` (`component_id`, `evaluation_id`, `value`) VALUES
-(1, 3, '10'),
-(2, 2, 'Some members did all the work');
-
 -- --------------------------------------------------------
 
 --
@@ -389,16 +279,7 @@ CREATE TABLE IF NOT EXISTS `EVAL_Statuses` (
   `name` varchar(255) CHARACTER SET latin1 NOT NULL,
   `description` text CHARACTER SET latin1,
   PRIMARY KEY (`status_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Specification of different statuses of evaluations' AUTO_INCREMENT=4 ;
-
---
--- Dumping data for table `EVAL_Statuses`
---
-
-INSERT INTO `EVAL_Statuses` (`status_id`, `name`, `description`) VALUES
-(1, 'Assigned', 'Evaluaion has been assigned, but has not been started'),
-(2, 'In-progress', 'Evaluation has been started, but not finished'),
-(3, 'Submitted', 'Evaluation has been submitted');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Specification of different statuses of evaluations' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -412,18 +293,18 @@ CREATE TABLE IF NOT EXISTS `REPO_Access_levels` (
   `name` varchar(255) CHARACTER SET latin1 NOT NULL,
   `description` text CHARACTER SET latin1,
   PRIMARY KEY (`access_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Access levels specified for ownership, editing, reading, etc' AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Access levels specified for ownership, editing, reading, etc' AUTO_INCREMENT=7 ;
 
 --
 -- Dumping data for table `REPO_Access_levels`
 --
 
 INSERT INTO `REPO_Access_levels` (`access_id`, `name`, `description`) VALUES
-(1, 'owner', 'Owner of the resource, can do anything they want'),
-(2, 'write', 'Can only write to resource, cannot view'),
-(3, 'edit', 'Can only edit the existing resource, cannot add sub-Resources'),
-(4, 'read', 'Can only view the resource, make no changes'),
-(5, 'submit', 'User can only submit new material to resource for approval');
+(1, 'OWNER', 'Total ownership of an object'),
+(2, 'WRITE', 'May write additional sub-Resources to the resource.'),
+(3, 'EDIT', 'May edit existing resources, make no changes to structure (cannot add sub-resources or delete anything)'),
+(4, 'READ', 'Can only read the resource, make no changes'),
+(5, 'SUBMIT', 'May only submit new resources to a resource, nothing more');
 
 -- --------------------------------------------------------
 
@@ -441,15 +322,14 @@ CREATE TABLE IF NOT EXISTS `REPO_Assignments` (
   `deactivated` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`assign_id`),
   KEY `class_id` (`class_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Assignments instantiated for submissions' AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Assignments instantiated for submissions' AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `REPO_Assignments`
 --
 
 INSERT INTO `REPO_Assignments` (`assign_id`, `class_id`, `title`, `description`, `requirements`, `deactivated`) VALUES
-(1, 3, 'NMD Project 1', 'Create tangible to describe future project', 'Please limit to 10 pages, submit in one of the following formats: .doc, .pdf, .svg, .png', 0),
-(2, 5, 'MAT Homework 5', 'Pages 256-258, #1b, 5c, 6abc', 'Please scan and submit in .pdf format', 0);
+(1, NULL, 'New Media Freshman Portfolios', 'Year-end summary portfolios for all 1st year students of the New Media program.', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -467,15 +347,14 @@ CREATE TABLE IF NOT EXISTS `REPO_Assignment_access_map` (
   KEY `assign_id` (`assign_id`),
   KEY `group_id` (`group_id`),
   KEY `access_type` (`access_type`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of access levels to assignments' AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of access levels to assignments' AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `REPO_Assignment_access_map`
 --
 
 INSERT INTO `REPO_Assignment_access_map` (`id`, `assign_id`, `group_id`, `access_type`) VALUES
-(1, 1, 1, 1),
-(2, 2, 2, 1);
+(1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -497,15 +376,14 @@ CREATE TABLE IF NOT EXISTS `REPO_Assignment_instances` (
   KEY `assign_id` (`assign_id`),
   KEY `section_id` (`section_id`),
   KEY `portfolio_id` (`portfolio_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Assignments instantiated for submissions' AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 COMMENT='Assignments instantiated for submissions' AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `REPO_Assignment_instances`
 --
 
 INSERT INTO `REPO_Assignment_instances` (`instance_id`, `assign_id`, `section_id`, `portfolio_id`, `title`, `description`, `requirements`, `due_date`) VALUES
-(1, 1, 1, 1, NULL, NULL, NULL, '2012-01-02'),
-(2, 2, 2, 2, NULL, NULL, 'Please scan and submit in .pdf format, OR fax to my office', '2012-02-04');
+(1, 1, 1, 1, 'New Media Freshman Portfolios 2012', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -531,7 +409,7 @@ CREATE TABLE IF NOT EXISTS `REPO_Assignment_instance_access_map` (
 
 INSERT INTO `REPO_Assignment_instance_access_map` (`id`, `instance_id`, `group_id`, `access_type`) VALUES
 (1, 1, 1, 1),
-(2, 2, 2, 1);
+(2, 1, 2, 4);
 
 -- --------------------------------------------------------
 
@@ -550,26 +428,14 @@ CREATE TABLE IF NOT EXISTS `REPO_Classes` (
   PRIMARY KEY (`class_id`),
   KEY `dept_id` (`dept_id`),
   KEY `owner_user_id` (`owner_user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Classes taught within departments' AUTO_INCREMENT=14 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Classes taught within departments' AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `REPO_Classes`
 --
 
 INSERT INTO `REPO_Classes` (`class_id`, `dept_id`, `number`, `title`, `description`, `owner_user_id`) VALUES
-(1, 1, 125, 'Intro To Programming', 'Python taught the hard way', 2),
-(2, 1, 250, 'Discrete Math', 'Farely.', 1),
-(3, 2, 302, 'Interaction Design', 'Building a touch wall', 2),
-(4, 2, 104, 'Intro to Graphic Desgn', 'Some kind of intro course', 1),
-(5, 3, 258, 'Intro to Differential Equations & Linear Algebra', '', 1),
-(6, 5, 101, 'Intro to Mechanical Stuff', 'Turbines!', 1),
-(7, 6, 102, 'Electrical Circuitry', 'Resistors, Transistors, Blisters', 1),
-(8, 6, 201, 'Embedded Systems', 'C', 1),
-(9, 7, 101, 'Intro to Economics', 'Money', 1),
-(10, 7, 104, 'Microeconomics', 'Money', 1),
-(11, 7, 105, 'Macroeconomics', 'Money', 1),
-(12, 8, 101, 'Managing People', '', 1),
-(13, 9, 102, 'Finance For The Common Folk', '', 1);
+(1, 1, 0, 'Freshman Portfolios', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -592,9 +458,7 @@ CREATE TABLE IF NOT EXISTS `REPO_Colleges` (
 --
 
 INSERT INTO `REPO_Colleges` (`college_id`, `name`, `description`, `owner_user_id`) VALUES
-(1, 'Liberal Arts & Sciences', 'College of Liberal Arts and Sciences', 1),
-(2, 'Engineering', 'College of Engineering', 1),
-(3, 'Business', 'College of Business', 1);
+(1, 'Liberal Arts and Sciences', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -607,21 +471,7 @@ CREATE TABLE IF NOT EXISTS `REPO_Day_schedules` (
   `sched_id` int(11) NOT NULL AUTO_INCREMENT,
   `days_of_week` varchar(255) CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`sched_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Possible combinations of days of the week classes are held' AUTO_INCREMENT=9 ;
-
---
--- Dumping data for table `REPO_Day_schedules`
---
-
-INSERT INTO `REPO_Day_schedules` (`sched_id`, `days_of_week`) VALUES
-(1, 'Monday'),
-(2, 'Tuesday'),
-(3, 'Wednesday'),
-(4, 'Thursday'),
-(5, 'Friday'),
-(6, 'Monday, Wednesday, Friday'),
-(7, 'Tuesday, Thursday'),
-(8, 'Online');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Possible combinations of days of the week classes are held' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -639,22 +489,14 @@ CREATE TABLE IF NOT EXISTS `REPO_Departments` (
   PRIMARY KEY (`dept_id`),
   KEY `college_id` (`college_id`),
   KEY `owner_user_id` (`owner_user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Specific departments within colleges' AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Specific departments within colleges' AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `REPO_Departments`
 --
 
 INSERT INTO `REPO_Departments` (`dept_id`, `college_id`, `name`, `description`, `owner_user_id`) VALUES
-(1, 1, 'Computer Science', 'The best department on campus', 1),
-(2, 1, 'New Media', 'Meh', 1),
-(3, 1, 'Mathematics', '++', 1),
-(4, 2, 'Civil Engineering', 'They build bridges and things', 1),
-(5, 2, 'Mechanical Engineering', 'Turbines?', 1),
-(6, 2, 'Electrical Engineering', 'Benjamin Carlson', 1),
-(7, 3, 'Economics', 'Economists', 1),
-(8, 3, 'Business Management', 'Needs no description', 1),
-(9, 3, 'Finance', 'Kind of like economics', 1);
+(1, 1, 'New Media', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -665,7 +507,7 @@ INSERT INTO `REPO_Departments` (`dept_id`, `college_id`, `name`, `description`, 
 DROP TABLE IF EXISTS `REPO_Media`;
 CREATE TABLE IF NOT EXISTS `REPO_Media` (
   `media_id` int(11) NOT NULL AUTO_INCREMENT,
-  `mimetype` varchar(255) NOT NULL,
+  `mimetype` varchar(255) CHARACTER SET latin1 NOT NULL,
   `title` varchar(255) CHARACTER SET latin1 NOT NULL,
   `description` text CHARACTER SET latin1,
   `created` datetime NOT NULL,
@@ -675,22 +517,7 @@ CREATE TABLE IF NOT EXISTS `REPO_Media` (
   `md5` char(32) CHARACTER SET latin1 NOT NULL,
   `extension` varchar(10) CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`media_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Unit of media contained within a body of work' AUTO_INCREMENT=10 ;
-
---
--- Dumping data for table `REPO_Media`
---
-
-INSERT INTO `REPO_Media` (`media_id`, `mimetype`, `title`, `description`, `created`, `edited`, `filename`, `filesize`, `md5`, `extension`) VALUES
-(1, "text/txt", 'NMD302 Touch Wall Tangible', 'Tangible describing the development and implementation of a large-scale multi-touch wall display', '2012-02-03 00:00:00', NULL, '/path/to/file', 23894, '79054025255fb1a26e4bc422aef54eb4', 'txt'),
-(2, "image/png", 'NMD302 Touch Wall Illustration', 'Illustration of conceptualized touch wall', '2012-02-03 00:00:00', NULL, '/path/to/file', 32652, '79054025255fb1a26e4bc422aef54eb4', 'png'),
-(3, "text/txt", 'NMD302 Scratch Sensor Tangible', 'Tangible describing the research and development of sensors to detech scrathing as input to applications', '2012-02-03 00:00:00', '2012-02-05 00:00:00', '/short/path/to/crazy/intense/file', 3243, '79054025255fb1a26e4bc422aef54eb4', 'txt'),
-(4, "image/png", 'MAT258 Homework 5', 'Submission', '2012-01-01 00:00:00', NULL, '/math/file', 32479, '79054025255fb1a26e4bc422aef54eb4', 'png'),
-(5, "image/svg", 'MAT258 Homework 5', 'Submission', '2012-02-01 00:00:00', NULL, '/math/file2', 73864, '79054025255fb1a26e4bc422aef54eb4', 'svg'),
-(6, "video/mpeg", 'Crazy Video of Research', 'CUGR 2012 Submission', '2012-03-02 00:00:00', NULL, '/cugr/sub1', 23472, '79054025255fb1a26e4bc422aef54eb4', 'mpeg'),
-(7, "image/jpg", 'Ballmer tongue', NULL, '2012-04-22 21:53:55', NULL, 'test/pics/ballmer1', 35713, '43dd31724c7d816b733f5d1f771284b2', 'jpg'),
-(8, "image/jpg", 'Ballmer fingers', NULL, '2012-04-22 16:49:38', NULL, 'test/pics/ballmer2', 53079, 'a0561b20ea970246e4feefb0f549bc17', 'jpg'),
-(9, "image/jpg", 'Ballmer thumb', NULL, '2012-04-25 17:39:43', NULL, 'test/pics/ballmer3', 76653, 'a4cf1c256ebc82ef08f499020c1253a2', 'jpg');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Unit of media contained within a body of work' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -708,19 +535,7 @@ CREATE TABLE IF NOT EXISTS `REPO_Media_access_map` (
   KEY `media_id` (`media_id`),
   KEY `group_id` (`group_id`),
   KEY `access_type` (`access_type`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of access levels to media for users and groups' AUTO_INCREMENT=7 ;
-
---
--- Dumping data for table `REPO_Media_access_map`
---
-
-INSERT INTO `REPO_Media_access_map` (`id`, `media_id`, `group_id`, `access_type`) VALUES
-(1, 1, 2, 1),
-(2, 2, 2, 1),
-(3, 3, 2, 1),
-(4, 7, 12, 1),
-(5, 8, 12, 1),
-(6, 9, 12, 1);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of access levels to media for users and groups' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -735,19 +550,14 @@ CREATE TABLE IF NOT EXISTS `REPO_Portfolios` (
   `description` text CHARACTER SET latin1,
   `private` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`port_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Custom collections of works for organizations and users' AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Custom collections of works for organizations and users' AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `REPO_Portfolios`
 --
 
 INSERT INTO `REPO_Portfolios` (`port_id`, `title`, `description`, `private`) VALUES
-(1, 'NMD 320 Project 1', 'Create tangible to describe future project', 0),
-(2, 'MAT 258 Homework 5', 'Pages 256-258, #1b, 5c, 6abc', 1),
-(3, 'NMD Portfolio', 'Portfolio for Spring 2012', 0),
-(4, 'CUGR 2012', 'Showcase of undergraduate student work', 0),
-(5, 'New Media Freshman Portfolio 2012', 'New Media Freshman Portfolio 2012', 1),
-(6, 'TEST PORT', 'TEST DESC', 1);
+(1, 'New Media Freshman Portfolio 2012 Submissions', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -765,7 +575,7 @@ CREATE TABLE IF NOT EXISTS `REPO_Portfolio_access_map` (
   KEY `port_id` (`port_id`),
   KEY `group_id` (`group_id`),
   KEY `access_type` (`access_type`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Access mapping of groups to their permissions' AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Access mapping of groups to their permissions' AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `REPO_Portfolio_access_map`
@@ -773,10 +583,7 @@ CREATE TABLE IF NOT EXISTS `REPO_Portfolio_access_map` (
 
 INSERT INTO `REPO_Portfolio_access_map` (`id`, `port_id`, `group_id`, `access_type`) VALUES
 (1, 1, 1, 1),
-(2, 1, 1, 2),
-(3, 3, 2, 1),
-(4, 5, 5, 1),
-(5, 6, 8, 1);
+(2, 1, 2, 5);
 
 -- --------------------------------------------------------
 
@@ -793,20 +600,7 @@ CREATE TABLE IF NOT EXISTS `REPO_Portfolio_project_map` (
   `child_privacy` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `port_id` (`port_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='A map of projects and portfolios to portfolios' AUTO_INCREMENT=12 ;
-
---
--- Dumping data for table `REPO_Portfolio_project_map`
---
-
-INSERT INTO `REPO_Portfolio_project_map` (`id`, `port_id`, `child_id`, `child_is_portfolio`, `child_privacy`) VALUES
-(1, 1, 1, 0, 0),
-(2, 1, 2, 0, 1),
-(3, 2, 3, 0, 1),
-(4, 2, 4, 0, 2),
-(5, 4, 5, 0, 1),
-(9, 5, 9, 0, 0),
-(11, 5, 11, 0, 0);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='A map of projects and portfolios to portfolios' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -822,20 +616,7 @@ CREATE TABLE IF NOT EXISTS `REPO_Projects` (
   `type` int(11) NOT NULL,
   PRIMARY KEY (`proj_id`),
   KEY `type` (`type`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Unit of work, typically done for an assignment' AUTO_INCREMENT=12 ;
-
---
--- Dumping data for table `REPO_Projects`
---
-
-INSERT INTO `REPO_Projects` (`proj_id`, `title`, `description`, `type`) VALUES
-(1, 'NMD302 Touch Wall', 'Creation and study of touch wall', 1),
-(2, 'NMD302 Scratch Sensor', 'Research and development of scratch sensor', 2),
-(3, 'MAT258 Homework 5', 'Submission', 1),
-(4, 'MAT258 Homework 5', 'Submission', 1),
-(5, 'Windboard', 'A formal study of the cost-effectiveness of wind-powered keyboards', 1),
-(9, 'Test Project!', 'Test project, gnarly!!', 1),
-(11, 'Another Test Project!!', 'Sweet!', 1);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Unit of work, typically done for an assignment' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -853,20 +634,7 @@ CREATE TABLE IF NOT EXISTS `REPO_Project_access_map` (
   KEY `proj_id` (`proj_id`),
   KEY `group_id` (`group_id`),
   KEY `access_type` (`access_type`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of access types to projects for users and groups' AUTO_INCREMENT=12 ;
-
---
--- Dumping data for table `REPO_Project_access_map`
---
-
-INSERT INTO `REPO_Project_access_map` (`id`, `proj_id`, `group_id`, `access_type`) VALUES
-(1, 1, 1, 1),
-(2, 2, 1, 1),
-(3, 3, 2, 1),
-(4, 4, 2, 1),
-(5, 5, 2, 1),
-(9, 9, 12, 1),
-(11, 11, 14, 1);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of access types to projects for users and groups' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -882,22 +650,7 @@ CREATE TABLE IF NOT EXISTS `REPO_Project_media_map` (
   PRIMARY KEY (`id`),
   KEY `proj_id` (`proj_id`),
   KEY `media_id` (`media_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of media to bodies of work' AUTO_INCREMENT=10 ;
-
---
--- Dumping data for table `REPO_Project_media_map`
---
-
-INSERT INTO `REPO_Project_media_map` (`id`, `proj_id`, `media_id`) VALUES
-(1, 1, 1),
-(2, 1, 2),
-(3, 2, 3),
-(4, 3, 4),
-(5, 4, 5),
-(6, 5, 6),
-(7, 9, 7),
-(8, 9, 8),
-(9, 9, 9);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of media to bodies of work' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -911,15 +664,7 @@ CREATE TABLE IF NOT EXISTS `REPO_Project_types` (
   `name` varchar(255) CHARACTER SET latin1 NOT NULL,
   `description` text CHARACTER SET latin1,
   PRIMARY KEY (`type_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Types of media (ex: gallery, article, etc.)' AUTO_INCREMENT=3 ;
-
---
--- Dumping data for table `REPO_Project_types`
---
-
-INSERT INTO `REPO_Project_types` (`type_id`, `name`, `description`) VALUES
-(1, 'article', 'Article-style project, similar tot hat of a journal or other periodical'),
-(2, 'gallery', 'Gallery-style display of medias');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Types of media (ex: gallery, article, etc.)' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -943,15 +688,14 @@ CREATE TABLE IF NOT EXISTS `REPO_Sections` (
   KEY `class_id` (`class_id`),
   KEY `day_sched` (`day_sched`),
   KEY `instructor_user_id` (`instructor_user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Class sections (aka class instantiations)' AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Class sections (aka class instantiations)' AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `REPO_Sections`
 --
 
 INSERT INTO `REPO_Sections` (`section_id`, `class_id`, `section_number`, `day_sched`, `time`, `instructor_user_id`, `semester`, `year`, `designator`, `description`) VALUES
-(1, 3, '0001', 4, '06:00:00', 1, 'Spring', 2012, 'NMD', 'Interaction Design'),
-(2, 5, '0001', 8, '00:00:00', 1, 'Spring', 2012, 'MAT', 'Diff Eqs. & Lin Alg.');
+(1, 1, '0', NULL, NULL, 1, 'Spring', 2012, 'NMD', 'New Media Freshman Portfolios - Spring 2012');
 
 -- --------------------------------------------------------
 
@@ -969,17 +713,15 @@ CREATE TABLE IF NOT EXISTS `REPO_Section_access_map` (
   KEY `section_id` (`section_id`),
   KEY `group_id` (`group_id`),
   KEY `access_type` (`access_type`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of access levels to sections for users and groups' AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='Mapping of access levels to sections for users and groups' AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `REPO_Section_access_map`
 --
 
 INSERT INTO `REPO_Section_access_map` (`id`, `section_id`, `group_id`, `access_type`) VALUES
-(1, 1, 1, 5),
-(2, 1, 2, 5),
-(3, 2, 1, 5),
-(4, 2, 2, 5);
+(1, 1, 1, 1),
+(2, 1, 2, 4);
 
 --
 -- Constraints for dumped tables
@@ -989,8 +731,8 @@ INSERT INTO `REPO_Section_access_map` (`id`, `section_id`, `group_id`, `access_t
 -- Constraints for table `AUTH_Group_user_map`
 --
 ALTER TABLE `AUTH_Group_user_map`
-  ADD CONSTRAINT `auth_group_user_map_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `AUTH_Groups` (`group_id`),
-  ADD CONSTRAINT `auth_group_user_map_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `AUTH_Users` (`user_id`);
+  ADD CONSTRAINT `auth_group_user_map_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `AUTH_Users` (`user_id`),
+  ADD CONSTRAINT `auth_group_user_map_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `AUTH_Groups` (`group_id`);
 
 --
 -- Constraints for table `AUTH_Users`
@@ -1002,40 +744,40 @@ ALTER TABLE `AUTH_Users`
 -- Constraints for table `EVAL_Components`
 --
 ALTER TABLE `EVAL_Components`
+  ADD CONSTRAINT `eval_components_ibfk_3` FOREIGN KEY (`creator_user_id`) REFERENCES `AUTH_Users` (`user_id`),
   ADD CONSTRAINT `eval_components_ibfk_1` FOREIGN KEY (`type`) REFERENCES `EVAL_Component_types` (`type_id`),
-  ADD CONSTRAINT `eval_components_ibfk_2` FOREIGN KEY (`category`) REFERENCES `EVAL_Component_categories` (`category_id`),
-  ADD CONSTRAINT `eval_components_ibfk_3` FOREIGN KEY (`creator_user_id`) REFERENCES `AUTH_Users` (`user_id`);
+  ADD CONSTRAINT `eval_components_ibfk_2` FOREIGN KEY (`category`) REFERENCES `EVAL_Component_categories` (`category_id`);
 
 --
 -- Constraints for table `EVAL_Evaluations`
 --
 ALTER TABLE `EVAL_Evaluations`
+  ADD CONSTRAINT `eval_evaluations_ibfk_5` FOREIGN KEY (`type`) REFERENCES `EVAL_Evaluation_types` (`type_id`),
   ADD CONSTRAINT `eval_evaluations_ibfk_1` FOREIGN KEY (`form_id`) REFERENCES `EVAL_Forms` (`form_id`),
   ADD CONSTRAINT `eval_evaluations_ibfk_2` FOREIGN KEY (`assigned_by_user_id`) REFERENCES `AUTH_Users` (`user_id`),
   ADD CONSTRAINT `eval_evaluations_ibfk_3` FOREIGN KEY (`evaluator_user_id`) REFERENCES `AUTH_Users` (`user_id`),
-  ADD CONSTRAINT `eval_evaluations_ibfk_4` FOREIGN KEY (`status`) REFERENCES `EVAL_Statuses` (`status_id`),
-  ADD CONSTRAINT `eval_evaluations_ibfk_5` FOREIGN KEY (`type`) REFERENCES `EVAL_Evaluation_types` (`type_id`);
+  ADD CONSTRAINT `eval_evaluations_ibfk_4` FOREIGN KEY (`status`) REFERENCES `EVAL_Statuses` (`status_id`);
 
 --
 -- Constraints for table `EVAL_Forms`
 --
 ALTER TABLE `EVAL_Forms`
-  ADD CONSTRAINT `eval_forms_ibfk_1` FOREIGN KEY (`type`) REFERENCES `EVAL_Evaluation_types` (`type_id`),
-  ADD CONSTRAINT `eval_forms_ibfk_2` FOREIGN KEY (`creator_user_id`) REFERENCES `AUTH_Users` (`user_id`);
+  ADD CONSTRAINT `eval_forms_ibfk_2` FOREIGN KEY (`creator_user_id`) REFERENCES `AUTH_Users` (`user_id`),
+  ADD CONSTRAINT `eval_forms_ibfk_1` FOREIGN KEY (`type`) REFERENCES `EVAL_Evaluation_types` (`type_id`);
 
 --
 -- Constraints for table `EVAL_Form_component_map`
 --
 ALTER TABLE `EVAL_Form_component_map`
-  ADD CONSTRAINT `eval_form_component_map_ibfk_1` FOREIGN KEY (`form_id`) REFERENCES `EVAL_Forms` (`form_id`),
-  ADD CONSTRAINT `eval_form_component_map_ibfk_2` FOREIGN KEY (`component_id`) REFERENCES `EVAL_Components` (`component_id`);
+  ADD CONSTRAINT `eval_form_component_map_ibfk_2` FOREIGN KEY (`component_id`) REFERENCES `EVAL_Components` (`component_id`),
+  ADD CONSTRAINT `eval_form_component_map_ibfk_1` FOREIGN KEY (`form_id`) REFERENCES `EVAL_Forms` (`form_id`);
 
 --
 -- Constraints for table `EVAL_Scores`
 --
 ALTER TABLE `EVAL_Scores`
-  ADD CONSTRAINT `eval_scores_ibfk_1` FOREIGN KEY (`component_id`) REFERENCES `EVAL_Components` (`component_id`),
-  ADD CONSTRAINT `eval_scores_ibfk_2` FOREIGN KEY (`evaluation_id`) REFERENCES `EVAL_Evaluations` (`evaluation_id`);
+  ADD CONSTRAINT `eval_scores_ibfk_2` FOREIGN KEY (`evaluation_id`) REFERENCES `EVAL_Evaluations` (`evaluation_id`),
+  ADD CONSTRAINT `eval_scores_ibfk_1` FOREIGN KEY (`component_id`) REFERENCES `EVAL_Components` (`component_id`);
 
 --
 -- Constraints for table `REPO_Assignments`
@@ -1047,32 +789,32 @@ ALTER TABLE `REPO_Assignments`
 -- Constraints for table `REPO_Assignment_access_map`
 --
 ALTER TABLE `REPO_Assignment_access_map`
+  ADD CONSTRAINT `repo_assignment_access_map_ibfk_3` FOREIGN KEY (`access_type`) REFERENCES `REPO_Access_levels` (`access_id`),
   ADD CONSTRAINT `repo_assignment_access_map_ibfk_1` FOREIGN KEY (`assign_id`) REFERENCES `REPO_Assignments` (`assign_id`),
-  ADD CONSTRAINT `repo_assignment_access_map_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `AUTH_Groups` (`group_id`),
-  ADD CONSTRAINT `repo_assignment_access_map_ibfk_3` FOREIGN KEY (`access_type`) REFERENCES `REPO_Access_levels` (`access_id`);
+  ADD CONSTRAINT `repo_assignment_access_map_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `AUTH_Groups` (`group_id`);
 
 --
 -- Constraints for table `REPO_Assignment_instances`
 --
 ALTER TABLE `REPO_Assignment_instances`
+  ADD CONSTRAINT `repo_assignment_instances_ibfk_3` FOREIGN KEY (`portfolio_id`) REFERENCES `REPO_Portfolios` (`port_id`),
   ADD CONSTRAINT `repo_assignment_instances_ibfk_1` FOREIGN KEY (`assign_id`) REFERENCES `REPO_Assignments` (`assign_id`),
-  ADD CONSTRAINT `repo_assignment_instances_ibfk_2` FOREIGN KEY (`section_id`) REFERENCES `REPO_Sections` (`section_id`),
-  ADD CONSTRAINT `repo_assignment_instances_ibfk_3` FOREIGN KEY (`portfolio_id`) REFERENCES `REPO_Portfolios` (`port_id`);
+  ADD CONSTRAINT `repo_assignment_instances_ibfk_2` FOREIGN KEY (`section_id`) REFERENCES `REPO_Sections` (`section_id`);
 
 --
 -- Constraints for table `REPO_Assignment_instance_access_map`
 --
 ALTER TABLE `REPO_Assignment_instance_access_map`
+  ADD CONSTRAINT `repo_assignment_instance_access_map_ibfk_3` FOREIGN KEY (`access_type`) REFERENCES `REPO_Access_levels` (`access_id`),
   ADD CONSTRAINT `repo_assignment_instance_access_map_ibfk_1` FOREIGN KEY (`instance_id`) REFERENCES `REPO_Assignment_instances` (`instance_id`),
-  ADD CONSTRAINT `repo_assignment_instance_access_map_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `AUTH_Groups` (`group_id`),
-  ADD CONSTRAINT `repo_assignment_instance_access_map_ibfk_3` FOREIGN KEY (`access_type`) REFERENCES `REPO_Access_levels` (`access_id`);
+  ADD CONSTRAINT `repo_assignment_instance_access_map_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `AUTH_Groups` (`group_id`);
 
 --
 -- Constraints for table `REPO_Classes`
 --
 ALTER TABLE `REPO_Classes`
-  ADD CONSTRAINT `repo_classes_ibfk_1` FOREIGN KEY (`dept_id`) REFERENCES `REPO_Departments` (`dept_id`),
-  ADD CONSTRAINT `repo_classes_ibfk_2` FOREIGN KEY (`owner_user_id`) REFERENCES `AUTH_Groups` (`group_id`);
+  ADD CONSTRAINT `repo_classes_ibfk_2` FOREIGN KEY (`owner_user_id`) REFERENCES `AUTH_Groups` (`group_id`),
+  ADD CONSTRAINT `repo_classes_ibfk_1` FOREIGN KEY (`dept_id`) REFERENCES `REPO_Departments` (`dept_id`);
 
 --
 -- Constraints for table `REPO_Colleges`
@@ -1084,24 +826,24 @@ ALTER TABLE `REPO_Colleges`
 -- Constraints for table `REPO_Departments`
 --
 ALTER TABLE `REPO_Departments`
-  ADD CONSTRAINT `repo_departments_ibfk_1` FOREIGN KEY (`college_id`) REFERENCES `REPO_Colleges` (`college_id`),
-  ADD CONSTRAINT `repo_departments_ibfk_2` FOREIGN KEY (`owner_user_id`) REFERENCES `AUTH_Groups` (`group_id`);
+  ADD CONSTRAINT `repo_departments_ibfk_2` FOREIGN KEY (`owner_user_id`) REFERENCES `AUTH_Groups` (`group_id`),
+  ADD CONSTRAINT `repo_departments_ibfk_1` FOREIGN KEY (`college_id`) REFERENCES `REPO_Colleges` (`college_id`);
 
 --
 -- Constraints for table `REPO_Media_access_map`
 --
 ALTER TABLE `REPO_Media_access_map`
+  ADD CONSTRAINT `repo_media_access_map_ibfk_3` FOREIGN KEY (`access_type`) REFERENCES `REPO_Access_levels` (`access_id`),
   ADD CONSTRAINT `repo_media_access_map_ibfk_1` FOREIGN KEY (`media_id`) REFERENCES `REPO_Media` (`media_id`),
-  ADD CONSTRAINT `repo_media_access_map_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `AUTH_Groups` (`group_id`),
-  ADD CONSTRAINT `repo_media_access_map_ibfk_3` FOREIGN KEY (`access_type`) REFERENCES `REPO_Access_levels` (`access_id`);
+  ADD CONSTRAINT `repo_media_access_map_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `AUTH_Groups` (`group_id`);
 
 --
 -- Constraints for table `REPO_Portfolio_access_map`
 --
 ALTER TABLE `REPO_Portfolio_access_map`
+  ADD CONSTRAINT `repo_portfolio_access_map_ibfk_3` FOREIGN KEY (`access_type`) REFERENCES `REPO_Access_levels` (`access_id`),
   ADD CONSTRAINT `repo_portfolio_access_map_ibfk_1` FOREIGN KEY (`port_id`) REFERENCES `REPO_Portfolios` (`port_id`),
-  ADD CONSTRAINT `repo_portfolio_access_map_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `AUTH_Groups` (`group_id`),
-  ADD CONSTRAINT `repo_portfolio_access_map_ibfk_3` FOREIGN KEY (`access_type`) REFERENCES `REPO_Access_levels` (`access_id`);
+  ADD CONSTRAINT `repo_portfolio_access_map_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `AUTH_Groups` (`group_id`);
 
 --
 -- Constraints for table `REPO_Portfolio_project_map`
@@ -1119,32 +861,32 @@ ALTER TABLE `REPO_Projects`
 -- Constraints for table `REPO_Project_access_map`
 --
 ALTER TABLE `REPO_Project_access_map`
+  ADD CONSTRAINT `repo_project_access_map_ibfk_3` FOREIGN KEY (`access_type`) REFERENCES `REPO_Access_levels` (`access_id`),
   ADD CONSTRAINT `repo_project_access_map_ibfk_1` FOREIGN KEY (`proj_id`) REFERENCES `REPO_Projects` (`proj_id`),
-  ADD CONSTRAINT `repo_project_access_map_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `AUTH_Groups` (`group_id`),
-  ADD CONSTRAINT `repo_project_access_map_ibfk_3` FOREIGN KEY (`access_type`) REFERENCES `REPO_Access_levels` (`access_id`);
+  ADD CONSTRAINT `repo_project_access_map_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `AUTH_Groups` (`group_id`);
 
 --
 -- Constraints for table `REPO_Project_media_map`
 --
 ALTER TABLE `REPO_Project_media_map`
-  ADD CONSTRAINT `repo_project_media_map_ibfk_1` FOREIGN KEY (`proj_id`) REFERENCES `REPO_Projects` (`proj_id`),
-  ADD CONSTRAINT `repo_project_media_map_ibfk_2` FOREIGN KEY (`media_id`) REFERENCES `REPO_Media` (`media_id`);
+  ADD CONSTRAINT `repo_project_media_map_ibfk_2` FOREIGN KEY (`media_id`) REFERENCES `REPO_Media` (`media_id`),
+  ADD CONSTRAINT `repo_project_media_map_ibfk_1` FOREIGN KEY (`proj_id`) REFERENCES `REPO_Projects` (`proj_id`);
 
 --
 -- Constraints for table `REPO_Sections`
 --
 ALTER TABLE `REPO_Sections`
+  ADD CONSTRAINT `repo_sections_ibfk_3` FOREIGN KEY (`instructor_user_id`) REFERENCES `AUTH_Users` (`user_id`),
   ADD CONSTRAINT `repo_sections_ibfk_1` FOREIGN KEY (`class_id`) REFERENCES `REPO_Classes` (`class_id`),
-  ADD CONSTRAINT `repo_sections_ibfk_2` FOREIGN KEY (`day_sched`) REFERENCES `REPO_Day_schedules` (`sched_id`),
-  ADD CONSTRAINT `repo_sections_ibfk_3` FOREIGN KEY (`instructor_user_id`) REFERENCES `AUTH_Users` (`user_id`);
+  ADD CONSTRAINT `repo_sections_ibfk_2` FOREIGN KEY (`day_sched`) REFERENCES `REPO_Day_schedules` (`sched_id`);
 
 --
 -- Constraints for table `REPO_Section_access_map`
 --
 ALTER TABLE `REPO_Section_access_map`
+  ADD CONSTRAINT `repo_section_access_map_ibfk_3` FOREIGN KEY (`access_type`) REFERENCES `REPO_Access_levels` (`access_id`),
   ADD CONSTRAINT `repo_section_access_map_ibfk_1` FOREIGN KEY (`section_id`) REFERENCES `REPO_Sections` (`section_id`),
-  ADD CONSTRAINT `repo_section_access_map_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `AUTH_Groups` (`group_id`),
-  ADD CONSTRAINT `repo_section_access_map_ibfk_3` FOREIGN KEY (`access_type`) REFERENCES `REPO_Access_levels` (`access_id`);
+  ADD CONSTRAINT `repo_section_access_map_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `AUTH_Groups` (`group_id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
