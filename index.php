@@ -91,15 +91,20 @@ function setBreadcrumb( $breadcrumbs ) {
 /** 
  * middleware to check student authentication and redirect to login page 
  */
-$authcheck_student = function ()
+$authcheck_student = function () use ($app)
 {	
 	//Redirect to login if not authenticated
 	if ( ! AuthenticationController::check_login() )
 	{
+		$app->flashNow('logged_in', false);
 		redirect('/login');
 		return false;
 	}
-	return true;
+	else
+	{
+		$app->flashNow('logged_in', true);
+		return true;
+	}
 };
 
 /**
@@ -152,7 +157,7 @@ $app->post('/login', function() use ($app) {
 /**
  *	Log Out
  */
-$app->get('/logout', function() use ($app) {
+$app->get('/logout', $authcheck_student, function() use ($app) {
 	AuthenticationController::log_out();
 	$app->flash('header', 'You have been successfully logged out.');
 	return redirect('/login');
