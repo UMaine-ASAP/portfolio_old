@@ -38,6 +38,11 @@ ORM::configure('password', $PASSWORD);
  * HELPER FUNCTIONS						*
  ***************************************/
 
+/**
+ * Retrieve currently logged-in User's New Media 2012 porfolio.
+ *
+ * Returns null if not found, the Portfolio object otherwise.
+ */
 function getNMDPortfolio()
 {
 	$ports = PortfolioController::getOwnedPortfolios();
@@ -54,32 +59,31 @@ function getNMDPortfolio()
 	return $nmd_port;
 }
 
+/**
+ * Check whether or not the currently logged-in User's New Media 2012 portfolio has been submitted.
+ *
+ * Returns true if submitted, false otherwise.
+ */
 function portfolioIsSubmitted()
 {
 
 }
 
+/**
+ * Helper to redirect the User to a location with the webroot appended
+ */
 function redirect($destination)
 {
 	$GLOBALS['app']->redirect($GLOBALS['web_root'] . $destination);
 }
 
+/**
+ * Helper to handle when a User does not have permission to access a page
+ */
 function permission_denied()
 {
 	$GLOBALS['app']->render('permission_denied.html');
 }
-
-
-/************************************************
- * ROUTING!!									*
- ***********************************************/
-
-/**
- *	System Home
- */
-$app = new Slim(array(
-	'view' => new TwigView
-));
 
 /**
  * Sets breadcrumbs for current page
@@ -89,7 +93,7 @@ function setBreadcrumb( $breadcrumbs ) {
 }
 
 /** 
- * middleware to check student authentication and redirect to login page 
+ * Middleware to check student authentication and redirect to login page 
  */
 $authcheck_student = function () use ($app)
 {	
@@ -119,6 +123,19 @@ $redirect_loggedInUser = function () use ($authcheck_student)
 		return redirect('/portfolio');
 	}
 };
+
+
+/************************************************
+ * ROUTING!!									*
+ ***********************************************/
+
+/**
+ *	System Home
+ */
+$app = new Slim(array(
+	'view' => new TwigView
+));
+
 
 // Inform app of the web root for the next HTML request
 $app->flashNow('web_root', $GLOBALS['web_root']);
@@ -172,11 +189,7 @@ $app->get('/register', $redirect_loggedInUser, function() use ($app) {
 });
 
 $app->post('/register', function() use ($app) {
-	if (true /* Reserved for Timothy D. Baker */ )
-	{
-		if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['email']) || !isset($_POST['firstname']) || !isset($_POST['lastname'])
-			)//|| !preg_match('/[a-z\.]\@umit\.maine\.edu/', $_POST['email']))
-
+		if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['email']) || !isset($_POST['firstname']) || !isset($_POST['lastname']))
 		{	// Reject, form invalid
 			$app->flash('error', true);
 			return redirect('/register');	//TODO: Save partial title/desc on return to form
@@ -215,12 +228,7 @@ $app->post('/register', function() use ($app) {
 				return redirect('/portfolio');
 			}
 		}
-	}
-	else
-	{
-		$app->flash('error', false);	//TODO
-	}
-});
+a);
 
 
 /**
