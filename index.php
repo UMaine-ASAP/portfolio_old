@@ -346,30 +346,6 @@ $app->get('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 });
 
 $app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
-	// Handle thumbnail upload
-	$thumb_path = NULL;
-	if ($_FILES['thumbnail']['name'] != '' )
-	{
-		// Get extention
-		$ext = end( explode('.', $_FILES['thumbnail']['name']) );//substr(strrchr($_FILES['thumbnail']['name'], '.'), 1);
-		$thumb_path = __DIR__ . $GLOBALS['thumbnail_path'] . $id . "." . $ext;
-		$size = getimagesize($_FILES['thumbnail']['tmp_name']);
-		$max_width = 100;
-		$max_height = 100;
-		if( file_exists($thumb_path) ) {
-			unlink($thumb_path);			
-		}
-		if (//($size[0] > $max_width || $size[1] > $max_height) ||
-			(!($ext == "jpg") && !($ext == "jpeg") && !($ext == "png") && !($ext == "gif")) ||
-			(!move_uploaded_file($_FILES['thumbnail']['tmp_name'], $thumb_path)))
-		{
-			$thumb_path = NULL;
-		}
-		else
-		{
-			$thumb_path = $GLOBALS['thumbnail_path'] . $id . "." . $ext;
-		}
-	}
 	if ($id == -1)
 	{	// Sent from add_project, we need to create a Project
 		if (!isset($_POST['title']))
@@ -401,6 +377,30 @@ $app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 			NULL))
 		{
 			$app->flashNow('error', true);
+		}
+	}
+	// Handle thumbnail upload
+	$thumb_path = NULL;
+	if ($_FILES['thumbnail']['name'] != '' )
+	{
+		// Get extention
+		$ext = end( explode('.', $_FILES['thumbnail']['name']) );//substr(strrchr($_FILES['thumbnail']['name'], '.'), 1);
+		$thumb_path = __DIR__ . $GLOBALS['thumbnail_path'] . $id . "." . $ext;
+		$size = getimagesize($_FILES['thumbnail']['tmp_name']);
+		$max_width = 100;
+		$max_height = 100;
+		if( file_exists($thumb_path) ) {
+			unlink($thumb_path);			
+		}
+		if (//($size[0] > $max_width || $size[1] > $max_height) ||
+			(!($ext == "jpg") && !($ext == "jpeg") && !($ext == "png") && !($ext == "gif")) ||
+			(!move_uploaded_file($_FILES['thumbnail']['tmp_name'], $thumb_path)))
+		{
+			$thumb_path = NULL;
+		}
+		else
+		{
+			$thumb_path = $GLOBALS['thumbnail_path'] . $id . "." . $ext;
 		}
 	}
 	return redirect('/project/'.$id);
