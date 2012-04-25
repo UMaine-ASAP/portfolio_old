@@ -14,6 +14,7 @@ if( $IS_PRODUCTION ) {
 /** Time until idle sessions are disconnected */
 $session_timeout = 600; // 10 minutes to logout
 
+$thumbnail_path = "/media/thumbnails/";
 
 /** Web Root */
-$web_root = "/mainejournal";
+$web_root = "/portfolio";
