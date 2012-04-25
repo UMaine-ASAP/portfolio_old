@@ -5,5 +5,11 @@ ehthumbs.db
 Icon?
 Thumbs.db
 
+# Thumbnails
+media/
+
+# Individual settings file
+libraries/settings.php
+
 # Misc #
 *.swp

@@ -164,7 +164,7 @@ class Slim {
             'log.path' => './logs',
             'log.level' => 4,
             //Debugging
-            'debug' => true,
+            'debug' => false,
             //View
             'templates.path' => './templates',
             'view' => 'Slim_View',
