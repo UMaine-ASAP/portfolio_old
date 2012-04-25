@@ -346,6 +346,7 @@ $app->get('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 });
 
 $app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
+	$thumb_path = NULL;
 	if ($id == -1)
 	{	// Sent from add_project, we need to create a Project
 		if (!isset($_POST['title']))
@@ -368,19 +369,7 @@ $app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 			$id = $proj->id();
 		}
 	}
-	else
-	{
-		if (!ProjectController::editProject($id, 
-			(isset($_POST['title']) ? $_POST['title'] : NULL),
-			(isset($_POST['description']) ? $_POST['description'] : NULL),
-			$thumb_path,
-			NULL))
-		{
-			$app->flashNow('error', true);
-		}
-	}
 	// Handle thumbnail upload
-	$thumb_path = NULL;
 	if ($_FILES['thumbnail']['name'] != '' )
 	{
 		// Get extention
@@ -402,6 +391,14 @@ $app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 		{
 			$thumb_path = $GLOBALS['thumbnail_path'] . $id . "." . $ext;
 		}
+	}
+	if (!ProjectController::editProject($id, 
+		(isset($_POST['title']) ? $_POST['title'] : NULL),
+		(isset($_POST['description']) ? $_POST['description'] : NULL),
+		$thumb_path,
+		NULL))
+	{
+		$app->flashNow('error', true);
 	}
 	return redirect('/project/'.$id);
 });
