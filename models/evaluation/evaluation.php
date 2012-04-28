@@ -1,5 +1,11 @@
 <?php
 
+require_once('libraries/Idiorm/idiorm.php');
+require_once('libraries/Paris/paris.php');
+require_once('libraries/constant.php');
+require_once('models/evaluation/mappings.php');
+
+
 /**
  * An Evaluation object represents a single row in the REPO_Evaluations table.
  *
@@ -19,10 +25,15 @@ class Evaluation extends Model
 	{
 		switch ($name)
 		{
-
-		default:
-			return parent::__get($name);
+			case 'status':
+				$result = Model::factory('EvaluationStatus')
+					->where('status_id', parent::__get("status"))
+					->find_one();
+				return $result;
 			break;
+			default:
+				return parent::__get($name);
+				break;
 		}
 	}
 
