@@ -122,6 +122,7 @@ class AssignmentInstance extends AccessMapModel
 	public static $_table = "REPO_Assignment_instances";
 	public static $_id_column = "instance_id";
 	public static $_access_map_name = "AssignmentInstanceAccessMap";
+	public static $_access_table = 'REPO_Assignment_instance_access_map';
 
 	/**
 	 *	Magic-method property getters
