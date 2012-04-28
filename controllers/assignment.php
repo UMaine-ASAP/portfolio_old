@@ -6,6 +6,7 @@ require_once('libraries/constant.php');
 require_once('models/assignment.php');
 require_once('controllers/authentication.php');
 require_once('controllers/portfolio.php');
+require_once('controllers/project.php');
 require_once('controllers/class.php');
 
 /**
@@ -389,14 +390,14 @@ class AssignmentController
 		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
 			(!$instance = self::getAssignmentInstance($instance_id)) ||
 			(!($work_is_portfolio) && ($work = PortfolioController::viewPortfolio($work_id))) ||
-			(!(!$work_is_portfolio) && ($work = self::getProject($work_id))) ||
+			(!(!$work_is_portfolio) && ($work = ProjectController::viewProject($work_id))) ||
 			(!$work->havePermissionOrHigher(OWNER)) ||		// Calling User must have OWNER permission
 			(!$instance->havePermissionOrHigher(SUBMIT)))	// Calling User must have WRITE permission
 		{
 			return false;
 		}
 
-		return $instance->addWork($work_id, $work_is_portfolio);
+		return $instance->submitWork($work_id, $work_is_portfolio);
 	}
 	
 	public static function approveChildOfInstance($instance_id, $child_id)

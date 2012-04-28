@@ -111,7 +111,6 @@ class Assignment extends AccessMapModel
  *	The object pertaining to instantiated Assignment objects, assigned to 
  *	a section or other Group of users.
  *	
- *	@property-read	array	permissions		Array of permission levels specific to the requesting user
  *	@property-read	object	owner			User object of the User who currently owns the AssignmentInstance
  *	@property-read	object	section			Section object the Assignment has been instantiated for
  *	@property-read	object	portfolio		Portfolio object the Assignment's works are contained within
@@ -131,27 +130,6 @@ class AssignmentInstance extends AccessMapModel
 	{
 		switch ($name)
 		{
-		case 'permissions':
-			$return = array();
-			if (!$user_id = AuthenticationController::get_current_user_id())
-			{
-				return $return;
-			}
-			$result = ORM::for_table('REPO_Assignment_instance_access_map')
-				->table_alias('access')
-				->select('access.access_type')
-				->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
-				->where('access.instance_id', $this->id())
-				->where('AUTH_Group_user_map.user_id', USER_ID)	// add user credentials here
-				->find_many();
-			
-			foreach ($result as $perm)
-			{	// Results are returned as ORM objects, de-reference them
-				$return[] = $perm->access_type;
-			}
-			return $return;
-			break;
-
 		case 'section':
 			return SectionController::getSection($this->section_id);
 			break;
@@ -206,14 +184,14 @@ class AssignmentInstance extends AccessMapModel
 	}
 
 	/**
-	 *	Add unit of work (Project or Portfolio) to this Instance.
+	 *	Add unit of work (Project or Portfolio) to this Instance as a submission needing approval.
 	 *
 	 *	@param	int		$work_id			Identifier of the piece of work to be added
 	 *	@param	int		$work_is_portfolio	Whether or not piece of work is a Portfolio (true=portfolio)
 	 *
 	 *	@return	bool						True if successful, false otherwise
 	 */
-	public function addWork($work_id, $work_is_portfolio)
+	public function submitWork($work_id, $work_is_portfolio)
 	{
 		// This is pretty kludgy (*should* use PortfolioController do to this,
 		// but we need to circumvent typical access checks due to the current implementation
@@ -228,7 +206,7 @@ class AssignmentInstance extends AccessMapModel
 		$map->port_id = $this->portfolio_id;
 		$map->child_id = $work_id;
 		$map->child_is_portfolio = $work_is_portfolio;
-		$map->child_privacy = $port->private;
+		$map->child_privacy = SUBMITTED;
 
 		return $map->save();
 	}

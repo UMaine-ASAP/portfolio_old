@@ -67,6 +67,15 @@ function getNMDPortfolio()
 }
 
 /**
+ * Retrieve the AssignmentInstance for the New Media 2012 protfolio submissions.
+ */
+function getNMDAssignmentInstance()
+{
+	$instance = AssignmentController::viewAssignmentInstance(1);
+	return $instance;
+}
+
+/**
  * Check whether or not the currently logged-in User's New Media 2012 portfolio has been submitted.
  *
  * Returns true if submitted, false otherwise.
@@ -195,16 +204,8 @@ $app->post('/register', function() use ($app) {
 		}
 		else
 		{
-			// Form name from FC email
-			//$fc = preg_split('/\@umit\.maine\.edu/', $_POST['email']);
-			//$name = explode('.', $fc[0]);
-			$first = $_POST['firstname'];//$name[0];
-			//$middle = NULL;
-			//for ($i = 1; $i < count($name)-1; $i++)
-			//{
-				//$middle = $middle." ".ucfirst($name[$i]);
-			//}
-			$last =  $_POST['lastname'];//ucfirst($name[count($name)-1]);
+			$first = $_POST['firstname'];
+			$last =  $_POST['lastname'];
 			// Create new User
 			if (!$user = UserController::createUser($_POST['username'],
 				$_POST['password'],
@@ -224,6 +225,9 @@ $app->post('/register', function() use ($app) {
 				AuthenticationController::attempt_login($_POST['username'], $_POST['password']);
 				// Create User's NMD portfolio
 				$port = PortfolioController::createPortfolio("New Media Freshman Portfolio 2012", "New Media Freshman Portfolio 2012", 1);
+				// Add permission for User to submit to NMD 2012 AssignmentInstance
+				$instance = getNMDAssignmentInstance();
+				$instance->addPermissionForUser($user->id(), SUBMIT);
 				return redirect('/portfolio');
 			}
 		}
