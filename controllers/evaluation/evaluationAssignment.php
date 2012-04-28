@@ -3,21 +3,21 @@
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
-require_once('models/evaluation/evaluation.php');
+require_once('models/evaluation/EvaluationAssignment.php');
 
 /**
- * Evaluation controller.
+ * Evaluation Assignment controller.
  *
  * @package Controllers
  */
-class EvaluationController
+class EvaluationAssignmentController
 {
 	/************************************************************************************
-	 * Evaluation object management														*
+	 * Evaluation Assignment object management											*
 	 ***********************************************************************************/
 
 	/**
-	 *	Creates a new Evaluation object in the system.
+	 *	Creates a new Evaluation Assignment object in the system.
 	 *
 	 *	The creating User must have the required privileges on the Group to which the Evaluation belongs
 	 *	(if a Class is specified).
@@ -31,7 +31,7 @@ class EvaluationController
 	 *
 	 *	@return object|bool					The created Evaluation object if successful, false otherwise
  	 */
-	public static function createEvaluation($group_id, $form_id, $evaluated_id, $type, $due_date, $evaluator_id)
+	public static function assignEvaluations($group_id, $form_id, $evaluated_id, $type, $due_date, $evaluator_id)
 	{
 		if (//(!$user_id = EvaluationController::get_current_user_id()) ||
 			(!$evaluation = Model::factory('Evaluation')->create()))
@@ -60,18 +60,6 @@ class EvaluationController
 		return $evaluation;
 	}
 
-	/**
-	 *	Gets a specific Evaluation object for private use.
-	 *
-	 *	Does not check permissions.
-	 *
-	 *	@param	int		$id		Identifier of the Evaluation object to get
-	 *
-	 *	@return	object|bool		The Evaluation object if found, false otherwise
-	 */
-	private static function getEvaluation($id)
-	{
-		return Model::factory('Evaluation')->find_one($id);
-	}
+
 }
 
