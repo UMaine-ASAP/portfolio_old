@@ -147,7 +147,7 @@ class UserController
 		if (!is_null($major))		{ $user->major = $major; }
 		if (!is_null($minor))		{ $user->minor = $minor; }
 		if (!is_null($grad_year))	{ $user->grad_year = $grad_year; }
-		if (!is_null($type_id))		{ $user->grad_year = $type_id; }
+		if (!is_null($type_id))		{ $user->type_id = $type_id; }
 
 		return $user->save();
 	}
