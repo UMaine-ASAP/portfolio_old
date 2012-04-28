@@ -228,7 +228,7 @@ $app->post('/register', function() use ($app) {
 				return redirect('/portfolio');
 			}
 		}
-a);
+);
 
 
 /**
