@@ -33,6 +33,13 @@ ORM::configure("mysql:host=$HOST;dbname=$DATABASE");
 ORM::configure('username', $USERNAME);
 ORM::configure('password', $PASSWORD);
 
+/**
+ *	System Home
+ */
+$app = new Slim(array(
+	'view' => new TwigView
+));
+
 
 /****************************************
  * HELPER FUNCTIONS						*
@@ -129,14 +136,6 @@ $redirect_loggedInUser = function () use ($authcheck_student)
  * ROUTING!!									*
  ***********************************************/
 
-/**
- *	System Home
- */
-$app = new Slim(array(
-	'view' => new TwigView
-));
-
-
 // Inform app of the web root for the next HTML request
 $app->flashNow('web_root', $GLOBALS['web_root']);
 
@@ -228,7 +227,7 @@ $app->post('/register', function() use ($app) {
 				return redirect('/portfolio');
 			}
 		}
-a);
+});
 
 
 /**
