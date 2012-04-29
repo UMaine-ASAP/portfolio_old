@@ -793,6 +793,11 @@ $app->get('/portfolios/:port_id', $authcheck_faculty, function($port_id) use ($a
 
 $app->get('/portfolios/:port_id/project/:id', $authcheck_faculty, function($port_id, $id) use ($app) {
 	$proj = Media::factory('Project')->find_one($id);
+
+	if( !($proj instanceOf Project ) ) {
+		return permission_denied();
+	}
+
 	
 	$media = array();
 	foreach ($proj->media as $media_id)
