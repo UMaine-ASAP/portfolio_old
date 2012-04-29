@@ -688,3 +688,25 @@ header {
 .media, .media img {
 	max-width: 100%;
 }
+
+/*************************/
+/** Evaluation  		**/
+
+.evaluation {
+	position: relative;
+}
+.evaluation label {
+	display: block;
+}
+.evaluation .component {
+	margin: 16px 0;
+}
+
+.evaluation .component-input {
+	margin-left: 30px;
+}
+.evaluation .required {
+	position: absolute;
+	left: -10px;
+}
+

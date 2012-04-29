@@ -94,5 +94,28 @@ class FormController
 	{
 		return Model::factory('Form')->find_one($id);
 	}
+
+	/**
+	 *	Generates a quiz object from a specified form object.
+	 *
+	 *	Does not check permissions.
+	 *
+	 *	@param	int		$form_id	Identifier of the Form object to get
+	 *
+	 *	@return	object|bool			The Quiz object if available, false otherwise
+	 */
+	public static function buildQuiz($form_id)
+	{
+		$components = FormComponentMap::getComponentsFromForm($form_id);
+		foreach( $components as $component ) {
+			$component->id = $component->component_id;
+			//Map radio options to array
+			if( $component->type->name == 'radio' ) {
+				$component->options = explode('#', $component->options);
+			}
+		}
+		return $components;
+	}
+
 }
 
