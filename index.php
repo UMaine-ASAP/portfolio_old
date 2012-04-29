@@ -701,7 +701,9 @@ $app->post('/portfolio/submit', $authcheck_student, function() use ($app) {
  * Portfolio viewing 
  */
 $app->get('/portfolios', $authcheck_faculty, function() use ($app) {
-	$app->render('view_all_portfolios.html');
+	$instance = getNMDAssignmentInstance();
+	$portfolios = $instance->children;
+	$app->render('view_all_portfolios.html', array('portfolios', $portfolios));
 	//Get all portfolios
 });
 
