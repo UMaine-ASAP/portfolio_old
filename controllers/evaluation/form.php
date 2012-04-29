@@ -96,7 +96,7 @@ class FormController
 	}
 
 	/**
-	 *	Gets a specific Quiz object.
+	 *	Generates a quiz object from a specified form object.
 	 *
 	 *	Does not check permissions.
 	 *
@@ -107,6 +107,13 @@ class FormController
 	public static function buildQuiz($form_id)
 	{
 		$components = FormComponentMap::getComponentsFromForm($form_id);
+		foreach( $components as $component ) {
+			$component->id = $component->component_id;
+			//Map radio options to array
+			if( $component->type->name == 'radio' ) {
+				$component->options = explode('#', $component->options);
+			}
+		}
 		return $components;
 	}
 
