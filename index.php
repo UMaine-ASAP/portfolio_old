@@ -703,7 +703,11 @@ $app->post('/portfolio/submit', $authcheck_student, function() use ($app) {
  */
 $app->get('/portfolios', $authcheck_faculty, function() use ($app) {
 	$instance = getNMDAssignmentInstance();
-	$portfolios = $instance->children;
+	$portfolios = array();
+	foreach( $instance->children as $id=>$arr ) {
+		$portfolios[] = PortfolioController::viewPortfolio($id);
+	}
+	print_r($portfolios);
 	$app->render('view_all_portfolios.html', array('portfolios', $portfolios));
 	//Get all portfolios
 });
