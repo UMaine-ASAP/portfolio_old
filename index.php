@@ -792,7 +792,30 @@ $app->get('/portfolios/:port_id', $authcheck_faculty, function($port_id) use ($a
 });
 
 $app->get('/portfolios/:port_id/project/:id', $authcheck_faculty, function($port_id, $id) use ($app) {
-	$app->render('submit_portfolio.html');
+	$proj = Media::factory('Project')->find_one($id);
+	
+	$media = array();
+	foreach ($proj->media as $media_id)
+	{
+		$m = MediaController::viewMedia($media_id);
+		$media[] = array('media_id' => $m->id(),
+			'mimetype' => $m->mimetype,
+			'title' => $m->title,
+			'description' => $m->description,
+			'created' => $m->created,
+			'edited' => $m->edited,
+			'filename' => $m->filename,
+			'filesize' => $m->filesize,
+			'md5' => $m->md5,
+			'extension' => $m->extension);
+	}
+
+	return $app->render('view_project.html',
+		array('project_id' => $proj->id(),
+			'title' => $proj->title,
+			'description' => $proj->description,
+			'thumbnail' => $proj->thumbnail,
+			'media_items' => $media));
 });
 
 
