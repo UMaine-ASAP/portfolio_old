@@ -752,18 +752,43 @@ $app->post('/portfolio/submit', $authcheck_student, $submission_check, function(
  */
 $app->get('/portfolios', $authcheck_faculty, function() use ($app) {
 	$instance = getNMDAssignmentInstance();
+
 	$portfolios = array();
-	foreach( $instance->children as $id=>$arr ) {
+	foreach( $instance->children as $id=>$arr )
+	{
 		$port = Model::factory('Portfolio')->find_one($id);
 		$student = $port->owner;
 		$studentName = $student->first . ' ' . $student->last;
-		$portfolios[] = array('id'=>$port, 'student'=>$studentName );
+		$portfolios[] = array('id'=>$id, 'student'=>$studentName );
 	}
+
 	return $app->render('view_all_portfolios.html', array('portfolios' => $portfolios));
 });
 
 $app->get('/portfolios/:port_id', $authcheck_faculty, function($port_id) use ($app) {
-	$app->render('submit_portfolio.html');
+	$port = Model::factory('Portfolio')->find_one($port_id);
+	
+	// Create multi-dimensional array of Project properties
+	$projects = array();
+	if ($port)
+	{
+		foreach ($port->children as $child_id=>$arr)
+		{
+			$proj = Model::factory('Project')->find_one($child_id);	// assume all children are Projects
+			// Trim title if it is too long
+			$t = substr($proj->title, 0, 50);
+			if (strlen($t) < strlen($proj->title)) { $t = $t . "..."; }
+			// Trim description if it is too long
+			$desc = substr($proj->description, 0, 410);
+			if (strlen($desc) < strlen($proj->description)) { $desc = $desc . "..."; }
+			$projects[] = array("project_id" => $proj->id(), "title" => $t, "description" => $desc, "thumbnail" => $proj->thumbnail, "type" => $proj->type);
+		}
+	}
+
+	$owner = $port->owner;
+	$app->flashNow('isFaculty', true);
+	$app->flashNow('port', array('id' => $port_id, 'owner_name' => $owner->first . " " . $owner->last));
+	return $app->render('view_portfolio.html', array('projects' => $projects));
 });
 
 $app->get('/portfolios/:port_id/project/:id', $authcheck_faculty, function($port_id, $id) use ($app) {
