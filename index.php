@@ -84,7 +84,6 @@ function portfolioIsSubmitted()
 {
 	$instance = getNMDAssignmentInstance();
 	$port = getNMDPortfolio();
-	// TODO: FIX TOMORROW!
 	foreach ($instance->children as $child_id=>$arr)
 	{
 		if ($child_id == $port->id())
@@ -649,9 +648,9 @@ $app->post('/project/:pid/media/:id/delete', $authcheck_student, function($pid, 
 /**
  *	Review Portfolio
  */
-$app->get('/portfolio/review', $authcheck_student, function() use ($app) {					
-	return $app->render('review_portfolio.html');		
-});
+// $app->get('/portfolio/review', $authcheck_student, function() use ($app) {					
+// 	return $app->render('review_portfolio.html');		
+// });
 
 
 /**
@@ -662,9 +661,18 @@ $app->get('/portfolio/submit', $authcheck_student, function() use ($app) {
 });
 
 $app->post('/portfolio/submit', $authcheck_student, function() use ($app) {
-	return permission_denied();
-	//return $app->render('portfolio_submitted.html');
+	$instance = getNMDAssignmentInstance();
+	$port = getNMDPortfolio();
+	if ($instance->submitWork($port->id(), true))
+	{	// Success!
+		return $app->render('portfolio_submitted.html');
+	}
+	else
+	{	// Failue
+		return permission_denied();
+	}
 });
+
 
 
 // RUN THE THING
