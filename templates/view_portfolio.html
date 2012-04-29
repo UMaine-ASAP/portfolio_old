@@ -4,22 +4,28 @@
 
 {% block content %}
 
+	{% if portfolioIsSubmitted %}
 	<div id="themed"style ="position: absolute; right: 0;">
 		<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/portfolio/submit">
 		<button class='right' type="submit">Submit Portfolio</button>
 		</FORM>
 	</div>
+	{% else %}
+	<div id="themed"style ="position: absolute; right: 0;">Portfolio submitted</div>
+	{% endif %}
 
 	<header>Your Portfolio</header>
 	
 	<hr>
 	
 
+	{% if portfolioIsSubmitted %}
 	<div id="themed">
 		<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/project/add">
 		<button class='left reset' type="submit">Add Project</button>
 		</FORM>
 	</div>
+	{% endif %}
 	<div class='spacer'></div>
 
 	<div id="projectSpacer" style="margin-top:20px"></div>
