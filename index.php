@@ -33,6 +33,13 @@ ORM::configure("mysql:host=$HOST;dbname=$DATABASE");
 ORM::configure('username', $USERNAME);
 ORM::configure('password', $PASSWORD);
 
+/**
+ *	System Home
+ */
+$app = new Slim(array(
+	'view' => new TwigView
+));
+
 
 /**
  *	System Home
@@ -117,6 +124,23 @@ $authcheck_student = function () use ($app)
 		$app->flashNow('logged_in', true);
 		return true;
 	}
+};
+
+$authcheck_faculty = function () use ($app)
+{
+	//Redirect to login if not authenticated
+	if ( ! AuthenticationController::check_login() )
+	{
+		$app->flashNow('logged_in', false);
+		redirect('/login');
+		return false;
+	}
+	else
+	{
+		//@TODO: Check user role here ...
+		$app->flashNow('logged_in', true);
+		return true;
+	}	
 };
 
 /**
@@ -653,6 +677,27 @@ $app->post('/portfolio/submit', $authcheck_student, function() use ($app) {
 	return permission_denied();
 	//return $app->render('portfolio_submitted.html');
 });
+
+
+/****************************************
+ * Faculty Pages						*
+ ***************************************/
+
+/**
+ * Portfolio viewing 
+ */
+$app->get('portfolio/views', $authcheck_faculty, function() use ($app) {
+	return true;
+	//Get all portfolios
+});
+
+$app->get('portfolio/evaluate/:id', $authcheck_faculty, function($id) use ($app) {
+	return true;
+
+	//G
+});
+
+
 
 
 // RUN THE THING
