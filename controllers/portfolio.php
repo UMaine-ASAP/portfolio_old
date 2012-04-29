@@ -393,7 +393,7 @@ class PortfolioController
 	 *	all sub-Portfolios as well).
 	 *	Calling user must have ownership privileges for the Portfolio object.
 	 *
-	 *	@param	int		$port_id			The identifier of the Portfolio the Group is being assigned to.
+	 *	@param	int		$port_id		The identifier of the Portfolio the Group is being assigned to.
 	 *	@param	int		$grpId			The identifier of the Group object recieving permissions for the Portfolio.
 	 *	@param	int		$permission		The type of permission being granted to the Group object,
 	 *	  								as specified in 'constant.php'.
