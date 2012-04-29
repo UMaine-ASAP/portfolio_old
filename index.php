@@ -137,9 +137,18 @@ $authcheck_student = function () use ($app)
 	}
 	else
 	{
-		$app->flashNow('logged_in', true);
-		$app->flashNow('portfolioIsSubmitted', portfolioIsSubmitted() );
-		return true;
+		$user = AuthenticationController::get_current_user();
+		if ($user->type_id == 2)
+		{	// User is student
+			$app->flashNow('logged_in', true);
+			$app->flashNow('portfolioIsSubmitted', portfolioIsSubmitted() );
+			return true;
+		}
+		else
+		{	// Denied
+			permission_denied();
+			$GLOBALS['app']->stop();
+		}
 	}
 };
 
@@ -154,9 +163,17 @@ $authcheck_faculty = function () use ($app)
 	}
 	else
 	{
-		//@TODO: Check user role here ...
-		$app->flashNow('logged_in', true);
-		return true;
+		$user = AuthenticationController::get_current_user();
+		if ($user->type_id == 1)
+		{	// User is faculty
+			$app->flashNow('logged_in', true);
+			return true;
+		}
+		else
+		{	// Denied
+			permission_denied();
+			$GLOBALS['app']->stop();
+		}
 	}	
 };
 
