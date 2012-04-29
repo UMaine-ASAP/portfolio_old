@@ -36,11 +36,12 @@
 			<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}"><div class="title">{{ project['title'] }}</div></a>
 			</br>
 			<div class="desc">{{ project['description'] }}</div>
-		
+			{% if portfolioIsSubmitted %}
 			<div class"actions" style="float:right;margin-top:-95px;margin-left:850px;">
 				<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}/edit"><img src="{{ flash['web_root'] }}/templates/images/icon_Edit.png" border="0" alt="Edit"></a></br>
 				<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}/delete"><img src="{{ flash['web_root'] }}/templates/images/icon_Delete.png" border="0" alt="Delete"></a>
 			</div>
+			{% endif %}
 		</div>
 	{% endfor %}
 	</p>

@@ -133,6 +133,7 @@ $authcheck_student = function () use ($app)
 	else
 	{
 		$app->flashNow('logged_in', true);
+		$app->flashNow('portfolioIsSubmitted', portfolioIsSubmitted() );
 		return true;
 	}
 };
