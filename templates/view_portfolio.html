@@ -4,22 +4,28 @@
 
 {% block content %}
 
+	{% if not flash['portfolioIsSubmitted'] %}
 	<div id="themed"style ="position: absolute; right: 0;">
 		<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/portfolio/submit">
 		<button class='right' type="submit">Submit Portfolio</button>
 		</FORM>
 	</div>
+	{% else %}
+	<div id="themed"style ="position: absolute; right: 0;">Portfolio submitted</div>
+	{% endif %}
 
 	<header>Your Portfolio</header>
 	
 	<hr>
 	
 
+	{% if not flash['portfolioIsSubmitted'] %}
 	<div id="themed">
 		<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/project/add">
 		<button class='left reset' type="submit">Add Project</button>
 		</FORM>
 	</div>
+	{% endif %}
 	<div class='spacer'></div>
 
 	<div id="projectSpacer" style="margin-top:20px"></div>
@@ -36,7 +42,7 @@
 			<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}"><div class="title">{{ project['title'] }}</div></a>
 			</br>
 			<div class="desc">{{ project['description'] }}</div>
-			{% if portfolioIsSubmitted %}
+			{% if not flash['portfolioIsSubmitted'] %}
 			<div class"actions" style="float:right;margin-top:-95px;margin-left:850px;">
 				<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}/edit"><img src="{{ flash['web_root'] }}/templates/images/icon_Edit.png" border="0" alt="Edit"></a></br>
 				<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}/delete"><img src="{{ flash['web_root'] }}/templates/images/icon_Delete.png" border="0" alt="Delete"></a>
