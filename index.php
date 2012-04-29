@@ -100,7 +100,7 @@ function portfolioIsSubmitted()
  */
 function redirect($destination)
 {
-	$GLOBALS['app']->redirect($GLOBALS['web_root'] . $destination);
+	return $GLOBALS['app']->redirect($GLOBALS['web_root'] . $destination);
 }
 
 /**
@@ -108,23 +108,23 @@ function redirect($destination)
  */
 function permission_denied()
 {
-	$GLOBALS['app']->render('permission_denied.html');
+	return $GLOBALS['app']->render('permission_denied.html');
 }
 
 /**
  * Sets breadcrumbs for current page
  */
 function setBreadcrumb( $breadcrumbs ) {
-	$GLOBALS['app']->flashNow('breadcrumbs', $breadcrumbs);
+	return $GLOBALS['app']->flashNow('breadcrumbs', $breadcrumbs);
 }
 
-/** 
- * Middleware to check student authentication and redirect to login page 
+/**
+ * Returns true and sets 'logged_in' flash variable if a User is currently logged in,
+ * returns false and redirects to /login otherwise.
  */
-$authcheck_student = function () use ($app)
-{	
-	//Redirect to login if not authenticated
-	if ( ! AuthenticationController::check_login() )
+$authcheck_login = function () use ($app)
+{
+	if (!AuthenticationController::check_login())
 	{
 		$app->flashNow('logged_in', false);
 		redirect('/login');
@@ -132,56 +132,66 @@ $authcheck_student = function () use ($app)
 	}
 	else
 	{
-		$user = AuthenticationController::get_current_user();
-		if ($user->type_id == 2)
-		{	// User is student
-			$app->flashNow('logged_in', true);
-			$app->flashNow('portfolioIsSubmitted', portfolioIsSubmitted() );
-			return true;
-		}
-		else
-		{	// Denied
-			permission_denied();
-			$GLOBALS['app']->stop();
-		}
+		$app->flashNow('logged_in', true);
+		return true;
 	}
 };
 
-$authcheck_faculty = function () use ($app)
-{
-	//Redirect to login if not authenticated
-	if ( ! AuthenticationController::check_login() )
+/** 
+ * Middleware to check student authentication and redirect to permission denied if not student 
+ */
+$authcheck_student = function () use ($app, $authcheck_login)
+{	
+	if ($authcheck_login() && AuthenticationController::currentUserIsStudent())
 	{
-		$app->flashNow('logged_in', false);
-		redirect('/login');
-		return false;
+		$app->flashNow('portfolioIsSubmitted', portfolioIsSubmitted() );
+		return true;
 	}
 	else
+	{	// Denied
+		permission_denied();
+		return $GLOBALS['app']->stop();
+	}
+};
+
+/**
+ * Middleware to check faculty authentication and redirect to permission denied if not faculty
+ */
+$authcheck_faculty = function () use ($app, $authcheck_login)
+{
+	if ($authcheck_login() && AuthenticationController::currentUserIsFaculty())
 	{
-		$user = AuthenticationController::get_current_user();
-		if ($user->type_id == 1)
-		{	// User is faculty
-			$app->flashNow('logged_in', true);
-			return true;
-		}
-		else
-		{	// Denied
-			permission_denied();
-			$GLOBALS['app']->stop();
-		}
-	}	
+		return true;
+	}
+	else
+	{	// Denied
+		permission_denied();
+		return $GLOBALS['app']->stop();
+	}
 };
 
 /**
  * Middleware to redirect user based on role to role-specific homepage
  */
-$redirect_loggedInUser = function () use ($authcheck_student)
+$redirect_loggedInUser = function () use ($app, $authcheck_student)
 {
-	//@TODO: We will want to get the user role and direct user depending on whether student or faculty ...
-
-	if ( AuthenticationController::check_login() )
+	if (AuthenticationController::check_login())
 	{	// User is already logged in
-		return redirect('/portfolio');
+		if (AuthenticationController::currentUserIsStudent())
+		{
+			redirect('/portfolio');
+			return false;
+		}
+		else if (AuthenticationController::currentUserIsFaculty())
+		{
+			redirect('/portfolios');
+			return false;
+		}
+		else
+		{
+			permission_denied();
+			return $app->stop();
+		}
 	}
 };
 
@@ -198,8 +208,7 @@ $app->flashNow('web_root', $GLOBALS['web_root']);
 /**
  *	Webroot
  */
-$app->get('/', $authcheck_student, function() use ($app) {
-	return redirect('/portfolio');	
+$app->get('/', $authcheck_login, $redirect_loggedInUser, function() use ($app) {
 });
 
 
@@ -210,15 +219,14 @@ $app->get('/login', $redirect_loggedInUser, function() use ($app) {
 	return $app->render('login.html');
 });
 
-$app->post('/login', function() use ($app) {
+$app->post('/login', function() use ($app, $redirect_loggedInUser) {
 	if (isset($_POST['username']) && isset($_POST['password']) &&
 		AuthenticationController::attempt_login($_POST['username'], $_POST['password']))
 	{	// Success!
-		return redirect('/portfolio');
+		return $redirect_loggedInUser();
 	}
 	else
 	{	// Fail :(
-
 		$app->flash('error', 'Username or password was incorrect.');
 		return redirect('/login');
 	}
@@ -228,7 +236,7 @@ $app->post('/login', function() use ($app) {
 /**
  *	Log Out
  */
-$app->get('/logout', $authcheck_student, function() use ($app) {
+$app->get('/logout', $authcheck_login, function() use ($app) {
 	AuthenticationController::log_out();
 	$app->flash('header', 'You have been successfully logged out.');
 	return redirect('/login');
@@ -242,41 +250,41 @@ $app->get('/register', $redirect_loggedInUser, function() use ($app) {
 	return $app->render('register.html');
 });
 
-$app->post('/register', function() use ($app) {
-		if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['email']) || !isset($_POST['firstname']) || !isset($_POST['lastname']))
-		{	// Reject, form invalid
-			$app->flash('error', true);
-			return redirect('/register');	//TODO: Save partial title/desc on return to form
+$app->post('/register', $redirect_loggedInUser, function() use ($app) {
+	if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['email']) || !isset($_POST['firstname']) || !isset($_POST['lastname']))
+	{	// Reject, form invalid
+		$app->flash('error', true);
+		return redirect('/register');	//TODO: Save partial title/desc on return to form
+	}
+	else
+	{
+		$first = $_POST['firstname'];
+		$last =  $_POST['lastname'];
+		// Create new User
+		if (!$user = UserController::createUser($_POST['username'],
+			$_POST['password'],
+			$first,
+			NULL,
+			$last,
+			$_POST['email'],
+			1,
+			NULL, NULL, NULL, NULL, NULL, NULL, 2))
+		{
+			$app->flash('error', "Username is already in use");
+			return redirect('/register');
 		}
 		else
 		{
-			$first = $_POST['firstname'];
-			$last =  $_POST['lastname'];
-			// Create new User
-			if (!$user = UserController::createUser($_POST['username'],
-				$_POST['password'],
-				$first,
-				NULL,
-				$last,
-				$_POST['email'],
-				1,
-				NULL, NULL, NULL, NULL, NULL, NULL, 2))
-			{
-				$app->flash('error', "Username is already in use");
-				return redirect('/register');
-			}
-			else
-			{
-				// Login as new User
-				AuthenticationController::attempt_login($_POST['username'], $_POST['password']);
-				// Create User's NMD portfolio
-				$port = PortfolioController::createPortfolio("New Media Freshman Portfolio 2012", "New Media Freshman Portfolio 2012", 1);
-				// Add permission for User to submit to NMD 2012 AssignmentInstance
-				$instance = getNMDAssignmentInstance();
-				$instance->addPermissionForUser($user->id(), SUBMIT);
-				return redirect('/portfolio');
-			}
+			// Login as new User
+			AuthenticationController::attempt_login($_POST['username'], $_POST['password']);
+			// Create User's NMD portfolio
+			$port = PortfolioController::createPortfolio("New Media Freshman Portfolio 2012", "New Media Freshman Portfolio 2012", 1);
+			// Add permission for User to submit to NMD 2012 AssignmentInstance
+			$instance = getNMDAssignmentInstance();
+			$instance->addPermissionForUser($user->id(), SUBMIT);
+			return redirect('/portfolio');	// Users may only register as Undergraduates
 		}
+	}
 });
 
 
@@ -726,15 +734,12 @@ $app->get('/portfolios', $authcheck_faculty, function() use ($app) {
 		$student = $port->owner;
 		$studentName = $student->first . ' ' . $student->last;
 		$portfolios[] = array('id'=>$port, 'student'=>$studentName );
-		
-//		echo "";
-//		print_r($port->owner);
 	}
-//	print_r($portfolios);
 	return $app->render('view_all_portfolios.html', array('portfolios' => $portfolios));
 });
 
 $app->get('/portfolios/:pid', $authcheck_faculty, function($port_id) use ($app) {
+	
 	$app->render('submit_portfolio.html');
 });
 
