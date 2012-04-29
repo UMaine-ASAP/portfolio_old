@@ -720,34 +720,41 @@ $app->post('/portfolio/submit', $authcheck_student, function() use ($app) {
  */
 $app->get('/portfolios', $authcheck_faculty, function() use ($app) {
 	$instance = getNMDAssignmentInstance();
-	$portfolios = $instance->children;
-	$app->render('view_all_portfolios.html', array('portfolios', $portfolios));
-	//Get all portfolios
+	$portfolios = array();
+	foreach( $instance->children as $id=>$arr ) {
+		$port = Model::factory('Portfolio')->find_one($id);
+		$student = $port->owner;
+		$studentName = $student->first . ' ' . $student->last;
+		$portfolios[] = array('id'=>$port, 'student'=>$studentName );
+		
+//		echo "";
+//		print_r($port->owner);
+	}
+//	print_r($portfolios);
+	return $app->render('view_all_portfolios.html', array('portfolios' => $portfolios));
 });
 
 $app->get('/portfolios/:pid', $authcheck_faculty, function($port_id) use ($app) {
 	$app->render('submit_portfolio.html');
-	//Get all portfolios
 });
 
 $app->get('/portfolios/:pid/project/:id', $authcheck_faculty, function($port_id, $id) use ($app) {
 	$app->render('submit_portfolio.html');
-	//Get all portfolios
 });
 
 
 $app->get('/portfolios/:id/evaluate', $authcheck_faculty, function($port_id) use ($app) {
 	$app->render('submit_portfolio.html');
-	//Get all portfolios
 });
 
 
 $app->get('portfolio/evaluate/:id', $authcheck_faculty, function($id) use ($app) {
 	return true;
-
-	//G
 });
 
+$app->post('/portfolio/evaluate/:id', $authcheck_faculty, function($id) use ($app) {
+
+});
 
 
 
