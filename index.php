@@ -117,6 +117,11 @@ function setBreadcrumb( $breadcrumbs ) {
 	$GLOBALS['app']->flashNow('breadcrumbs', $breadcrumbs);
 }
 
+
+/****************************************
+ * MIDDLEWARE FUNCTIONS					*
+ ***************************************/
+
 /** 
  * Middleware to check student authentication and redirect to login page 
  */
@@ -134,6 +139,18 @@ $authcheck_student = function () use ($app)
 		$app->flashNow('logged_in', true);
 		$app->flashNow('portfolioIsSubmitted', portfolioIsSubmitted() );
 		return true;
+	}
+};
+
+/**
+ * Middleware to check submission status of the student's Portfolio and redirect appropriately
+ */
+$submission_check = function () use ($app)
+{
+	if (portfolioIsSubmitted())
+	{
+		permission_denied();
+		return $app->stop();
 	}
 };
 
@@ -182,7 +199,6 @@ $app->post('/login', function() use ($app) {
 	}
 	else
 	{	// Fail :(
-
 		$app->flash('error', 'Username or password was incorrect.');
 		return redirect('/login');
 	}
@@ -274,7 +290,7 @@ $app->get('/portfolio', $authcheck_student, function() use ($app) {
 /**
  *	Add Project
  */
-$app->get('/project/add', $authcheck_student, function() use ($app) {
+$app->get('/project/add', $authcheck_student, $submission_check, function() use ($app) {
 	//TODO: Handle error messages from failed adds
 	return $app->render('edit_project.html', 
 		array('project_id' => -1,
@@ -330,7 +346,7 @@ $app->get('/project/:id', $authcheck_student, function($id) use ($app) {
 /**
  *	Edit Project
  */
-$app->get('/project/:id/edit', $authcheck_student, function($id) use ($app) {					
+$app->get('/project/:id/edit', $authcheck_student, $submission_check, function($id) use ($app) {					
 	if ((!$proj = ProjectController::viewProject($id)) ||
 		(!$proj->havePermissionOrHigher(OWNER)))
 	{	// User does not have permission to edit this Project
@@ -371,7 +387,7 @@ $app->get('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 	}
 });
 
-$app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
+$app->post('/project/:id/edit', $authcheck_student, $submission_check, function($id) use ($app) {
 	$thumb_path = NULL;
 	if ($id == -1)
 	{	// Sent from add_project, we need to create a Project
@@ -433,7 +449,7 @@ $app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 /**
  *	Delete Project
  */
-$app->get('/project/:id/delete', $authcheck_student, function($id) use ($app) {
+$app->get('/project/:id/delete', $authcheck_student, $submission_check, function($id) use ($app) {
 	if ((!$proj = ProjectController::viewProject($id)) ||
 		(!$proj->havePermissionOrHigher(OWNER)))
 	{
@@ -462,7 +478,7 @@ $app->get('/project/:id/delete', $authcheck_student, function($id) use ($app) {
 	}
 });
 
-$app->post('/project/:id/delete', $authcheck_student, function($id) use ($app) {
+$app->post('/project/:id/delete', $authcheck_student, $submission_check, function($id) use ($app) {
 	if ((!$proj = ProjectController::viewProject($id) ||
 		(!$proj->havePermissionOrHigher(OWNER))) ||
 		(!ProjectController::deleteProject($id)))
@@ -479,7 +495,7 @@ $app->post('/project/:id/delete', $authcheck_student, function($id) use ($app) {
 /**
  *	Add Media
  */
-$app->get('/project/:id/media/add', $authcheck_student, function($id) use ($app) {
+$app->get('/project/:id/media/add', $authcheck_student, $submission_check, function($id) use ($app) {
 	//TODO: Handle error messages from failed adds
 	if ((!$proj = ProjectController::viewProject($id)) ||
 		(!$proj->havePermissionOrHigher(OWNER)))
@@ -572,12 +588,12 @@ function postMediaData($pid, $id) {
 	}
 }
 
-$app->post('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {	
+$app->post('/project/:pid/media/:id/edit', $authcheck_student, $submission_check, function($pid, $id) use ($app) {	
 	postMediaData($pid, $id);
 });
 
 
-$app->get('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {
+$app->get('/project/:pid/media/:id/edit', $authcheck_student, $submission_check, function($pid, $id) use ($app) {
 	if( isset( $GLOBALS['specialUpload'] ) ) {
 		$_POST = $GLOBALS['specialUpload']['uploadForm'];
 		postMediaData($pid, $id);
@@ -614,7 +630,7 @@ $app->get('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id
 /**
  *	Delete Media
  */
-$app->get('/project/:pid/media/:id/delete', $authcheck_student, function($pid, $id) use ($app) {
+$app->get('/project/:pid/media/:id/delete', $authcheck_student, $submission_check, function($pid, $id) use ($app) {
 	if ((!$media = MediaController::viewMedia($id)) ||
 		(!$media->havePermissionOrHigher(OWNER)) ||
 		(!$project = ProjectController::viewProject($pid)) ||
@@ -634,7 +650,7 @@ $app->get('/project/:pid/media/:id/delete', $authcheck_student, function($pid, $
 	}
 });
 
-$app->post('/project/:pid/media/:id/delete', $authcheck_student, function($pid, $id) use ($app) {
+$app->post('/project/:pid/media/:id/delete', $authcheck_student, $submission_check, function($pid, $id) use ($app) {
 	if (!MediaController::deleteMedia($id))
 	{
 		return permission_denied();
@@ -657,11 +673,11 @@ $app->post('/project/:pid/media/:id/delete', $authcheck_student, function($pid, 
 /**
  *	Portfolio Submission
  */
-$app->get('/portfolio/submit', $authcheck_student, function() use ($app) {					
+$app->get('/portfolio/submit', $authcheck_student, $submission_check, function() use ($app) {					
 	return $app->render('submit_portfolio.html');		
 });
 
-$app->post('/portfolio/submit', $authcheck_student, function() use ($app) {
+$app->post('/portfolio/submit', $authcheck_student, $submission_check, function() use ($app) {
 	$instance = getNMDAssignmentInstance();
 	$port = getNMDPortfolio();
 	if ($instance->submitWork($port->id(), true))
