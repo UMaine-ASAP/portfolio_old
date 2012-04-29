@@ -30,6 +30,23 @@ class AuthenticationController
 	}
 
 	/**
+	 * Gets the User object of the User who is currently logged in. Since it calls check_login, it will log the user
+	 * out if their session has expired or their IP has changed during their current session.
+	 *
+	 *		@return The logged in user's User object, or false if no user is logged in.
+	 */
+	static function get_current_user()
+	{
+		if (self::check_login())
+		{
+			$id = intval($_SESSION['UserID']);
+			return UserController::getUser($id);
+		}
+
+		return false;
+	}
+
+	/**
 	 * Determines if a user is currently logged in. If so, it checks their session data and logs them out
 	 * if their session has expired or their IP has changed. It then updates their latest access time to
 	 * the current time() value
