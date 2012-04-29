@@ -11,7 +11,6 @@ error_reporting(E_ALL);
 
 // Our Settings file matters most!
 require_once 'settings.php';
-require_once 'constant.php';
 
 // External Libraries
 require_once 'Slim/Slim/Slim.php';
