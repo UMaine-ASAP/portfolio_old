@@ -1,8 +1,19 @@
 <?php
+
+require_once('libraries/Idiorm/idiorm.php');
+require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
 /*
-* A User class represents a single row in the REPO_Users table.
-*/
+ * A User class represents a single row in the REPO_Users table.
+ *
+ * @package Models
+ */
+
+class UserType extends Model
+{
+	public static $_table = "AUTH_User_types";
+	public static $_id_column = "type_id";
+}
 
 class User extends Model
 {
@@ -72,6 +83,10 @@ class User extends Model
 				}
 				return $groups;
 				break;
+
+			case 'type':
+				$result = Model::factory('UserType')->find_one($this->type_id);
+				return $result;
 
 			default:
 				return parent::__get($name);
