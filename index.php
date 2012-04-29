@@ -743,12 +743,7 @@ $app->get('/portfolios', $authcheck_faculty, function() use ($app) {
 	return $app->render('view_all_portfolios.html', array('portfolios' => $portfolios));
 });
 
-<<<<<<< HEAD
-$app->get('/portfolios/:pid', $authcheck_faculty, function($port_id) use ($app) {
-	
-=======
 $app->get('/portfolios/:port_id', $authcheck_faculty, function($port_id) use ($app) {
->>>>>>> d90333b5b232395740a88388ae477d120e130ec4
 	$app->render('submit_portfolio.html');
 });
 
@@ -757,7 +752,7 @@ $app->get('/portfolios/:port_id/project/:id', $authcheck_faculty, function($port
 });
 
 
-$app->get('/portfolios/:portID/evaluate', $authcheck_faculty, function($portID) use ($app) {
+$app->get('/portfolios/:port_id/evaluate', $authcheck_faculty, function($portID) use ($app) {
 	$components = FormController::buildQuiz(1);
 	
 	// Get student name
@@ -768,7 +763,7 @@ $app->get('/portfolios/:portID/evaluate', $authcheck_faculty, function($portID) 
 	return $app->render('evaluation.html', array('portfolioID'=>$portID, 'name'=>$studentName, 'components'=>$components));
 });
 
-$app->post('/portfolios/:portID/evaluate', $authcheck_faculty, function($portID) use ($app) {
+$app->post('/portfolios/:port_id/evaluate', $authcheck_faculty, function($portID) use ($app) {
 	return $app->render('submit_portfolio.html');
 });
 
