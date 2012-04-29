@@ -68,13 +68,31 @@ function getNMDPortfolio()
 }
 
 /**
+ * Retrieve the AssignmentInstance for the New Media 2012 protfolio submissions.
+ */
+function getNMDAssignmentInstance()
+{
+	$instance = AssignmentController::viewAssignmentInstance(1);
+	return $instance;
+}
+
+/**
  * Check whether or not the currently logged-in User's New Media 2012 portfolio has been submitted.
  *
  * Returns true if submitted, false otherwise.
  */
 function portfolioIsSubmitted()
 {
-
+	$instance = getNMDAssignmentInstance();
+	$port = getNMDPortfolio();
+	foreach ($instance->children as $child_id=>$arr)
+	{
+		if ($child_id == $port->id())
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 /**
@@ -214,16 +232,8 @@ $app->post('/register', function() use ($app) {
 		}
 		else
 		{
-			// Form name from FC email
-			//$fc = preg_split('/\@umit\.maine\.edu/', $_POST['email']);
-			//$name = explode('.', $fc[0]);
-			$first = $_POST['firstname'];//$name[0];
-			//$middle = NULL;
-			//for ($i = 1; $i < count($name)-1; $i++)
-			//{
-				//$middle = $middle." ".ucfirst($name[$i]);
-			//}
-			$last =  $_POST['lastname'];//ucfirst($name[count($name)-1]);
+			$first = $_POST['firstname'];
+			$last =  $_POST['lastname'];
 			// Create new User
 			if (!$user = UserController::createUser($_POST['username'],
 				$_POST['password'],
@@ -243,6 +253,9 @@ $app->post('/register', function() use ($app) {
 				AuthenticationController::attempt_login($_POST['username'], $_POST['password']);
 				// Create User's NMD portfolio
 				$port = PortfolioController::createPortfolio("New Media Freshman Portfolio 2012", "New Media Freshman Portfolio 2012", 1);
+				// Add permission for User to submit to NMD 2012 AssignmentInstance
+				$instance = getNMDAssignmentInstance();
+				$instance->addPermissionForUser($user->id(), SUBMIT);
 				return redirect('/portfolio');
 			}
 		}
@@ -654,9 +667,9 @@ $app->post('/project/:pid/media/:id/delete', $authcheck_student, function($pid, 
 /**
  *	Review Portfolio
  */
-$app->get('/portfolio/review', $authcheck_student, function() use ($app) {					
-	return $app->render('review_portfolio.html');		
-});
+// $app->get('/portfolio/review', $authcheck_student, function() use ($app) {					
+// 	return $app->render('review_portfolio.html');		
+// });
 
 
 /**
@@ -667,8 +680,16 @@ $app->get('/portfolio/submit', $authcheck_student, function() use ($app) {
 });
 
 $app->post('/portfolio/submit', $authcheck_student, function() use ($app) {
-	return permission_denied();
-	//return $app->render('portfolio_submitted.html');
+	$instance = getNMDAssignmentInstance();
+	$port = getNMDPortfolio();
+	if ($instance->submitWork($port->id(), true))
+	{	// Success!
+		return $app->render('portfolio_submitted.html');
+	}
+	else
+	{	// Failue
+		return permission_denied();
+	}
 });
 
 
@@ -679,10 +700,27 @@ $app->post('/portfolio/submit', $authcheck_student, function() use ($app) {
 /**
  * Portfolio viewing 
  */
-$app->get('portfolio/views', $authcheck_faculty, function() use ($app) {
-	return true;
+$app->get('/portfolios', $authcheck_faculty, function() use ($app) {
+	$app->render('view_all_portfolios.html');
 	//Get all portfolios
 });
+
+$app->get('/portfolios/:pid', $authcheck_faculty, function($port_id) use ($app) {
+	$app->render('submit_portfolio.html');
+	//Get all portfolios
+});
+
+$app->get('/portfolios/:pid/project/:id', $authcheck_faculty, function($port_id, $id) use ($app) {
+	$app->render('submit_portfolio.html');
+	//Get all portfolios
+});
+
+
+$app->get('/portfolios/:id/evaluate', $authcheck_faculty, function($port_id) use ($app) {
+	$app->render('submit_portfolio.html');
+	//Get all portfolios
+});
+
 
 $app->get('portfolio/evaluate/:id', $authcheck_faculty, function($id) use ($app) {
 	return true;
