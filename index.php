@@ -749,10 +749,14 @@ $app->get('/portfolios/:port_id/project/:id', $authcheck_faculty, function($port
 
 
 $app->get('/portfolios/:portID/evaluate', $authcheck_faculty, function($portID) use ($app) {
+	$port = Model::factory('Portfolio')->find_one($portID);
+	if( !($port instanceOf Portfolio ) ) {
+		return permission_denied();
+	}
+
 	$components = FormController::buildQuiz(1);
 	
 	// Get student name
-	$port = Model::factory('Portfolio')->find_one($portID);
 	$student = $port->owner;
 	$studentName = $student->first . ' ' . $student->last;	
 
@@ -760,6 +764,18 @@ $app->get('/portfolios/:portID/evaluate', $authcheck_faculty, function($portID) 
 });
 
 $app->post('/portfolios/:portID/evaluate', $authcheck_faculty, function($portID) use ($app) {
+	//Ensure project exists to evaluate
+	$port = Model::factory('Portfolio')->find_one($portID);
+	if( !($port instanceOf Portfolio ) ) {
+		return permission_denied();
+	}
+	
+	//Create Evaluation
+	$evaluation = Model::factory('Evaluation')->create();
+	$evaluation->save();
+
+	print_r($_POST);
+	//$first = $_POST['firstname'];
 	return $app->render('submit_portfolio.html');
 });
 
