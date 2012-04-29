@@ -750,9 +750,13 @@ $app->get('/portfolios/:port_id/project/:id', $authcheck_faculty, function($port
 
 $app->get('/portfolios/:portID/evaluate', $authcheck_faculty, function($portID) use ($app) {
 	$components = FormController::buildQuiz(1);
-	//print_r($quiz);
-	$student = "test";
-	return $app->render('evaluation.html', array('portfolioID'=>$portID, 'name'=>$student, 'components'=>$components));
+	
+	// Get student name
+	$port = Model::factory('Portfolio')->find_one($portID);
+	$student = $port->owner;
+	$studentName = $student->first . ' ' . $student->last;	
+
+	return $app->render('evaluation.html', array('portfolioID'=>$portID, 'name'=>$studentName, 'components'=>$components));
 });
 
 $app->post('/portfolios/:portID/evaluate', $authcheck_faculty, function($portID) use ($app) {
