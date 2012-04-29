@@ -767,22 +767,23 @@ $app->get('/portfolios', $authcheck_faculty, function() use ($app) {
 
 $app->get('/portfolios/:port_id', $authcheck_faculty, function($port_id) use ($app) {
 	$port = Model::factory('Portfolio')->find_one($port_id);
-	
+
+	if ( !($port instanceOf Portfolio ) ) {
+		return permission_denied();
+	}
+
 	// Create multi-dimensional array of Project properties
 	$projects = array();
-	if ($port)
+	foreach ($port->children as $child_id=>$arr)
 	{
-		foreach ($port->children as $child_id=>$arr)
-		{
-			$proj = Model::factory('Project')->find_one($child_id);	// assume all children are Projects
-			// Trim title if it is too long
-			$t = substr($proj->title, 0, 50);
-			if (strlen($t) < strlen($proj->title)) { $t = $t . "..."; }
-			// Trim description if it is too long
-			$desc = substr($proj->description, 0, 410);
-			if (strlen($desc) < strlen($proj->description)) { $desc = $desc . "..."; }
-			$projects[] = array("project_id" => $proj->id(), "title" => $t, "description" => $desc, "thumbnail" => $proj->thumbnail, "type" => $proj->type);
-		}
+		$proj = Model::factory('Project')->find_one($child_id);	// assume all children are Projects
+		// Trim title if it is too long
+		$t = substr($proj->title, 0, 50);
+		if (strlen($t) < strlen($proj->title)) { $t = $t . "..."; }
+		// Trim description if it is too long
+		$desc = substr($proj->description, 0, 410);
+		if (strlen($desc) < strlen($proj->description)) { $desc = $desc . "..."; }
+		$projects[] = array("project_id" => $proj->id(), "title" => $t, "description" => $desc, "thumbnail" => $proj->thumbnail, "type" => $proj->type);
 	}
 
 	$owner = $port->owner;
@@ -797,12 +798,11 @@ $app->get('/portfolios/:port_id/project/:id', $authcheck_faculty, function($port
 	if( !($proj instanceOf Project ) ) {
 		return permission_denied();
 	}
-
 	
 	$media = array();
 	foreach ($proj->media as $media_id)
 	{
-		$m = MediaController::viewMedia($media_id);
+		$m = Model::factory('Media')->find_one($media_id);
 		$media[] = array('media_id' => $m->id(),
 			'mimetype' => $m->mimetype,
 			'title' => $m->title,
