@@ -203,7 +203,7 @@ class AssignmentInstance extends AccessMapModel
 		{
 			return false;
 		}
-
+			
 		$map->port_id = $this->portfolio_id;
 		$map->child_id = $work_id;
 		$map->child_is_portfolio = $work_is_portfolio;
