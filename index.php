@@ -824,8 +824,6 @@ $app->post('/portfolios/:port_id/evaluate', $authcheck_faculty, function($port_i
 	$evaluation = EvaluationController::createEvaluation(1, $port_id, $current_user_id, 1);
 	EvaluationController::submitScores( $evaluation->id, $_POST );
 
-
-
 	return $app->render('submit_portfolio.html');
 });
 
