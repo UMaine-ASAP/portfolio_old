@@ -33,13 +33,6 @@ ORM::configure("mysql:host=$HOST;dbname=$DATABASE");
 ORM::configure('username', $USERNAME);
 ORM::configure('password', $PASSWORD);
 
-/**
- *	System Home
- */
-$app = new Slim(array(
-	'view' => new TwigView
-));
-
 
 /**
  *	System Home
