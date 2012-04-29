@@ -82,7 +82,17 @@ function getNMDAssignmentInstance()
  */
 function portfolioIsSubmitted()
 {
-
+	$instance = getNMDAssignmentInstance();
+	$port = getNMDPortfolio();
+	// TODO: FIX TOMORROW!
+	foreach ($instance->children as $child_id=>$arr)
+	{
+		if ($child_id == $port->id())
+		{
+			return true;
+		}
+	}
+	return false;
 }
 
 /**
