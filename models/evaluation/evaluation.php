@@ -14,7 +14,7 @@ require_once('models/evaluation/mappings.php');
 
 class Evaluation extends Model
 {
-	public static $_table = "REPO_Evaluations";
+	public static $_table = "EVAL_Evaluations";
 	public static $_id_column = "evaluation_id";
 
 
@@ -25,6 +25,8 @@ class Evaluation extends Model
 	{
 		switch ($name)
 		{
+			case 'id':
+				return $this->evaluation_id;
 			case 'status':
 				$result = Model::factory('EvaluationStatus')
 					->where('status_id', parent::__get("status"))

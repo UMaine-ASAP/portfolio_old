@@ -772,7 +772,7 @@ $app->get('/portfolios/:port_id/project/:id', $authcheck_faculty, function($port
 
 
 $app->get('/portfolios/:port_id/evaluate', $authcheck_faculty, function($port_id) use ($app) {
-	$port = Model::factory('Portfolio')->find_one($portID);
+	$port = Model::factory('Portfolio')->find_one($port_id);
 	if( !($port instanceOf Portfolio ) ) {
 		return permission_denied();
 	}
@@ -783,23 +783,24 @@ $app->get('/portfolios/:port_id/evaluate', $authcheck_faculty, function($port_id
 	$student = $port->owner;
 	$studentName = $student->first . ' ' . $student->last;	
 
-	return $app->render('evaluation.html', array('portfolioID'=>$portID, 'name'=>$studentName, 'components'=>$components));
+	return $app->render('evaluation.html', array('portfolioID'=>$port_id, 'name'=>$studentName, 'components'=>$components));
 });
 
 
 $app->post('/portfolios/:port_id/evaluate', $authcheck_faculty, function($port_id) use ($app) {
 	//Ensure project exists to evaluate
-	$port = Model::factory('Portfolio')->find_one($portID);
+	$port = Model::factory('Portfolio')->find_one($port_id);
 	if( !($port instanceOf Portfolio ) ) {
 		return permission_denied();
 	}
 	
 	//Create Evaluation
-	$evaluation = Model::factory('Evaluation')->create();
-	$evaluation->save();
+	$current_user_id = AuthenticationController::get_current_user_id();
+	$evaluation = EvaluationController::createEvaluation(1, $port_id, $current_user_id, 1);
+	EvaluationController::submitScores( $evaluation->id, $_POST );
 
-	print_r($_POST);
-	//$first = $_POST['firstname'];
+
+
 	return $app->render('submit_portfolio.html');
 });
 
