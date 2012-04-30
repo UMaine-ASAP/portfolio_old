@@ -280,14 +280,10 @@ $app->get('/register', $redirect_loggedInUser, function() use ($app) {
 	return $app->render('register.html');
 });
 
-<<<<<<< HEAD
-$app->post('/register', function() use ($app) {
+$app->post('/register', $redirect_loggedInUser, function() use ($app) {
 	// Prevent Undergrads from being sneaky past the deadline
 	return permission_denied();
 
-=======
-$app->post('/register', $redirect_loggedInUser, function() use ($app) {
->>>>>>> origin/evaluation
 	if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['email']) || !isset($_POST['firstname']) || !isset($_POST['lastname']))
 	{	// Reject, form invalid
 		$app->flash('error', true);
@@ -319,11 +315,8 @@ $app->post('/register', $redirect_loggedInUser, function() use ($app) {
 			// Add permission for User to submit to NMD 2012 AssignmentInstance
 			$instance = getNMDAssignmentInstance();
 			$instance->addPermissionForUser($user->id(), SUBMIT);
-<<<<<<< HEAD
-			return redirect('/portfolio');
-=======
+			
 			return redirect('/portfolio');	// Users may only register as Undergraduates
->>>>>>> origin/evaluation
 		}
 	}
 });
