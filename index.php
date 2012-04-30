@@ -26,12 +26,18 @@ require_once 'controllers/project.php';
 require_once 'controllers/media.php';
 require_once 'controllers/user.php';
 
+require_once 'controllers/evaluation/form.php';
+require_once 'controllers/evaluation/component.php';
+require_once 'controllers/evaluation/evaluation.php';
+//require_once 'controllers/evaluation/evaluationAssignment.php';
+
 // Library configuration
 TwigView::$twigDirectory = __DIR__ . '/libraries/Twig/lib/Twig/';
 
 ORM::configure("mysql:host=$HOST;dbname=$DATABASE");
 ORM::configure('username', $USERNAME);
 ORM::configure('password', $PASSWORD);
+
 
 /**
  *	System Home
@@ -102,7 +108,7 @@ function portfolioIsSubmitted()
  */
 function redirect($destination)
 {
-	$GLOBALS['app']->redirect($GLOBALS['web_root'] . $destination);
+	return $GLOBALS['app']->redirect($GLOBALS['web_root'] . $destination);
 }
 
 /**
@@ -110,28 +116,30 @@ function redirect($destination)
  */
 function permission_denied()
 {
-	$GLOBALS['app']->render('permission_denied.html');
+	return $GLOBALS['app']->render('permission_denied.html');
 }
 
 /**
  * Sets breadcrumbs for current page
  */
 function setBreadcrumb( $breadcrumbs ) {
-	$GLOBALS['app']->flashNow('breadcrumbs', $breadcrumbs);
+	return $GLOBALS['app']->flashNow('breadcrumbs', $breadcrumbs);
 }
+
 
 
 /****************************************
  * MIDDLEWARE FUNCTIONS					*
  ***************************************/
 
-/** 
- * Middleware to check student authentication and redirect to login page 
+
+/**
+ * Returns true and sets 'logged_in' flash variable if a User is currently logged in,
+ * returns false and redirects to /login otherwise.
  */
-$authcheck_student = function () use ($app)
-{	
-	//Redirect to login if not authenticated
-	if ( ! AuthenticationController::check_login() )
+$authcheck_login = function () use ($app)
+{
+	if (!AuthenticationController::check_login())
 	{
 		$app->flashNow('logged_in', false);
 		redirect('/login');
@@ -140,8 +148,24 @@ $authcheck_student = function () use ($app)
 	else
 	{
 		$app->flashNow('logged_in', true);
+		return true;
+	}
+};
+
+/** 
+ * Middleware to check student authentication and redirect to permission denied if not student 
+ */
+$authcheck_student = function () use ($app, $authcheck_login)
+{	
+	if ($authcheck_login() && AuthenticationController::currentUserIsStudent())
+	{
 		$app->flashNow('portfolioIsSubmitted', portfolioIsSubmitted() );
 		return true;
+	}
+	else
+	{	// Denied
+		permission_denied();
+		return $GLOBALS['app']->stop();
 	}
 };
 
@@ -157,16 +181,44 @@ $submission_check = function () use ($app)
 	}
 };
 
+/** 
+ * Middleware to check faculty authentication and redirect to permission denied if not faculty.
+ */
+$authcheck_faculty = function () use ($app, $authcheck_login)
+{
+	if ($authcheck_login() && AuthenticationController::currentUserIsFaculty())
+	{
+		return true;
+	}
+	else
+	{	// Denied
+		permission_denied();
+		return $GLOBALS['app']->stop();
+	}
+};
+
 /**
  * Middleware to redirect user based on role to role-specific homepage
  */
-$redirect_loggedInUser = function () use ($authcheck_student)
+$redirect_loggedInUser = function () use ($app, $authcheck_student)
 {
-	//@TODO: We will want to get the user role and direct user depending on whether student or faculty ...
-
-	if ( AuthenticationController::check_login() )
+	if (AuthenticationController::check_login())
 	{	// User is already logged in
-		return redirect('/portfolio');
+		if (AuthenticationController::currentUserIsStudent())
+		{
+			redirect('/portfolio');
+			return false;
+		}
+		else if (AuthenticationController::currentUserIsFaculty())
+		{
+			redirect('/portfolios');
+			return false;
+		}
+		else
+		{
+			permission_denied();
+			return $app->stop();
+		}
 	}
 };
 
@@ -175,6 +227,7 @@ $redirect_loggedInUser = function () use ($authcheck_student)
  * ROUTING!!									*
  ***********************************************/
 
+
 // Inform app of the web root for the next HTML request
 $app->flashNow('web_root', $GLOBALS['web_root']);
 
@@ -182,8 +235,7 @@ $app->flashNow('web_root', $GLOBALS['web_root']);
 /**
  *	Webroot
  */
-$app->get('/', $authcheck_student, function() use ($app) {
-	return redirect('/portfolio');	
+$app->get('/', $authcheck_login, $redirect_loggedInUser, function() use ($app) {
 });
 
 
@@ -194,11 +246,11 @@ $app->get('/login', $redirect_loggedInUser, function() use ($app) {
 	return $app->render('login.html');
 });
 
-$app->post('/login', function() use ($app) {
+$app->post('/login', function() use ($app, $redirect_loggedInUser) {
 	if (isset($_POST['username']) && isset($_POST['password']) &&
 		AuthenticationController::attempt_login($_POST['username'], $_POST['password']))
 	{	// Success!
-		return redirect('/portfolio');
+		return $redirect_loggedInUser();
 	}
 	else
 	{	// Fail :(
@@ -211,7 +263,7 @@ $app->post('/login', function() use ($app) {
 /**
  *	Log Out
  */
-$app->get('/logout', $authcheck_student, function() use ($app) {
+$app->get('/logout', $authcheck_login, function() use ($app) {
 	AuthenticationController::log_out();
 	$app->flash('header', 'You have been successfully logged out.');
 	return redirect('/login');
@@ -228,10 +280,14 @@ $app->get('/register', $redirect_loggedInUser, function() use ($app) {
 	return $app->render('register.html');
 });
 
+<<<<<<< HEAD
 $app->post('/register', function() use ($app) {
 	// Prevent Undergrads from being sneaky past the deadline
 	return permission_denied();
 
+=======
+$app->post('/register', $redirect_loggedInUser, function() use ($app) {
+>>>>>>> origin/evaluation
 	if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['email']) || !isset($_POST['firstname']) || !isset($_POST['lastname']))
 	{	// Reject, form invalid
 		$app->flash('error', true);
@@ -263,7 +319,11 @@ $app->post('/register', function() use ($app) {
 			// Add permission for User to submit to NMD 2012 AssignmentInstance
 			$instance = getNMDAssignmentInstance();
 			$instance->addPermissionForUser($user->id(), SUBMIT);
+<<<<<<< HEAD
 			return redirect('/portfolio');
+=======
+			return redirect('/portfolio');	// Users may only register as Undergraduates
+>>>>>>> origin/evaluation
 		}
 	}
 });
@@ -697,6 +757,119 @@ $app->post('/portfolio/submit', $authcheck_student, $submission_check, function(
 	{	// Failue
 		return permission_denied();
 	}
+});
+
+
+/****************************************
+ * Faculty Pages						*
+ ***************************************/
+
+/**
+ * Portfolio viewing 
+ */
+$app->get('/portfolios', $authcheck_faculty, function() use ($app) {
+	$instance = getNMDAssignmentInstance();
+
+	$portfolios = array();
+	foreach( $instance->children as $id=>$arr )
+	{
+		$port = Model::factory('Portfolio')->find_one($id);
+		$student = $port->owner;
+		$studentName = $student->first . ' ' . $student->last;
+		$portfolios[] = array('id'=>$id, 'student'=>$studentName );
+	}
+
+	return $app->render('view_all_portfolios.html', array('portfolios' => $portfolios));
+});
+
+$app->get('/portfolios/:port_id', $authcheck_faculty, function($port_id) use ($app) {
+	$port = Model::factory('Portfolio')->find_one($port_id);
+
+	if ( !($port instanceOf Portfolio ) ) {
+		return permission_denied();
+	}
+
+	// Create multi-dimensional array of Project properties
+	$projects = array();
+	foreach ($port->children as $child_id=>$arr)
+	{
+		$proj = Model::factory('Project')->find_one($child_id);	// assume all children are Projects
+		// Trim title if it is too long
+		$t = substr($proj->title, 0, 50);
+		if (strlen($t) < strlen($proj->title)) { $t = $t . "..."; }
+		// Trim description if it is too long
+		$desc = substr($proj->description, 0, 410);
+		if (strlen($desc) < strlen($proj->description)) { $desc = $desc . "..."; }
+		$projects[] = array("project_id" => $proj->id(), "title" => $t, "description" => $desc, "thumbnail" => $proj->thumbnail, "type" => $proj->type);
+	}
+
+	$owner = $port->owner;
+	$app->flashNow('isFaculty', true);
+	$app->flashNow('port', array('id' => $port_id, 'owner_name' => $owner->first . " " . $owner->last));
+	return $app->render('view_portfolio.html', array('projects' => $projects));
+});
+
+$app->get('/portfolios/:port_id/project/:id', $authcheck_faculty, function($port_id, $id) use ($app) {
+	$proj = Media::factory('Project')->find_one($id);
+
+	if( !($proj instanceOf Project ) ) {
+		return permission_denied();
+	}
+	
+	$media = array();
+	foreach ($proj->media as $media_id)
+	{
+		$m = Model::factory('Media')->find_one($media_id);
+		$media[] = array('media_id' => $m->id(),
+			'mimetype' => $m->mimetype,
+			'title' => $m->title,
+			'description' => $m->description,
+			'created' => $m->created,
+			'edited' => $m->edited,
+			'filename' => $m->filename,
+			'filesize' => $m->filesize,
+			'md5' => $m->md5,
+			'extension' => $m->extension);
+	}
+
+	return $app->render('view_project.html',
+		array('project_id' => $proj->id(),
+			'title' => $proj->title,
+			'description' => $proj->description,
+			'thumbnail' => $proj->thumbnail,
+			'media_items' => $media));
+});
+
+
+$app->get('/portfolios/:port_id/evaluate', $authcheck_faculty, function($port_id) use ($app) {
+	$port = Model::factory('Portfolio')->find_one($port_id);
+	if( !($port instanceOf Portfolio ) ) {
+		return permission_denied();
+	}
+
+	$components = FormController::buildQuiz(1);
+	
+	// Get student name
+	$student = $port->owner;
+	$studentName = $student->first . ' ' . $student->last;	
+
+	return $app->render('evaluation.html', array('portfolioID'=>$port_id, 'name'=>$studentName, 'components'=>$components));
+});
+
+
+$app->post('/portfolios/:port_id/evaluate', $authcheck_faculty, function($port_id) use ($app) {
+	//Ensure project exists to evaluate
+	$port = Model::factory('Portfolio')->find_one($port_id);
+	if( !($port instanceOf Portfolio ) ) {
+		return permission_denied();
+	}
+	
+	//Create Evaluation
+	$current_user_id = AuthenticationController::get_current_user_id();
+	$evaluation = EvaluationController::createEvaluation(1, $port_id, $current_user_id, 1);
+	EvaluationController::submitScores( $evaluation->id, $_POST );
+
+	return $app->render('submit_portfolio.html');
 });
 
 

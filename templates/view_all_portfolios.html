@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block page_title %}New Media Portfolio - All Portfolios{% endblock %}
+
+{% block content %}
+
+	<header>New Media Portfolios</header>
+	
+	<hr>
+	
+
+	<div class='spacer'></div>
+
+	<div id="projectSpacer" style="margin-top:20px"></div>
+
+	<p>
+	{% for portfolio in portfolios %}
+		<div class="project">
+			<a href="{{ flash['web_root'] }}/portfolios/{{ portfolio['id'] }}"><div class="title">{{ portfolio['student'] }}</div></a>
+			</br>
+		
+		</div>
+	{% endfor %}
+	</p>
+
+{% endblock %}
