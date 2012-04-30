@@ -82,6 +82,9 @@ function getNMDAssignmentInstance()
  */
 function portfolioIsSubmitted()
 {
+	// Prevent Undergrads from submitting/adding/editing/deleting after deadline in one fell swoop
+	return true;
+
 	$instance = getNMDAssignmentInstance();
 	$port = getNMDPortfolio();
 	foreach ($instance->children as $child_id=>$arr)
@@ -218,45 +221,51 @@ $app->get('/logout', $authcheck_student, function() use ($app) {
 /**
  *	Register
  */
-$app->get('/register', $redirect_loggedInUser, function() use ($app) {					
+$app->get('/register', $redirect_loggedInUser, function() use ($app) {
+	// Prevent Undergrads from registering past deadline
+	return permission_denied();
+
 	return $app->render('register.html');
 });
 
 $app->post('/register', function() use ($app) {
-		if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['email']) || !isset($_POST['firstname']) || !isset($_POST['lastname']))
-		{	// Reject, form invalid
-			$app->flash('error', true);
-			return redirect('/register');	//TODO: Save partial title/desc on return to form
+	// Prevent Undergrads from being sneaky past the deadline
+	return permission_denied();
+
+	if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['email']) || !isset($_POST['firstname']) || !isset($_POST['lastname']))
+	{	// Reject, form invalid
+		$app->flash('error', true);
+		return redirect('/register');	//TODO: Save partial title/desc on return to form
+	}
+	else
+	{
+		$first = $_POST['firstname'];
+		$last =  $_POST['lastname'];
+		// Create new User
+		if (!$user = UserController::createUser($_POST['username'],
+			$_POST['password'],
+			$first,
+			NULL,
+			$last,
+			$_POST['email'],
+			1,
+			NULL, NULL, NULL, NULL, NULL, NULL, 2))
+		{
+			$app->flash('error', "Username is already in use");
+			return redirect('/register');
 		}
 		else
 		{
-			$first = $_POST['firstname'];
-			$last =  $_POST['lastname'];
-			// Create new User
-			if (!$user = UserController::createUser($_POST['username'],
-				$_POST['password'],
-				$first,
-				NULL,
-				$last,
-				$_POST['email'],
-				1,
-				NULL, NULL, NULL, NULL, NULL, NULL, 2))
-			{
-				$app->flash('error', "Username is already in use");
-				return redirect('/register');
-			}
-			else
-			{
-				// Login as new User
-				AuthenticationController::attempt_login($_POST['username'], $_POST['password']);
-				// Create User's NMD portfolio
-				$port = PortfolioController::createPortfolio("New Media Freshman Portfolio 2012", "New Media Freshman Portfolio 2012", 1);
-				// Add permission for User to submit to NMD 2012 AssignmentInstance
-				$instance = getNMDAssignmentInstance();
-				$instance->addPermissionForUser($user->id(), SUBMIT);
-				return redirect('/portfolio');
-			}
+			// Login as new User
+			AuthenticationController::attempt_login($_POST['username'], $_POST['password']);
+			// Create User's NMD portfolio
+			$port = PortfolioController::createPortfolio("New Media Freshman Portfolio 2012", "New Media Freshman Portfolio 2012", 1);
+			// Add permission for User to submit to NMD 2012 AssignmentInstance
+			$instance = getNMDAssignmentInstance();
+			$instance->addPermissionForUser($user->id(), SUBMIT);
+			return redirect('/portfolio');
 		}
+	}
 });
 
 
