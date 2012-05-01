@@ -876,8 +876,8 @@ $app->get('/portfolios/:port_id/project/:id/evaluate', $authcheck_faculty, funct
 	// Get student name
 //	$student = $port->owner;
 //	$studentName = $student->first . ' ' . $student->last;	
-
-	return $app->render('evaluation.html', array('portfolioID'=>$port_id, 'name'=>'Project', 'components'=>$components));
+	$action_url = "/portfolios/" . $port_id . "/project/" . $id . '/evaluate';
+	return $app->render('evaluation.html', array('portfolioID'=>$port_id, 'name'=>'Project', 'components'=>$components, 'action_url'=>$action_url));
 
 });
 /**
@@ -886,7 +886,7 @@ $app->get('/portfolios/:port_id/project/:id/evaluate', $authcheck_faculty, funct
 $app->post('/portfolios/:port_id/project/:id/evaluate', $authcheck_faculty, function($port_id, $id) use ($app) {
 	//Ensure project exists to evaluate
 	$proj = Model::factory('Project')->find_one($id);
-	if( !($port instanceOf Project ) ) {
+	if( !($proj instanceOf Project ) ) {
 		return permission_denied();
 	}
 	
@@ -894,8 +894,16 @@ $app->post('/portfolios/:port_id/project/:id/evaluate', $authcheck_faculty, func
 
 	//Create Evaluation
 	$current_user_id = AuthenticationController::get_current_user_id();
-	$evaluation = EvaluationController::createEvaluation(2, $port_id, $current_user_id, 1);
-	EvaluationController::submitScores( $evaluation->id, $_POST );
+	$evaluation = EvaluationController::createEvaluation(2, $id, $current_user_id, 1);
+
+	$result = EvaluationController::submitScores( $evaluation->id, $_POST );
+
+	if ( !$result ) {
+		//Rerender old page
+		$app->flash('message', 'Required fields missing');
+		$app->flash('defaultValues', $_POST); // Pass filled values back to page
+		redirect('/portfolios/' . $port_id . '/project/' . $id . '/evaluate');
+	}
 
 	$app->flash('message', 'Evaluation successfully submitted.');
 	redirect("/portfolios/" . $port_id . "/project/" . $id);
@@ -916,7 +924,8 @@ $app->get('/portfolios/:port_id/evaluate', $authcheck_faculty, function($port_id
 	$student = $port->owner;
 	$studentName = $student->first . ' ' . $student->last;	
 
-	return $app->render('evaluation.html', array('portfolioID'=>$port_id, 'name'=>$studentName, 'components'=>$components));
+	$action_url = "/portfolios/" . $port_id . '/evaluate';
+	return $app->render('evaluation.html', array('portfolioID'=>$port_id, 'name'=>$studentName, 'components'=>$components, 'action_url'=>$action_url));
 });
 
 
@@ -933,7 +942,15 @@ $app->post('/portfolios/:port_id/evaluate', $authcheck_faculty, function($port_i
 	//Create Evaluation
 	$current_user_id = AuthenticationController::get_current_user_id();
 	$evaluation = EvaluationController::createEvaluation(1, $port_id, $current_user_id, 1);
-	EvaluationController::submitScores( $evaluation->id, $_POST );
+	
+	$result = EvaluationController::submitScores( $evaluation->id, $_POST );
+
+	if ( !$result ) {
+		//Rerender old page
+		$app->flash('message', 'Required fields missing');
+		$app->flash('defaultValues', $_POST); // Pass filled values back to page
+		redirect('/portfolios/' . $port_id . '/evaluate');
+	}
 
 	$app->flash('message', 'Evaluation successfully submitted.');
 	redirect("/portfolios/" . $port_id);

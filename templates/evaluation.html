@@ -27,9 +27,9 @@
 	<div class='spacer'></div>
 
 	<div id="projectSpacer" style="margin-top:20px"></div>
-
+	<h2>{{ flash['message'] }}</h2>
 	<p>
-		<form class='evaluation' method='post' action='{{ flash['web_root'] }}/portfolios/{{ portfolioID }}/evaluate'>
+		<form class='evaluation' method='post' action='{{ flash['web_root'] }}{{ action_url }}'>
 		{% for component in components %}
 			<div class='component'>
 				{% if component.required %}
@@ -40,9 +40,9 @@
 			<div class='component-input'>
 
 				{% if component.type.name == 'radio' %}
-					{{ _self.buildRadio(defaultValues, component.id, component.options ) }}
+					{{ _self.buildRadio(flash['defaultValues'], component.id, component.options ) }}
 				{% elseif component.type.name == 'text' %}
-					<textarea name='{{question.id}}' maxLength='1500'>{{ defaultValues[component.id] }}</textarea>
+					<textarea name='{{component.id}}'>{{ flash['defaultValues'][component.id] }}</textarea>
 				{% endif %}
 			</div>
 

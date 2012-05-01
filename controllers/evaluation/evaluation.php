@@ -1,13 +1,18 @@
 <?php
 
+// Libraries
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
 
+// Controllers
 require_once('controllers/authentication.php');
 
+// Models
 require_once('models/evaluation/evaluation.php');
+require_once('models/evaluation/component.php');
 require_once('models/evaluation/score.php');
+require_once('models/evaluation/form.php');
 
 /**
  * Evaluation controller.
@@ -86,10 +91,23 @@ class EvaluationController
 
 		//@TODO: Check permissions for submission?
 
-		// Get quiz and check if all required fields are submitted
+		// Get quiz and check if all required fields have been submitted
+		$components = FormController::buildQuiz($evaluation->form_id);
+		foreach( $components as $component) {
+			$component_id = $component->component_id;
+			if( ($component->required == 1) && 
+					( (in_array($component_id, array_keys($scores)) === false)  || ($scores[$component_id] == null) )) 
+			{
+				return false;
+			}
+		}
 
 		//Create scores
 		foreach ($scores as $component_id => $value) {
+			//Check required fields - this should be done by getting the quiz ...
+			$component = ComponentController::viewComponent($component_id);
+
+
 			$new_score = Model::factory('Score')->create();
 
 			$new_score->component_id 	= $component_id;

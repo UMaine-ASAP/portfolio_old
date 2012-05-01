@@ -115,6 +115,22 @@ class ComponentController
 	 *
 	 *	@return	object|bool		The Component object if found, false otherwise
 	 */
+	public static function viewComponent($id)
+	{
+		//@TODO: permission check
+		return self::getComponent($id);
+
+	}
+
+	/**
+	 *	Gets a specific Component object for private use.
+	 *
+	 *	Does not check permissions.
+	 *
+	 *	@param	int		$id		Identifier of the Component object to get
+	 *
+	 *	@return	object|bool		The Component object if found, false otherwise
+	 */
 	private static function getComponent($id)
 	{
 		return Model::factory('Component')->find_one($id);
