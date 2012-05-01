@@ -60,6 +60,76 @@ class EvaluationAssignmentController
 		return $evaluation;
 	}
 
+	/**
+	 * Get results of completed evaluations
+	 * 
+	 * This function aggregates the scores for all completed evaluations tied to this particular assignment.
+	 * 
+	 * @param int 			$evalAssign_id		The evaluation assignment to return the results for
+	 * 
+	 * @return array|bool 						Values for evaluation, false if unsuccessful
+	 * 
+	 * Format of output:
+	 * 		[component_id]=>(component, value=>number, label=>label_name,  length=>number_of_scores_found)
+	 * 		[component_id]=>(component, value=>(text1, text2, text3, ...), length=>number_of_scores_found)
+	 */
+	function getResults($evalAssign_id) {
+		// @NOTE: this intermediary table between form and evaluations has not been implemented yet so we need to use the form id
+		$evaluations = Model::factory('Evaluation')->where('form_id', $evalAssign_id)->find_many();
+
+		$results = array();
+
+		foreach( $evaluations as $evaluation ) {
+			$scores = Model::factory('Scores')->where('evaluation_id', $evaluation->evaluation_id)->find_many();
+
+			foreach( $scores as $score ) {
+				$component = $score->component;
+				$component_id = $component->component_id;
+				$component_exists_in_results = (array_search($component->component_id, array_keys($results) ) !== false);
+
+				if( ! $component_exists_in_results ) {
+					//New addition to results
+					switch( $component->type->name ) {
+						case 'radio':
+							$value = array($score->value);
+							$results[$component_id] = array($component, 'value'=>$value, 'length'=>1);
+						break;
+						case 'text':
+							$options = explode('#', $component->options);
+							$label = $options[$score->value-1];
+							$value = $score->value;
+							$results[$component_id] = array('component'=>$component, 'label'=>$label, 'value'=>$value, 'length'=>1);						
+						break;
+						default:
+						return false;
+						break;
+					}
+				} else {
+					//Add value to old values
+					$curr_value = $results[$component_id];
+					$results[$component_id]['length'] += 1;
+
+					switch( $component->type->name ) {
+						case 'radio':
+							$results[$component_id]['value'] += $score->value;
+						break;
+						case 'text':
+							$results[$component_id]['value'][] = $score->value;
+						break;
+						default:
+						return false;
+						break;
+					}
+
+				}
+
+				// Average results for radio buttons
+				// @TODO
+			}
+
+		}
+
+	}
 
 }
 

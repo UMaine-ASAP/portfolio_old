@@ -9,7 +9,7 @@
 class Component extends Model
 {
 	public static $_table 		= "EVAL_Components";
-	public static $_id_column 	= "form_id";
+	public static $_id_column 	= "component_id";
 
 
 	/**

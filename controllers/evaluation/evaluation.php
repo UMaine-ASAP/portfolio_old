@@ -86,6 +86,8 @@ class EvaluationController
 
 		//@TODO: Check permissions for submission?
 
+		// Get quiz and check if all required fields are submitted
+
 		//Create scores
 		foreach ($scores as $component_id => $value) {
 			$new_score = Model::factory('Score')->create();
@@ -119,6 +121,24 @@ class EvaluationController
 		return Model::factory('Evaluation')->find_one($id);
 	}
 
+	/**
+	 * Get evaluation results for complete evaluations
+	 * 
+	 * 
+	 * @param 	int 		$id 	Identifier of the Evaluation results to get
+	 * 
+	 * @return array|bool 			Array of results if available, false if unsuccessful
+	 */
+	public static function getEvaluationResults($id)
+	{
+		$evaluation = self::getEvaluation($id);
+		if( $evaluation->status->name != 'complete' )
+		{
+			return false;
+		}
+
+		//@TODO: format scores and return
+	}
 
 }
 

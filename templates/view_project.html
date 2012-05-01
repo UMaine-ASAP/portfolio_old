@@ -5,8 +5,11 @@
 {% block content %}
 
 	<header>{{ title }}</header>
-	
-	{% if flash['portfolioIsSubmitted'] is defined and not flash['portfolioIsSubmitted'] %}
+	{% if flash['isFaculty'] %}
+	<div id='themed' style='position: absolute; right: 0; margin-top: -30px;' >
+		<a class='button' href="{{ flash['web_root'] }}/portfolios/{{ portfolio_id }}/project/{{ project_id }}/evaluate" type="submit">Evaluate Project</a>
+	</div>
+	{% elseif flash['portfolioIsSubmitted'] is defined and not flash['portfolioIsSubmitted'] %}
 	<div id='themed' style='position: absolute; right: 0; margin-top: -30px;' >
 		<a class='button' href="{{ flash['web_root'] }}/project/{{ project_id }}/edit" type="submit">Edit Project</a>
 	</div>

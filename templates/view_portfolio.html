@@ -27,7 +27,9 @@
 		Your Portfolio
 		{% endif %}
 	</header>
-	
+	{% if flash['message'] %}
+	<h2>{{ flash['message'] }}</h2>
+	{% endif %}
 	<hr>
 	
 
