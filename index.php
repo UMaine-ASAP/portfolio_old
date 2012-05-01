@@ -762,12 +762,14 @@ function getNMDSubmittedPortfolios() {
 	$instance = getNMDAssignmentInstance();
 
 	$portfolios = array();
+	$uid = AuthenticationController::get_current_user_id();
 	foreach( $instance->children as $id=>$arr )
 	{
 		$port = Model::factory('Portfolio')->find_one($id);
 		$student = $port->owner;
 		$studentName = $student->first . ' ' . $student->last;
-		$portfolios[] = array('id'=>$id, 'student'=>$studentName );
+		$hasEvaluated = EvaluationAssignmentController::hasDoneEvaluation($uid, 1, $id);
+		$portfolios[] = array('id'=>$id, 'student'=>$studentName, 'hasEvaluated'=> $hasEvaluated );
 	}
 	return $portfolios;
 }
@@ -821,7 +823,7 @@ $app->get('/portfolios/:port_id', $authcheck_faculty, function($port_id) use ($a
 	}
 
 	$uid = AuthenticationController::get_current_user_id();
-	$hasDoneEvaluation = EvaluationAssignmentController::hasDoneEvaluation($uid, 1);
+	$hasDoneEvaluation = EvaluationAssignmentController::hasDoneEvaluation($uid, 1, $port_id);
 
 	$owner = $port->owner;
 	$app->flashNow('isFaculty', true);
@@ -858,7 +860,7 @@ $app->get('/portfolios/:port_id/project/:id', $authcheck_faculty, function($port
 	}
 
 	$uid = AuthenticationController::get_current_user_id();
-	$hasDoneEvaluation = EvaluationAssignmentController::hasDoneEvaluation($uid, 2);
+	$hasDoneEvaluation = EvaluationAssignmentController::hasDoneEvaluation($uid, 2, $id);
 
 	$app->flashNow('isFaculty', true);
 	return $app->render('view_project.html',
@@ -903,9 +905,9 @@ $app->post('/portfolios/:port_id/project/:id/evaluate', $authcheck_faculty, func
 		return permission_denied();
 	}
 	
-	//Check if portfolio has already been evaluated
+	//Check if project has already been evaluated
 	$uid = AuthenticationController::get_current_user_id();
-	if( EvaluationAssignmentController::hasDoneEvaluation($uid, 2) ) {
+	if( EvaluationAssignmentController::hasDoneEvaluation($uid, 2, $id) ) {
 		$app->flash('message', 'Evaluation already submitted');
 		redirect('/portfolios/' . $port_id . '/project/' . $id);
 		$app->stop();
@@ -959,7 +961,7 @@ $app->post('/portfolios/:port_id/evaluate', $authcheck_faculty, function($port_i
 
 	//Check if portfolio has already been evaluated
 	$uid = AuthenticationController::get_current_user_id();
-	if( EvaluationAssignmentController::hasDoneEvaluation($uid, 1) ) {
+	if( EvaluationAssignmentController::hasDoneEvaluation($uid, 1, $port_id) ) {
 		$app->flash('message', 'Evaluation already submitted');
 		redirect('/portfolios/' . $port_id);
 		$app->stop();

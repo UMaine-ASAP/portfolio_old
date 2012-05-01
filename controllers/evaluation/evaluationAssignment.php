@@ -65,15 +65,20 @@ class EvaluationAssignmentController
 	 *
 	 *	Does not check permissions.
 	 *
-	 *	@param	int			$uid	Identifier of the User to check
-	 *  @param 	int 		$eaid 	Identifier of the Evaluation Assignment to check
+	 *	@param	int			$uid		Identifier of the User to check
+	 *  @param 	int 		$eaid 		Identifier of the Evaluation Assignment to check
+	 *  @param 	int 		$evaluated 	Identifier of the evaluated item
 	 *
-	 *	@return	bool				True if user has submitted a completed evaluation, false otherwise
+	 *	@return	bool					True if user has submitted a completed evaluation, false otherwise
 	 */
-	public static function hasDoneEvaluation($uid, $eaid)
+	public static function hasDoneEvaluation($uid, $eaid, $evaluated_id)
 	{
 		//@NOTE: EvaluationAssignment table has not been implemented therefore a form is assumed
-		$evaluations = Model::factory('Evaluation')->where('form_id', $eaid)->where('evaluator_user_id', $uid)->find_many();
+		$evaluations = Model::factory('Evaluation')
+			->where('form_id', $eaid)
+			->where('evaluator_user_id', $uid)
+			->where('evaluated_id', $evaluated_id)
+			->find_many();
 
 		if( is_array($evaluations) )
 		{

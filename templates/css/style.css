@@ -137,11 +137,23 @@ code,kbd {
 }
 
 pre {
-	background: #EEE;
+	/*background: #EEE;
 	border: 1px solid #DDD;
 	border-radius: 4px;
 	-moz-border-radius: 4px;
-	-webkit-border-radius: 4px;
+	-webkit-border-radius: 4px;*/
+	font-family: Verdana,Geneva,sans-serif;
+	font-size: 12px;
+	width: 940px;
+	margin-bottom: 10px;
+	margin-top: 20px;
+	margin-right: 10px;
+	line-height: 1.75;
+	text-align: left;
+	padding: 5px;
+	margin-bottom: 5px;
+
+	white-space: normal;
 	padding: 5px 10px;
 	color: #666;
 	font-size: 12px
@@ -609,7 +621,7 @@ textarea {
 	color: #555
 }
 
-.project, .media {
+.project, .media, .pre-style {
 	font-family: Verdana,Geneva,sans-serif;
 	font-size: 12px;
 	height: 110px;
@@ -629,22 +641,30 @@ textarea {
 .project img {
 }
 
+.project-desc {
+	white-space: pre-wrap;
+	line-height: 1.75;
+}
+
 .title {
 	font-size: 24px;
 	font-weight: bold;
 	text-align: left;
 	margin-top: 10px;
-	margin-bottom: 5px;
+	margin-bottom: 10px;
 	padding-left: 10px;
+
+}
+
+.file {
+	margin: 10px 0;
 }
 
 .desc {
 	font-size: 12px;
 	color: #848484;
 	padding-left: 10px;
-
-	width: 700px;
-	white-space: normal;
+	white-space: pre-wrap;
 }
 
 .type {
@@ -687,6 +707,7 @@ textarea {
 
 .media .desc {
 	white-space: normal;
+	line-height: 1.5;
 }
 
 .media, .media img {
