@@ -275,7 +275,7 @@ $app->get('/logout', $authcheck_login, function() use ($app) {
  */
 $app->get('/register', $redirect_loggedInUser, function() use ($app) {
 	// Prevent Undergrads from registering past deadline
-	return permission_denied();
+	//return permission_denied();
 
 	return $app->render('register.html');
 });
