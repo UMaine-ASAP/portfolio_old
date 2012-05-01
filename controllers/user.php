@@ -208,4 +208,90 @@ class UserController
 
 		return $user->save();
 	}
+
+	/**
+	 * SHOULD NEVER BE USED UNLESS UNDER EXTREME CIRCUMSTANCES
+	 *
+	 * Will completely erase anything and everything in the system related to the specified User,
+	 * regardless of the caller's permissions.
+	 * Has been customized to delete only things the User is an OWNER of.
+	 */
+	public static function DESTROY_USER($user_id)
+	{
+		if (!$user = Model::factory('User')->find_one($user_id))
+		{
+			die("ERROR: No User with id ".$user_id);
+		}
+
+		// Retrieve all User's Portfolios
+		if (!$portfolio_ids = ORM::for_table('REPO_Portfolio_access_map')
+				->table_alias('access')
+				->select('access.port_id')
+				->join('AUTH_Group_user_map', 'access.group_id = AUTH_Group_user_map.group_id')
+				->where('AUTH_Group_user_map.user_id', $user_id)
+				->where('access.access_type', OWNER)
+				->find_many())
+		{
+			die("ERROR: No portfolios for this User!");
+		}
+		foreach ($portfolio_ids as $port_id)
+		{
+			// We assume here that there are no sub-portfolios, please change this if on a more established system
+			if (!$portfolio = Model::factory('Portfolio')->find_one($port_id->port_id))
+			{
+				die("ERROR: No Portfolio with id ".$port_id->port_id);
+			}
+			foreach ($portfolio->children as $child_id=>$arr)
+			{
+				if ($arr[0])
+				{
+					// Handle as sub-portfolio, I don't care
+				}
+				else
+				{
+					if (!$project = Model::factory('Project')->find_one($child_id))
+					{
+						die("ERROR: No Project with id ".$child_id);
+					}
+					// Remove all media underneath the Project
+					foreach ($project->media as $media_id)
+					{
+						if (!$media = Model::factory('Media')->find_one($media_id))
+						{
+							die("ERROR: No Media with id ".$media_id);
+						}
+						$media->delete();
+					}
+					$project->delete();
+				}
+			}
+			$portfolio->delete();
+		}
+
+		// Remove User from all Groups
+		if (!$group_ids = ORM::for_table('Group_user_map')
+			->table_alias('groups')
+			->select('groups.group_id')
+			->where('groups.user_id', $user_id)
+			->find_many())
+		{
+			die("ERROR: No Groups contain this User!");
+		}
+		foreach ($group_ids as $group_id)
+		{
+			if (!$group = Model::factory('Group')->find_one($group_id->group_id))
+			{
+				die("ERROR: No Group with id ".$group_id->group_id);
+			}
+			$group->removeUser($user_id);
+			// If Group is empty, delete it
+			if (count($group->members))
+			{
+				$group->delete();
+			}
+		}
+
+		// Delete the User
+		$user->delete();
+	}
 }
