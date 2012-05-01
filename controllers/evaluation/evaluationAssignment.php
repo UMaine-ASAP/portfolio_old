@@ -61,6 +61,34 @@ class EvaluationAssignmentController
 	}
 
 	/**
+	 *  Determines whether an evaluation has been submitted yet or not for this evaluation group
+	 *
+	 *	Does not check permissions.
+	 *
+	 *	@param	int			$uid	Identifier of the User to check
+	 *  @param 	int 		$eaid 	Identifier of the Evaluation Assignment to check
+	 *
+	 *	@return	bool				True if user has submitted a completed evaluation, false otherwise
+	 */
+	public static function hasDoneEvaluation($uid, $eaid)
+	{
+		//@NOTE: EvaluationAssignment table has not been implemented therefore a form is assumed
+		$evaluations = Model::factory('Evaluation')->where('form_id', $eaid)->where('evaluator_user_id', $uid)->find_many();
+
+		if( is_array($evaluations) )
+		{
+			foreach( $evaluations as $evaluation) {
+				if( $evaluation->status->name == 'complete') 
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+
+	/**
 	 * Get results of completed evaluations
 	 * 
 	 * This function aggregates the scores for all completed evaluations tied to this particular assignment.
