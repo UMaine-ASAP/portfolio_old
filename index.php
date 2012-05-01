@@ -912,8 +912,7 @@ $app->post('/portfolios/:port_id/project/:id/evaluate', $authcheck_faculty, func
 	}
 
 	//Create Evaluation
-	$current_user_id = AuthenticationController::get_current_user_id();
-	$evaluation = EvaluationController::createEvaluation(2, $id, $current_user_id, 1);
+	$evaluation = EvaluationController::createEvaluation(2, $id, $uid, 2);
 
 	$result = EvaluationController::submitScores( $evaluation->id, $_POST );
 
@@ -944,7 +943,7 @@ $app->get('/portfolios/:port_id/evaluate', $authcheck_faculty, function($port_id
 	$studentName = $student->first . ' ' . $student->last;	
 
 	$action_url = "/portfolios/" . $port_id . '/evaluate';
-	return $app->render('evaluation.html', array('portfolioID'=>$port_id, 'name'=>$studentName, 'components'=>$components, 'action_url'=>$action_url));
+	return $app->render('evaluation.html', array('portfolioID'=>$port_id, 'name'=>$studentName . '\'s Portfolio', 'components'=>$components, 'action_url'=>$action_url));
 });
 
 
@@ -967,8 +966,7 @@ $app->post('/portfolios/:port_id/evaluate', $authcheck_faculty, function($port_i
 	}
 	
 	//Create Evaluation
-	$current_user_id = AuthenticationController::get_current_user_id();
-	$evaluation = EvaluationController::createEvaluation(1, $port_id, $current_user_id, 1);
+	$evaluation = EvaluationController::createEvaluation(1, $port_id, $uid, 1);
 	
 	$result = EvaluationController::submitScores( $evaluation->id, $_POST );
 
