@@ -282,7 +282,7 @@ $app->get('/register', $redirect_loggedInUser, function() use ($app) {
 
 $app->post('/register', $redirect_loggedInUser, function() use ($app) {
 	// Prevent Undergrads from being sneaky past the deadline
-	return permission_denied();
+	//return permission_denied();
 
 	if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['email']) || !isset($_POST['firstname']) || !isset($_POST['lastname']))
 	{	// Reject, form invalid
