@@ -235,6 +235,10 @@ header {
 	font-style: normal;
 	text-decoration: none;
 }
+textarea {
+	width: 400px;
+	height: 100px;
+}
 
 #themed input.medium, textarea.medium {
 	width: 400px;

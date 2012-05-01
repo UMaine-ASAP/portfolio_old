@@ -10,7 +10,7 @@ class FormComponentMap extends Model
 
 	private static function getFormComponentMap($form_id)
 	{
-		return Model::factory('FormComponentMap')->where('form_id', $form_id)->find_one();	
+		return Model::factory('FormComponentMap')->where('form_id', $form_id)->find_many();	
 	}
 
 	/**
@@ -22,11 +22,17 @@ class FormComponentMap extends Model
 	 */
 	public static function getComponentsFromForm($form_id)
 	{
-		$formComponentMap = FormComponentMap::getFormComponentMap($form_id);
+		$formComponentMap = self::getFormComponentMap($form_id);
 		if( !($formComponentMap instanceof FormComponentMap) ) {
 			return false;
 		}
 		return $formComponentMap->Components();
+	}
+
+	public static function Components()
+	{
+
+		return Model::factory('Component')->find_many($this->component_id);
 	}
 
 	public function Form()
@@ -34,8 +40,9 @@ class FormComponentMap extends Model
 		return Model::factory('Form')->find_one($this->form_id);
 	}
 
-	public function Components()
+	public function Component()
 	{
-		return Model::factory('Component')->find_many($this->component_id);
+		return Model::factory('Component')->find_one($this->component_id);
+
 	}
 }

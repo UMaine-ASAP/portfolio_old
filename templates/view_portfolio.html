@@ -5,11 +5,16 @@
 {% block content %}
 
 	{% if flash['isFaculty'] %}
-	<div id="themed"style ="position: absolute; right: 0;">
-		<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/portfolios/{{ flash['port']['id'] }}/evaluate">
-		<button class='right' type="submit">Evaluate Portfolio</button>
-		</FORM>
-	</div>
+		{% if hasDoneEvaluation %}
+			<h2 style='position: absolute; right: 0; '>Has Been Evaluated</h2>
+		{% else %}
+		<div id="themed"style ="position: absolute; right: 0;">
+			<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/portfolios/{{ flash['port']['id'] }}/evaluate">
+			<button class='right' type="submit">Evaluate Portfolio</button>
+			</FORM>
+		</div>
+		{% endif %}
+
 	{% elseif not flash['portfolioIsSubmitted'] %}
 	<div id="themed"style ="position: absolute; right: 0;">
 		<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/portfolio/submit">
@@ -27,7 +32,9 @@
 		Your Portfolio
 		{% endif %}
 	</header>
-	
+	{% if flash['message'] %}
+	<h2>{{ flash['message'] }}</h2>
+	{% endif %}
 	<hr>
 	
 

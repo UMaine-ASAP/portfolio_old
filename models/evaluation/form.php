@@ -1,5 +1,7 @@
 <?php
 
+require_once "models/evaluation/component.php";
+
 /**
  * A Form object represents a single row in the EVAL_Form table.
  *
@@ -37,5 +39,8 @@ class Form extends Model
 		}
 	}
 
+	public function getComponents() {
+		return $this->has_many_through('Component', 'EVAL_Form_component_map', 'form_id', 'component_id');
+	}
 }
 

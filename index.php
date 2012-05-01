@@ -29,7 +29,7 @@ require_once 'controllers/user.php';
 require_once 'controllers/evaluation/form.php';
 require_once 'controllers/evaluation/component.php';
 require_once 'controllers/evaluation/evaluation.php';
-//require_once 'controllers/evaluation/evaluationAssignment.php';
+require_once 'controllers/evaluation/evaluationAssignment.php';
 
 // Library configuration
 TwigView::$twigDirectory = __DIR__ . '/libraries/Twig/lib/Twig/';
@@ -757,10 +757,8 @@ $app->post('/portfolio/submit', $authcheck_student, $submission_check, function(
  * Faculty Pages						*
  ***************************************/
 
-/**
- * Portfolio viewing 
- */
-$app->get('/portfolios', $authcheck_faculty, function() use ($app) {
+/** Helper functions **/
+function getNMDSubmittedPortfolios() {
 	$instance = getNMDAssignmentInstance();
 
 	$portfolios = array();
@@ -771,10 +769,36 @@ $app->get('/portfolios', $authcheck_faculty, function() use ($app) {
 		$studentName = $student->first . ' ' . $student->last;
 		$portfolios[] = array('id'=>$id, 'student'=>$studentName );
 	}
+	return $portfolios;
+}
+
+/**
+ * View Portfolio Evaluations
+ */
+$app->get('/Evaluation-results', $authcheck_faculty, function() use ($app) {
+	//Turn off initially
+	return redirect('/portfolios');
+	$portfolios = getNMDSubmittedPortfolios();
+	
+	//Get results
+
+
+	return $app->render('', array('portfolios' => $portfolios, 'faculty'=>array('Mike', 'Bill', 'Owen', 'Jon', 'Joline')));
+});
+
+/**
+ * Portfolio viewing 
+ */
+$app->get('/portfolios', $authcheck_faculty, function() use ($app) {
+
+	$portfolios = getNMDSubmittedPortfolios();
 
 	return $app->render('view_all_portfolios.html', array('portfolios' => $portfolios));
 });
 
+/**
+ * View Particular Portfolio
+ */
 $app->get('/portfolios/:port_id', $authcheck_faculty, function($port_id) use ($app) {
 	$port = Model::factory('Portfolio')->find_one($port_id);
 
@@ -796,12 +820,20 @@ $app->get('/portfolios/:port_id', $authcheck_faculty, function($port_id) use ($a
 		$projects[] = array("project_id" => $proj->id(), "title" => $t, "description" => $desc, "thumbnail" => $proj->thumbnail, "type" => $proj->type);
 	}
 
+	$uid = AuthenticationController::get_current_user_id();
+	$hasDoneEvaluation = EvaluationAssignmentController::hasDoneEvaluation($uid, 1);
+
 	$owner = $port->owner;
 	$app->flashNow('isFaculty', true);
 	$app->flashNow('port', array('id' => $port_id, 'owner_name' => $owner->first . " " . $owner->last));
-	return $app->render('view_portfolio.html', array('projects' => $projects));
+	return $app->render('view_portfolio.html', 
+		array('projects' => $projects,
+			'hasDoneEvaluation'=>$hasDoneEvaluation));
 });
 
+/**
+ * View Specific project within a portfolio
+ */
 $app->get('/portfolios/:port_id/project/:id', $authcheck_faculty, function($port_id, $id) use ($app) {
 	$proj = Media::factory('Project')->find_one($id);
 
@@ -825,15 +857,79 @@ $app->get('/portfolios/:port_id/project/:id', $authcheck_faculty, function($port
 			'extension' => $m->extension);
 	}
 
+	$uid = AuthenticationController::get_current_user_id();
+	$hasDoneEvaluation = EvaluationAssignmentController::hasDoneEvaluation($uid, 2);
+
+	$app->flashNow('isFaculty', true);
 	return $app->render('view_project.html',
-		array('project_id' => $proj->id(),
+		array('portfolio_id' => $port_id,
+			'project_id' => $proj->id(),
 			'title' => $proj->title,
 			'description' => $proj->description,
 			'thumbnail' => $proj->thumbnail,
-			'media_items' => $media));
+			'media_items' => $media,
+			'hasDoneEvaluation'=>$hasDoneEvaluation));
 });
 
+/**
+ * Evaluate a specific project
+ */
+$app->get('/portfolios/:port_id/project/:id/evaluate', $authcheck_faculty, function($port_id, $id) use ($app) {
+	$proj = Model::factory('Project')->find_one($id);
+	if( !($proj instanceOf Project ) ) {
+		return permission_denied();
+	}
 
+	$components = FormController::buildQuiz(2);
+	
+	// Get student name
+//	$student = $port->owner;
+//	$studentName = $student->first . ' ' . $student->last;	
+	$action_url = "/portfolios/" . $port_id . "/project/" . $id . '/evaluate';
+	return $app->render('evaluation.html', 
+		array('portfolioID'=>$port_id, 
+			'name'=>'Project', 
+			'components'=>$components, 
+			'action_url'=>$action_url));
+
+});
+/**
+ * Submit Project evaluation results
+ */
+$app->post('/portfolios/:port_id/project/:id/evaluate', $authcheck_faculty, function($port_id, $id) use ($app) {
+	//Ensure project exists to evaluate
+	$proj = Model::factory('Project')->find_one($id);
+	if( !($proj instanceOf Project ) ) {
+		return permission_denied();
+	}
+	
+	//Check if portfolio has already been evaluated
+	$uid = AuthenticationController::get_current_user_id();
+	if( EvaluationAssignmentController::hasDoneEvaluation($uid, 2) ) {
+		$app->flash('message', 'Evaluation already submitted');
+		redirect('/portfolios/' . $port_id . '/project/' . $id);
+		$app->stop();
+	}
+
+	//Create Evaluation
+	$evaluation = EvaluationController::createEvaluation(2, $id, $uid, 2);
+
+	$result = EvaluationController::submitScores( $evaluation->id, $_POST );
+
+	if ( !$result ) {
+		//Rerender old page
+		$app->flash('message', 'Required fields missing');
+		$app->flash('defaultValues', $_POST); // Pass filled values back to page
+		redirect('/portfolios/' . $port_id . '/project/' . $id . '/evaluate');
+	}
+
+	$app->flash('message', 'Evaluation successfully submitted.');
+	redirect("/portfolios/" . $port_id . "/project/" . $id);
+});
+
+/**
+ * Evaluate a specific portfolio
+ */
 $app->get('/portfolios/:port_id/evaluate', $authcheck_faculty, function($port_id) use ($app) {
 	$port = Model::factory('Portfolio')->find_one($port_id);
 	if( !($port instanceOf Portfolio ) ) {
@@ -846,23 +942,44 @@ $app->get('/portfolios/:port_id/evaluate', $authcheck_faculty, function($port_id
 	$student = $port->owner;
 	$studentName = $student->first . ' ' . $student->last;	
 
-	return $app->render('evaluation.html', array('portfolioID'=>$port_id, 'name'=>$studentName, 'components'=>$components));
+	$action_url = "/portfolios/" . $port_id . '/evaluate';
+	return $app->render('evaluation.html', array('portfolioID'=>$port_id, 'name'=>$studentName . '\'s Portfolio', 'components'=>$components, 'action_url'=>$action_url));
 });
 
 
+/**
+ * Submit Portfolio evaluation results
+ */
 $app->post('/portfolios/:port_id/evaluate', $authcheck_faculty, function($port_id) use ($app) {
 	//Ensure project exists to evaluate
 	$port = Model::factory('Portfolio')->find_one($port_id);
 	if( !($port instanceOf Portfolio ) ) {
 		return permission_denied();
 	}
+
+	//Check if portfolio has already been evaluated
+	$uid = AuthenticationController::get_current_user_id();
+	if( EvaluationAssignmentController::hasDoneEvaluation($uid, 1) ) {
+		$app->flash('message', 'Evaluation already submitted');
+		redirect('/portfolios/' . $port_id);
+		$app->stop();
+	}
 	
 	//Create Evaluation
-	$current_user_id = AuthenticationController::get_current_user_id();
-	$evaluation = EvaluationController::createEvaluation(1, $port_id, $current_user_id, 1);
-	EvaluationController::submitScores( $evaluation->id, $_POST );
+	$evaluation = EvaluationController::createEvaluation(1, $port_id, $uid, 1);
+	
+	$result = EvaluationController::submitScores( $evaluation->id, $_POST );
 
-	return $app->render('submit_portfolio.html');
+	if ( !$result ) {
+		//Rerender old page
+		$app->flash('message', 'Required fields missing');
+		$app->flash('defaultValues', $_POST); // Pass filled values back to page
+		redirect('/portfolios/' . $port_id . '/evaluate');
+		$app->stop();
+	}
+
+	$app->flash('message', 'Evaluation successfully submitted.');
+	redirect("/portfolios/" . $port_id);
 });
 
 

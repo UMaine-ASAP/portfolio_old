@@ -107,6 +107,8 @@ class FormController
 	public static function buildQuiz($form_id)
 	{
 		$components = FormComponentMap::getComponentsFromForm($form_id);
+		$form = Model::factory('Form')->find_one($form_id);
+		$components = $form->getComponents()->find_many();
 		foreach( $components as $component ) {
 			$component->id = $component->component_id;
 			//Map radio options to array
