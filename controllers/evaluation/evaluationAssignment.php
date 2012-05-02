@@ -164,5 +164,33 @@ class EvaluationAssignmentController
 
 	}
 
+	/**
+	 * Get evaluation results for particular user
+	 * 
+	 * 
+	 * @param 	int 		$evalAssign_id 		Identifier of the Evaluation Assignment results to analyze
+	 * @param 	int 		$eid 				Identifier of the Evaluated object to analyze
+	 * @param 	int 		$uid 				Identifier of the user to get the evaluation from
+	 * 
+	 * @return object|bool 						Evaluation result if available, false if unsuccessful
+	 */
+	public static function getEvaluationResults($evalAssign_id, $eid, $uid)
+	{
+		// @NOTE: this intermediary table between form and evaluations has not been implemented yet so we need to use the form id
+		$evaluation = Model::factory('Evaluation')
+			->where('form_id', $evalAssign_id)
+			->where('evaluator_user_id', $uid)
+			->where('evaluated_id', $eid)
+			->find_one();
+
+		//@TODO: only get completed evaluations ...
+//		if( $evaluation->status->name != 'complete' )
+//		{
+//			return false;
+//		}
+
+		return $evaluation;
+	}
+
 }
 

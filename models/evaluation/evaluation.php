@@ -3,8 +3,9 @@
 require_once('libraries/Idiorm/idiorm.php');
 require_once('libraries/Paris/paris.php');
 require_once('libraries/constant.php');
-require_once('models/evaluation/mappings.php');
 
+require_once('models/evaluation/mappings.php');
+require_once('models/evaluation/score.php');
 
 /**
  * An Evaluation object represents a single row in the REPO_Evaluations table.
@@ -33,6 +34,12 @@ class Evaluation extends Model
 					->find_one();
 				return $result;
 			break;
+			case 'scores':
+				if( $this->status->name == 'complete' )
+				{
+					return Model::factory('Score')->where('evaluation_id', $this->id)->find_many();
+				}
+				return false;
 			default:
 				return parent::__get($name);
 				break;

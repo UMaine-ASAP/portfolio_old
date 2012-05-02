@@ -777,15 +777,56 @@ function getNMDSubmittedPortfolios() {
 /**
  * View Portfolio Evaluations
  */
-$app->get('/Evaluation-results', $authcheck_faculty, function() use ($app) {
+$app->get('/evaluation-results', $authcheck_faculty, function() use ($app) {
 	//Turn off initially
-	return redirect('/portfolios');
+
+	$result = array();
 	$portfolios = getNMDSubmittedPortfolios();
+
+	//TODO: This should be based on permissions for the portfolio, not just faculty users
+	$facultyMembers = array( array('name'=>'Mike', 'id'=>30),
+						array('name'=>'Bill', 'id'=>27),
+						array('name'=>'Owen', 'id'=>28),
+						array('name'=>'Jon', 'id'=>26),
+						array('name'=>'Joline', 'id'=>31),
+						array('name'=>'Larry', 'id'=>29)
+						);//Model::factory('User')->where('type_id', 1)->find_many(); 
+
+	$gradeMapping = array('fail', 'discuss', 'pass');
+
+	foreach( $portfolios as $portfolio )
+	{
+		$evaluations = array();
+		$port_id = $portfolio['id'];
+		foreach( $facultyMembers as $faculty ) {
+			$evaluation = EvaluationAssignmentController::getEvaluationResults(1, $port_id, $faculty['id']);
+			$grade = null;
+			
+			// Get grade for pass/discuss/fail question on portfolio evaluation
+			if( $evaluation instanceOf Evaluation ) {
+				$scores = $evaluation->scores;
+				foreach( $scores as $score) {
+					if( $score->component_id == 4 ) {
+						$grade = $gradeMapping[$score->value - 1];
+						break;
+					}
+				}
+			}
+
+			$evaluations[] = array('evaluator'=>$faculty['name'], 'grade'=>$grade);
+		}
+		//Get Student name
+		$port = Model::factory('Portfolio')->find_one($port_id);
+		$student = $port->owner;
+		$studentName = $student->first . ' ' . $student->last;		
+
+		$result[] = array('name'=>$studentName, 'portfolio_id'=>$port_id, 'facultyEvaluations'=>$evaluations );
+	}
 	
 	//Get results
 
 
-	return $app->render('', array('portfolios' => $portfolios, 'faculty'=>array('Mike', 'Bill', 'Owen', 'Jon', 'Joline')));
+	return $app->render('view-evaluation-results.html', array('results' => $result) );
 });
 
 /**
