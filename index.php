@@ -779,8 +779,8 @@ function getNMDSubmittedPortfolios() {
  */
 $app->get('/portfolios/evaluation-results', $authcheck_faculty, function() use ($app) {
 	//Turn off initially
-	return permission_denied();
-	
+	//return permission_denied();
+
 	$result = array();
 	$portfolios = getNMDSubmittedPortfolios();
 
