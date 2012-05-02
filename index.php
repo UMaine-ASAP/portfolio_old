@@ -1048,7 +1048,7 @@ $app->get('/portfolios/:port_id/evaluate', $authcheck_faculty, function($port_id
 
 	setBreadcrumb( array( 
 						array('name'=>"New Media Portfolios", 'url'=>'/portfolios'),
-						array('name'=>$proj->owner->first . '\'s Portfolio', 'url'=>'/portfolios/' . $port_id)
+						array('name'=>$port->owner->first . '\'s Portfolio', 'url'=>'/portfolios/' . $port_id)
 					));
 
 
