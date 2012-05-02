@@ -777,7 +777,7 @@ function getNMDSubmittedPortfolios() {
 /**
  * View Portfolio Evaluations
  */
-$app->get('/evaluation-results', $authcheck_faculty, function() use ($app) {
+$app->get('/portfolios/evaluation-results', $authcheck_faculty, function() use ($app) {
 	//Turn off initially
 
 	$result = array();
@@ -819,6 +819,10 @@ $app->get('/evaluation-results', $authcheck_faculty, function() use ($app) {
 		$port = Model::factory('Portfolio')->find_one($port_id);
 		$student = $port->owner;
 		$studentName = $student->first . ' ' . $student->last;		
+
+		setBreadcrumb( array( 
+							array('name'=>"New Media Portfolios", 'url'=>'/portfolios')
+						));
 
 		$result[] = array('name'=>$studentName, 'portfolio_id'=>$port_id, 'facultyEvaluations'=>$evaluations );
 	}
@@ -869,6 +873,12 @@ $app->get('/portfolios/:port_id', $authcheck_faculty, function($port_id) use ($a
 	$owner = $port->owner;
 	$app->flashNow('isFaculty', true);
 	$app->flashNow('port', array('id' => $port_id, 'owner_name' => $owner->first . " " . $owner->last));
+
+	setBreadcrumb( array( 
+						array('name'=>"New Media Portfolios", 'url'=>'/portfolios')
+					));
+
+
 	return $app->render('view_portfolio.html', 
 		array('projects' => $projects,
 			'hasDoneEvaluation'=>$hasDoneEvaluation));
@@ -903,6 +913,12 @@ $app->get('/portfolios/:port_id/project/:id', $authcheck_faculty, function($port
 	$uid = AuthenticationController::get_current_user_id();
 	$hasDoneEvaluation = EvaluationAssignmentController::hasDoneEvaluation($uid, 2, $id);
 
+	setBreadcrumb( array( 
+						array('name'=>"New Media Portfolios", 'url'=>'/portfolios'),
+						array('name'=>$proj->owner->first . '\'s Portfolio', 'url'=>'/portfolios/' . $port_id)
+					));
+
+
 	$app->flashNow('isFaculty', true);
 	return $app->render('view_project.html',
 		array('portfolio_id' => $port_id,
@@ -927,7 +943,15 @@ $app->get('/portfolios/:port_id/project/:id/evaluate', $authcheck_faculty, funct
 	
 	// Get student name
 //	$student = $port->owner;
-//	$studentName = $student->first . ' ' . $student->last;	
+//	$studentName = $student->first . ' ' . $student->last;
+
+	setBreadcrumb( array( 
+						array('name'=>"New Media Portfolios", 'url'=>'/portfolios'),
+						array('name'=>$proj->owner->first . '\'s Portfolio', 'url'=>'/portfolios/' . $port_id),
+						array('name'=>'Project', 'url'=>'/portfolios/' . $port_id . '/project/' . $id)
+					));
+
+
 	$action_url = "/portfolios/" . $port_id . "/project/" . $id . '/evaluate';
 	return $app->render('evaluation.html', 
 		array('portfolioID'=>$port_id, 
@@ -957,6 +981,13 @@ $app->get('/portfolios/:port_id/project/:id/view-evaluation', $authcheck_faculty
 	foreach( $evaluation->scores as $score) {
 		$defaultValues[$score->component_id] = $score->value;
 	}
+
+	setBreadcrumb( array( 
+						array('name'=>"New Media Portfolios", 'url'=>'/portfolios'),
+						array('name'=>$proj->owner->first . '\'s Portfolio', 'url'=>'/portfolios/' . $port_id),
+						array('name'=>'Project', 'url'=>'/portfolios/' . $port_id . '/project/' . $id)
+					));
+
 
 	return $app->render('view_evaluation.html',
 		array('backURL'=>$backURL,
@@ -1014,6 +1045,12 @@ $app->get('/portfolios/:port_id/evaluate', $authcheck_faculty, function($port_id
 	$student = $port->owner;
 	$studentName = $student->first . ' ' . $student->last;	
 
+	setBreadcrumb( array( 
+						array('name'=>"New Media Portfolios", 'url'=>'/portfolios'),
+						array('name'=>$proj->owner->first . '\'s Portfolio', 'url'=>'/portfolios/' . $port_id)
+					));
+
+
 	$action_url = "/portfolios/" . $port_id . '/evaluate';
 	return $app->render('evaluation.html', array('portfolioID'=>$port_id, 'name'=>$studentName . '\'s Portfolio', 'components'=>$components, 'action_url'=>$action_url));
 });
@@ -1064,7 +1101,6 @@ $app->get('/portfolios/:port_id/view-evaluation', $authcheck_faculty, function($
 		return permission_denied();
 	}
 
-
 	$backURL = "/portfolios/" . $port_id;
 	$components = FormController::buildQuiz(1);
 
@@ -1075,6 +1111,11 @@ $app->get('/portfolios/:port_id/view-evaluation', $authcheck_faculty, function($
 	foreach( $evaluation->scores as $score) {
 		$defaultValues[$score->component_id] = $score->value;
 	}
+
+	setBreadcrumb( array( 
+						array('name'=>"New Media Portfolios", 'url'=>'/portfolios'),
+						array('name'=>$proj->owner->first . '\'s Portfolio', 'url'=>'/portfolios/' . $port_id)
+					));
 
 	return $app->render('view_evaluation.html',
 		array('backURL'=>$backURL,
