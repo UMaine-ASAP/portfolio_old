@@ -936,6 +936,35 @@ $app->get('/portfolios/:port_id/project/:id/evaluate', $authcheck_faculty, funct
 			'action_url'=>$action_url));
 
 });
+
+/**
+ * View previous evaluation submission
+ */
+$app->get('/portfolios/:port_id/project/:id/view-evaluation', $authcheck_faculty, function($port_id, $id) use ($app) {
+	$proj = Model::factory('Project')->find_one($id);
+	if( !($proj instanceOf Project ) ) {
+		return permission_denied();
+	}
+
+
+	$backURL = "/portfolios/" . $port_id . "/project/" . $id;
+	$components = FormController::buildQuiz(2);
+
+
+	$cuid = AuthenticationController::get_current_user_id();
+	$evaluation = EvaluationAssignmentController::getEvaluationResults(2, $id, $cuid);
+	$defaultValues = array();
+	foreach( $evaluation->scores as $score) {
+		$defaultValues[$score->component_id] = $score->value;
+	}
+
+	return $app->render('view_evaluation.html',
+		array('backURL'=>$backURL,
+			'name'=>'Project',
+			'defaultValues'=> $defaultValues,
+			'components'=>$components));
+});
+
 /**
  * Submit Project evaluation results
  */
@@ -1026,6 +1055,33 @@ $app->post('/portfolios/:port_id/evaluate', $authcheck_faculty, function($port_i
 });
 
 
+/**
+ * View previous evaluation submission
+ */
+$app->get('/portfolios/:port_id/view-evaluation', $authcheck_faculty, function($port_id) use ($app) {
+	$port = Model::factory('Portfolio')->find_one($port_id);
+	if( !($port instanceOf Portfolio ) ) {
+		return permission_denied();
+	}
+
+
+	$backURL = "/portfolios/" . $port_id;
+	$components = FormController::buildQuiz(1);
+
+
+	$cuid = AuthenticationController::get_current_user_id();
+	$evaluation = EvaluationAssignmentController::getEvaluationResults(1, $port_id, $cuid);
+	$defaultValues = array();
+	foreach( $evaluation->scores as $score) {
+		$defaultValues[$score->component_id] = $score->value;
+	}
+
+	return $app->render('view_evaluation.html',
+		array('backURL'=>$backURL,
+			'name'=>'Project',
+			'defaultValues'=> $defaultValues,
+			'components'=>$components));
+});
 
 // RUN THE THING
 $app->run();

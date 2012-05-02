@@ -7,6 +7,11 @@
 	{% if flash['isFaculty'] %}
 	{% if hasDoneEvaluation %}
 		<h2 style='position: absolute; right: 0;'>Has Been Evaluated</h2>
+	<div id='themed' style='position: absolute; right: 0; margin-top: 45px;' >
+		<a class='button' href="{{ flash['web_root'] }}/portfolios/{{ portfolio_id }}/project/{{ project_id }}/view-evaluation" type="submit">View Evaluation</a>
+	</div>
+
+
 	{% else %}
 	<div id='themed' style='position: absolute; right: 0;' >
 		<a class='button' href="{{ flash['web_root'] }}/portfolios/{{ portfolio_id }}/project/{{ project_id }}/evaluate" type="submit">Evaluate Project</a>
