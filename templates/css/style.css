@@ -260,7 +260,7 @@ textarea {
 	
 }
 
-#themed button, #themed a.button {
+#themed button, a.button {
 	margin-left: 150px;
 	margin-bottom: 10px;
 	background-color: #a5b8da;
