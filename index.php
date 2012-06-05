@@ -198,7 +198,9 @@ $app->get('/project/:id', $authcheck_student, function($id) use ($app) {
 	{
 		setBreadcrumb( array( 
 				array(	'name'=>"New Media Portfolio", 
-						'url'=>'/portfolio')
+						'url'=>'/portfolio'),
+				array ('name' => 'View Project',
+						'url' => '/project/' . $id)
 				));
 
 		$media = array();
