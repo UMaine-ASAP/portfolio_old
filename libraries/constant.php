@@ -56,6 +56,8 @@ DEFINE("PRIVATE", 1);	// Child is only viewable by Users with WRITE or higher pe
 DEFINE("SUBMITTED", 2);	// Child is awaiting approval from a submissions, and can be viewable by Users with WRITE 
 						//	or higher permissions on the parent Portfolio
 
+DEFINE("MIN_USERNAME_LENGTH", 3);
+
 function arrayFlatten($array)
 {
 	$ret = array();

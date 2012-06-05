@@ -48,7 +48,7 @@ class UserController
 
 		$user->username = $username;
 
-		if (strlen($username) < 3 || strlen($pass) < 6)
+		if (strlen($username) < MIN_USERNAME_LENGTH || strlen($pass) < 6)
 		{
 			//usernames must be at least 3 characters long; passwords must be at least six
 			return false;
@@ -133,6 +133,11 @@ class UserController
 		if ((!$currentUser = AuthenticationController::get_current_user_id()) ||
 			($currentUser != $user_id) ||
 			(!$user = self::getUser($user_id)))
+		{
+			return false;
+		}
+
+		if (strlen($username) < MIN_USERNAME_LENGTH)
 		{
 			return false;
 		}
