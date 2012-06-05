@@ -1,0 +1,1 @@
+Portfolio is the backend code to the MaineJournal system. It supports management of assignments, portfolios (of course!), students, faculty, sections, evaluations, and much more.
