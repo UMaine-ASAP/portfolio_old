@@ -4,8 +4,7 @@ if( isset( $_SESSION['uploadForm']) ) {
 	$GLOBALS['specialUpload'] = $_SESSION;
 }
 session_destroy();
-
-set_include_path("C:/XAMPP/htdocs/portfolio/libraries");
+set_include_path(get_include_path() . PATH_SEPARATOR . "./libraries");
 
 error_reporting(E_ALL);
 
