@@ -40,76 +40,6 @@ $app = new Slim(array(
 	'view' => new TwigView
 ));
 
-
-/****************************************
- * HELPER FUNCTIONS						*
- ***************************************/
-
-/**
- * Retrieve currently logged-in User's New Media 2012 porfolio.
- *
- * Returns null if not found, the Portfolio object otherwise.
- */
-function getNMDPortfolio()
-{
-	$ports = PortfolioController::getOwnedPortfolios();
-	$nmd_port = null;
-	foreach ($ports as $p)
-	{
-		if ($p->title == "New Media Freshman Portfolio 2012")
-		{
-			$nmd_port = $p;
-			break;
-		}
-	}
-	
-	return $nmd_port;
-}
-
-/**
- * Retrieve the AssignmentInstance for the New Media 2012 protfolio submissions.
- */
-function getNMDAssignmentInstance()
-{
-	$instance = AssignmentController::viewAssignmentInstance(1);
-	return $instance;
-}
-
-/**
- * Check whether or not the currently logged-in User's New Media 2012 portfolio has been submitted.
- *
- * Returns true if submitted, false otherwise.
- */
-function portfolioIsSubmitted()
-{
-	$instance = getNMDAssignmentInstance();
-	$port = getNMDPortfolio();
-	foreach ($instance->children as $child_id=>$arr)
-	{
-		if ($child_id == $port->id())
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
-/**
- * Helper to redirect the User to a location with the webroot appended
- */
-function redirect($destination)
-{
-	$GLOBALS['app']->redirect($GLOBALS['web_root'] . $destination);
-}
-
-/**
- * Helper to handle when a User does not have permission to access a page
- */
-function permission_denied()
-{
-	$GLOBALS['app']->render('permission_denied.html');
-}
-
 /**
  * Sets breadcrumbs for current page
  */
@@ -117,56 +47,11 @@ function setBreadcrumb( $breadcrumbs ) {
 	$GLOBALS['app']->flashNow('breadcrumbs', $breadcrumbs);
 }
 
-
-/****************************************
- * MIDDLEWARE FUNCTIONS					*
- ***************************************/
-
-/** 
- * Middleware to check student authentication and redirect to login page 
- */
-$authcheck_student = function () use ($app)
-{	
-	//Redirect to login if not authenticated
-	if ( ! AuthenticationController::check_login() )
-	{
-		$app->flashNow('logged_in', false);
-		redirect('/login');
-		return false;
-	}
-	else
-	{
-		$app->flashNow('logged_in', true);
-		$app->flashNow('portfolioIsSubmitted', portfolioIsSubmitted() );
-		return true;
-	}
-};
-
 /**
- * Middleware to check submission status of the student's Portfolio and redirect appropriately
+ * Middleware and helpers. Middleware allows you to hook Slim functions and modify/add to their behavior; helpers are just that.
  */
-$submission_check = function () use ($app)
-{
-	if (portfolioIsSubmitted())
-	{
-		permission_denied();
-		return $app->stop();
-	}
-};
-
-/**
- * Middleware to redirect user based on role to role-specific homepage
- */
-$redirect_loggedInUser = function () use ($authcheck_student)
-{
-	//@TODO: We will want to get the user role and direct user depending on whether student or faculty ...
-
-	if ( AuthenticationController::check_login() )
-	{	// User is already logged in
-		return redirect('/portfolio');
-	}
-};
-
+require_once 'middleware.php';
+require_once 'helpers.php';
 
 /************************************************
  * ROUTING!!									*
