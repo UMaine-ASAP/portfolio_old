@@ -33,6 +33,50 @@ ORM::configure("mysql:host=$HOST;dbname=$DATABASE");
 ORM::configure('username', $USERNAME);
 ORM::configure('password', $PASSWORD);
 
+<<<<<<< HEAD
+=======
+
+/****************************************
+ * HELPER FUNCTIONS						*
+ ***************************************/
+
+function getNMDPortfolio()
+{
+	$ports = PortfolioController::getOwnedPortfolios();
+	$nmd_port = null;
+	foreach ($ports as $p)
+	{
+		if ($p->title == "New Media Freshman Portfolio 2012")
+		{
+			$nmd_port = $p;
+			break;
+		}
+	}
+	
+	return $nmd_port;
+}
+
+function portfolioIsSubmitted()
+{
+
+}
+
+function redirect($destination)
+{
+	$GLOBALS['app']->redirect($GLOBALS['web_root'] . $destination);
+}
+
+function permission_denied()
+{
+	$GLOBALS['app']->render('permission_denied.html');
+}
+
+
+/************************************************
+ * ROUTING!!									*
+ ***********************************************/
+
+>>>>>>> Web root modification
 /**
  *	System Home
  */
@@ -47,15 +91,44 @@ function setBreadcrumb( $breadcrumbs ) {
 	$GLOBALS['app']->flashNow('breadcrumbs', $breadcrumbs);
 }
 
+<<<<<<< HEAD
+=======
+/** 
+ * middleware to check student authentication and redirect to login page 
+ */
+$authcheck_student = function ()
+{	
+	//Redirect to login if not authenticated
+	if ( ! AuthenticationController::check_login() )
+	{
+		redirect('/login');
+		return false;
+	}
+	return true;
+};
+
+>>>>>>> Web root modification
 /**
  * Middleware and helpers. Middleware allows you to hook Slim functions and modify/add to their behavior; helpers are just that.
  */
+<<<<<<< HEAD
 require_once 'middleware.php';
 require_once 'helpers.php';
 
 /************************************************
  * ROUTING!!									*
  ***********************************************/
+=======
+$redirect_loggedInUser = function () use ($authcheck_student)
+{
+	//@TODO: We will want to get the user role and direct user depending on whether student or faculty ...
+
+	if ( AuthenticationController::check_login() )
+	{	// User is already logged in
+		return redirect('/portfolio');
+	}
+};
+>>>>>>> Web root modification
 
 // Inform app of the web root for the next HTML request
 $app->flashNow('web_root', $GLOBALS['web_root']);
@@ -84,6 +157,7 @@ $app->post('/login', function() use ($app) {
 	}
 	else
 	{	// Fail :(
+
 		$app->flash('error', 'Username or password was incorrect.');
 		return redirect('/login');
 	}
@@ -93,7 +167,7 @@ $app->post('/login', function() use ($app) {
 /**
  *	Log Out
  */
-$app->get('/logout', $authcheck_student, function() use ($app) {
+$app->get('/logout', function() use ($app) {
 	AuthenticationController::log_out();
 	$app->flash('header', 'You have been successfully logged out.');
 	return redirect('/login');
@@ -108,15 +182,27 @@ $app->get('/register', $redirect_loggedInUser, function() use ($app) {
 });
 
 $app->post('/register', function() use ($app) {
-		if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['email']) || !isset($_POST['firstname']) || !isset($_POST['lastname']))
+	if (true /* Reserved for Timothy D. Baker */ )
+	{
+		if (!isset($_POST['username']) || !isset($_POST['password']) || !isset($_POST['email']) || !isset($_POST['firstname']) || !isset($_POST['lastname'])
+			)//|| !preg_match('/[a-z\.]\@umit\.maine\.edu/', $_POST['email']))
+
 		{	// Reject, form invalid
 			$app->flash('error', true);
 			return redirect('/register');	//TODO: Save partial title/desc on return to form
 		}
 		else
 		{
-			$first = $_POST['firstname'];
-			$last =  $_POST['lastname'];
+			// Form name from FC email
+			//$fc = preg_split('/\@umit\.maine\.edu/', $_POST['email']);
+			//$name = explode('.', $fc[0]);
+			$first = $_POST['firstname'];//$name[0];
+			//$middle = NULL;
+			//for ($i = 1; $i < count($name)-1; $i++)
+			//{
+				//$middle = $middle." ".ucfirst($name[$i]);
+			//}
+			$last =  $_POST['lastname'];//ucfirst($name[count($name)-1]);
 			// Create new User
 			if (!$user = UserController::createUser($_POST['username'],
 				$_POST['password'],
@@ -136,12 +222,14 @@ $app->post('/register', function() use ($app) {
 				AuthenticationController::attempt_login($_POST['username'], $_POST['password']);
 				// Create User's NMD portfolio
 				$port = PortfolioController::createPortfolio("New Media Freshman Portfolio 2012", "New Media Freshman Portfolio 2012", 1);
-				// Add permission for User to submit to NMD 2012 AssignmentInstance
-				$instance = getNMDAssignmentInstance();
-				$instance->addPermissionForUser($user->id(), SUBMIT);
 				return redirect('/portfolio');
 			}
 		}
+	}
+	else
+	{
+		$app->flash('error', false);	//TODO
+	}
 });
 
 
@@ -175,7 +263,7 @@ $app->get('/portfolio', $authcheck_student, function() use ($app) {
 /**
  *	Add Project
  */
-$app->get('/project/add', $authcheck_student, $submission_check, function() use ($app) {
+$app->get('/project/add', $authcheck_student, function() use ($app) {
 	//TODO: Handle error messages from failed adds
 	return $app->render('edit_project.html', 
 		array('project_id' => -1,
@@ -231,7 +319,7 @@ $app->get('/project/:id', $authcheck_student, function($id) use ($app) {
 /**
  *	Edit Project
  */
-$app->get('/project/:id/edit', $authcheck_student, $submission_check, function($id) use ($app) {					
+$app->get('/project/:id/edit', $authcheck_student, function($id) use ($app) {					
 	if ((!$proj = ProjectController::viewProject($id)) ||
 		(!$proj->havePermissionOrHigher(OWNER)))
 	{	// User does not have permission to edit this Project
@@ -243,7 +331,7 @@ $app->get('/project/:id/edit', $authcheck_student, $submission_check, function($
 		setBreadcrumb( array( 
 				array(	'name'=>"New Media Portfolio",
 						'url'=>'/portfolio'),
-				array(	'name'=>$proj->title,
+				array(	'name'=>"Project: " . $proj->title,
 						'url'=>'/project/'.$id),
 				));
 
@@ -272,31 +360,9 @@ $app->get('/project/:id/edit', $authcheck_student, $submission_check, function($
 	}
 });
 
-$app->post('/project/:id/edit', $authcheck_student, $submission_check, function($id) use ($app) {
-	$thumb_path = NULL;
-	if ($id == -1)
-	{	// Sent from add_project, we need to create a Project
-		if (!isset($_POST['title']))
-		{	// Reject, form invalid
-			$app->flash('error', true);
-			return redirect('/project/add');	//TODO: Save partial title/desc on return to form
-		}
-		else
-		{
-			$proj = ProjectController::createProject($_POST['title'],
-				(isset($_POST['description']) ? $_POST['description'] : NULL),
-				$thumb_path,
-				1);
-			if ((!$nmd_port = getNMDPortfolio()) ||
-				(!PortfolioController::addProjectToPortfolio($nmd_port->id(), $proj->id())))
-			{
-				$proj->delete();
-				return permission_denied();
-			}
-			$id = $proj->id();
-		}
-	}
+$app->post('/project/:id/edit', $authcheck_student, function($id) use ($app) {
 	// Handle thumbnail upload
+	$thumb_path = NULL;
 	if ($_FILES['thumbnail']['name'] != '' )
 	{
 		// Get extention
@@ -319,13 +385,38 @@ $app->post('/project/:id/edit', $authcheck_student, $submission_check, function(
 			$thumb_path = $GLOBALS['thumbnail_path'] . $id . "." . $ext;
 		}
 	}
-	if (!ProjectController::editProject($id, 
-		(isset($_POST['title']) ? $_POST['title'] : NULL),
-		(isset($_POST['description']) ? $_POST['description'] : NULL),
-		$thumb_path,
-		NULL))
+	if ($id == -1)
+	{	// Sent from add_project, we need to create a Project
+		if (!isset($_POST['title']))
+		{	// Reject, form invalid
+			$app->flash('error', true);
+			return redirect('/project/add');	//TODO: Save partial title/desc on return to form
+		}
+		else
+		{
+			$proj = ProjectController::createProject($_POST['title'],
+				(isset($_POST['description']) ? $_POST['description'] : NULL),
+				$thumb_path,
+				1);
+			if ((!$nmd_port = getNMDPortfolio()) ||
+				(!PortfolioController::addProjectToPortfolio($nmd_port->id(), $proj->id())))
+			{
+				$proj->delete();
+				return permission_denied();
+			}
+			$id = $proj->id();
+		}
+	}
+	else
 	{
-		$app->flashNow('error', true);
+		if (!ProjectController::editProject($id, 
+			(isset($_POST['title']) ? $_POST['title'] : NULL),
+			(isset($_POST['description']) ? $_POST['description'] : NULL),
+			$thumb_path,
+			NULL))
+		{
+			$app->flashNow('error', true);
+		}
 	}
 	return redirect('/project/'.$id);
 });
@@ -334,7 +425,7 @@ $app->post('/project/:id/edit', $authcheck_student, $submission_check, function(
 /**
  *	Delete Project
  */
-$app->get('/project/:id/delete', $authcheck_student, $submission_check, function($id) use ($app) {
+$app->get('/project/:id/delete', $authcheck_student, function($id) use ($app) {
 	if ((!$proj = ProjectController::viewProject($id)) ||
 		(!$proj->havePermissionOrHigher(OWNER)))
 	{
@@ -345,7 +436,7 @@ $app->get('/project/:id/delete', $authcheck_student, $submission_check, function
 		setBreadcrumb( array( 
 				array(	'name'=>"New Media Portfolio",
 						'url'=>'/portfolio'),
-				array(	'name'=>$proj->title,
+				array(	'name'=>"Project: " . $proj->title,
 						'url'=>'/project/'.$id),
 				));
 
@@ -363,7 +454,7 @@ $app->get('/project/:id/delete', $authcheck_student, $submission_check, function
 	}
 });
 
-$app->post('/project/:id/delete', $authcheck_student, $submission_check, function($id) use ($app) {
+$app->post('/project/:id/delete', $authcheck_student, function($id) use ($app) {
 	if ((!$proj = ProjectController::viewProject($id) ||
 		(!$proj->havePermissionOrHigher(OWNER))) ||
 		(!ProjectController::deleteProject($id)))
@@ -380,7 +471,7 @@ $app->post('/project/:id/delete', $authcheck_student, $submission_check, functio
 /**
  *	Add Media
  */
-$app->get('/project/:id/media/add', $authcheck_student, $submission_check, function($id) use ($app) {
+$app->get('/project/:id/media/add', $authcheck_student, function($id) use ($app) {
 	//TODO: Handle error messages from failed adds
 	if ((!$proj = ProjectController::viewProject($id)) ||
 		(!$proj->havePermissionOrHigher(OWNER)))
@@ -392,7 +483,7 @@ $app->get('/project/:id/media/add', $authcheck_student, $submission_check, funct
 		setBreadcrumb( array( 
 				array(	'name'=>"New Media Portfolio",
 						'url'=>'/portfolio'),
-				array(	'name'=>$proj->title,
+				array(	'name'=>"Project: " . $proj->title,
 						'url'=>'/project/'.$id),
 				));
 
@@ -473,12 +564,12 @@ function postMediaData($pid, $id) {
 	}
 }
 
-$app->post('/project/:pid/media/:id/edit', $authcheck_student, $submission_check, function($pid, $id) use ($app) {	
+$app->post('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {	
 	postMediaData($pid, $id);
 });
 
 
-$app->get('/project/:pid/media/:id/edit', $authcheck_student, $submission_check, function($pid, $id) use ($app) {
+$app->get('/project/:pid/media/:id/edit', $authcheck_student, function($pid, $id) use ($app) {
 	if( isset( $GLOBALS['specialUpload'] ) ) {
 		$_POST = $GLOBALS['specialUpload']['uploadForm'];
 		postMediaData($pid, $id);
@@ -496,7 +587,7 @@ $app->get('/project/:pid/media/:id/edit', $authcheck_student, $submission_check,
 		setBreadcrumb( array( 
 				array(	'name'=>"New Media Portfolio",
 						'url'=>'/portfolio'),
-				array(	'name'=>$project->title,
+				array(	'name'=>"Project: " . $project->title,
 						'url'=>'/project/'.$pid.'/edit'),
 				));
 
@@ -515,7 +606,7 @@ $app->get('/project/:pid/media/:id/edit', $authcheck_student, $submission_check,
 /**
  *	Delete Media
  */
-$app->get('/project/:pid/media/:id/delete', $authcheck_student, $submission_check, function($pid, $id) use ($app) {
+$app->get('/project/:pid/media/:id/delete', $authcheck_student, function($pid, $id) use ($app) {
 	if ((!$media = MediaController::viewMedia($id)) ||
 		(!$media->havePermissionOrHigher(OWNER)) ||
 		(!$project = ProjectController::viewProject($pid)) ||
@@ -535,7 +626,7 @@ $app->get('/project/:pid/media/:id/delete', $authcheck_student, $submission_chec
 	}
 });
 
-$app->post('/project/:pid/media/:id/delete', $authcheck_student, $submission_check, function($pid, $id) use ($app) {
+$app->post('/project/:pid/media/:id/delete', $authcheck_student, function($pid, $id) use ($app) {
 	if (!MediaController::deleteMedia($id))
 	{
 		return permission_denied();
@@ -550,31 +641,22 @@ $app->post('/project/:pid/media/:id/delete', $authcheck_student, $submission_che
 /**
  *	Review Portfolio
  */
-// $app->get('/portfolio/review', $authcheck_student, function() use ($app) {					
-// 	return $app->render('review_portfolio.html');		
-// });
+$app->get('/portfolio/review', $authcheck_student, function() use ($app) {					
+	return $app->render('review_portfolio.html');		
+});
 
 
 /**
  *	Portfolio Submission
  */
-$app->get('/portfolio/submit', $authcheck_student, $submission_check, function() use ($app) {					
+$app->get('/portfolio/submit', $authcheck_student, function() use ($app) {					
 	return $app->render('submit_portfolio.html');		
 });
 
-$app->post('/portfolio/submit', $authcheck_student, $submission_check, function() use ($app) {
-	$instance = getNMDAssignmentInstance();
-	$port = getNMDPortfolio();
-	if ($instance->submitWork($port->id(), true))
-	{	// Success!
-		return $app->render('portfolio_submitted.html');
-	}
-	else
-	{	// Failue
-		return permission_denied();
-	}
+$app->post('/portfolio/submit', $authcheck_student, function() use ($app) {
+	return permission_denied();
+	//return $app->render('portfolio_submitted.html');
 });
-
 
 
 // RUN THE THING
