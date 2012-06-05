@@ -48,6 +48,12 @@ class UserController
 
 		$user->username = $username;
 
+		if (strlen($username) < 3 || strlen($pass) < 6)
+		{
+			//usernames must be at least 3 characters long; passwords must be at least six
+			return false;
+		}
+
 		if ($password = AuthenticationController::create_hash($pass))
 		{
 			$user->pass = $password;
