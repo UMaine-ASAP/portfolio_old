@@ -293,6 +293,11 @@ class AssignmentController
 	 */
 	public static function viewAssignmentInstance($id)
 	{
+		if (!$user = AuthenticationController::get_current_user())
+		{
+			return false;
+		}
+
 		if (!$instance = self::getAssignmentInstance($id))
 		{
 			return false;
@@ -300,6 +305,10 @@ class AssignmentController
 
 		// Check viewing permissions here
 		// $instance->permissions
+		if (!$instance->havePermissionOrHigher(READ))
+		{
+			return false;
+		}
 		
 		return $instance;
 	}
