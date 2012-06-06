@@ -223,6 +223,15 @@ class AssignmentController
 	 */
 	public static function removeCoownerFromAssignment($assign_id, $user_id)
 	{
+		if (!$user = AuthenticationController::get_current_user() ||
+			!$assignment = self::viewAssignment($assign_id) ||
+			!$assignment->havePermissionOrHigher(OWNER) ||
+			!$coOwner = UserController::getUser($user_id))
+		{
+			return false;
+		}
+
+		$assignment->removePermissionForUser($user, OWNER);
 	}
 
 	/************************************************************************************
