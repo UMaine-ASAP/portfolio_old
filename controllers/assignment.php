@@ -333,6 +333,39 @@ class AssignmentController
 	 */
 	private static function editAssignmentInstance($id, $owner_user_id = NULL, $title = NULL, $description = NULL, $requirements = NULL, $due_date = NULL)
 	{
+		if (!$userID = AuthenticationController::get_current_user_id() || //if they're not logged in
+		    !$assignmentInstance = self::getAssignmentInstance($id)    || //if the ID is invalid
+		    !$assignmentInstance->havePermissionOrHigher(EDIT))           //if they don't have edit permissions
+		{
+			return false;
+		}
+
+		if (!is_null($owner_user_id))
+		{
+			$assignmentInstance->owner_user_id = $owner_user_id;
+		}
+
+		if (!is_null($title))
+		{
+			$assignmentInstance->title = $title;
+		}
+
+		if (!is_null($description))
+		{
+			$assignmentInstance->description = $description;
+		}
+
+		if (!is_null($requirements))
+		{
+			$assignmentInstance->requirements = $requirements;
+		}
+
+		if (!is_null($due_date))
+		{
+			$assignmentInstance->due_date = $due_date;
+		}
+
+		return $assignmentInstance->save();
 	}
 
 	/**
@@ -346,6 +379,14 @@ class AssignmentController
 	 */
 	public static function deleteAssignmentInstance($id)
 	{
+		if (!$userID = AuthenticationController::get_current_user_id() || //if they're not logged in
+		    !$assignmentInstance = self::getAssignmentInstance($id)    || //if the ID is invalid
+		    !$assignmentInstance->havePermissionOrHigher(OWNER))           //if they don't have edit permissions
+		{
+			return false;
+		}
+
+		return $assignmentInstance->delete();
 	}
 
 	/**
