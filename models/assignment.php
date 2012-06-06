@@ -55,6 +55,12 @@ class Assignment extends AccessMapModel
 	 */
 	public function addOwner($id)
 	{
+		if (!$user = UserController::getUser($id))
+		{
+			return false;
+		}
+
+		return $this->addPermissionForUser($id, OWNER);
 	}
 
 	/**
