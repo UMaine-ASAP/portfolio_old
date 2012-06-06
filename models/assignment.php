@@ -72,6 +72,12 @@ class Assignment extends AccessMapModel
 	 */
 	public function removeOwner($id)
 	{
+		if (!$user = UserController::getUser($id))
+		{
+			return false;
+		}
+
+		return $this->removePermissionForUser($id, OWNER);
 	}
 
 	/**
