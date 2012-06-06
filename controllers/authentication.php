@@ -114,12 +114,6 @@ class AuthenticationController
 	 */
 	static function destroy_session()
 	{
-		if (session_id() === '')
-		{
-			//$_SESSION = array();
-//			return true;
-		}
-
 		$_SESSION['UserID'] 	= '';
 		$_SESSION['LastAccess'] = '';
 		$_SESSION['RemoteIP'] 	= '';
@@ -128,8 +122,6 @@ class AuthenticationController
 		unset($_SESSION['LastAccess']);
 		unset($_SESSION['RemoteIP']);		
 
-		//$_SESSION = array();
-		//session_destroy();
 		return true;
 	}
 
