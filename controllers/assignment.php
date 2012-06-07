@@ -209,6 +209,14 @@ class AssignmentController
 	 */
 	public static function addCoownerToAssignment($assign_id, $user_id)
 	{
+		if (!$user = AuthenticationController::get_current_user() ||
+			!$coOwner = UserController::getUser($user_id) ||
+			!$assignment = self::viewAssignment($assign_id) ||
+			!$assignment->havePermissionOrHigher(OWNER))
+		{
+			return false;
+		}
+		$assignment->addPermissionForUser($user_id, OWNER);
 	}
 
 	/**
