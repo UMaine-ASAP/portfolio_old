@@ -36,7 +36,8 @@ ORM::configure('password', $PASSWORD);
  *	System Home
  */
 $app = new Slim(array(
-	'view' => new TwigView
+	'view' => new TwigView,
+	'debug' => true
 ));
 
 /**
