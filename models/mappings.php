@@ -8,14 +8,30 @@ class ProjectMediaMap extends Model
 	public static $_table = 'REPO_Project_media_map';
 	public static $_id_column = 'id';
 
-	public function project()
+	public function __get($name)
 	{
-		return Model::factory('Project')->find_one($this->proj_id);
-	}
+		switch ($name)
+		{
+			case 'project_id':
+				return $this->proj_id; //these are redundant, but in the interest of issue #13 and clarity...
+				break;
 
-	public function media()
-	{
-		return Model::factory('Media')->find_one($this->media_id);
+			case 'project':
+				return Model::factory('Project')->find_one($this->proj_id);
+				break;
+
+			case 'media_id':
+				return $this->media_id;
+				break;
+
+			case 'media':
+				return Model::factory('Media')->find_one($this->media_id);
+				break;
+
+			default:
+				return parent::__get($name);
+				break;
+		}
 	}
 }
 
@@ -24,14 +40,30 @@ class SectionAccessMap extends Model
 	public static $_table = 'REPO_Section_access_map';
 	public static $_id_column = 'id';
 
-	public function section()
+	public function __get($name)
 	{
-		return Model::factory('Section')->find_one($this->section_id);
-	}
+		switch ($name)
+		{
+			case 'section_id':
+				return $this->section_id;
+				break;
 
-	public function group()
-	{
-		return Model::factory('Group')->find_one($this->group_id);
+			case 'section'
+				return return Model::factory('Section')->find_one($this->section_id);
+				break;
+
+			case 'group_id':
+				return $this->group_id;
+				break;
+
+			case 'group':
+				return return Model::factory('Group')->find_one($this->group_id);
+				break;
+
+			default:
+				return parent::__get($name);
+				break;
+		}
 	}
 }
 

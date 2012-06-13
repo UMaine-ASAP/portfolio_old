@@ -35,6 +35,10 @@ class Group extends Model
 			return UserController::getUser($this->creator_user_id);
 			break;
 
+		case 'owner_id':
+			return $this->creator_user_id;
+			break;
+
 		case 'members':
 			$maps = Model::factory('GroupUserMap')
 				->where('group_id', $this->id())
