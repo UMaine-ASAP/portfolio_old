@@ -20,10 +20,6 @@ class ProjectMediaMap extends Model
 				return Model::factory('Project')->find_one($this->proj_id);
 				break;
 
-			case 'media_id':
-				return $this->media_id;
-				break;
-
 			default:
 				return parent::__get($name);
 				break;
