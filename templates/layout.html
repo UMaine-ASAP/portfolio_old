@@ -10,8 +10,11 @@
 	<body>
 		<div class="container">
 
-		<ul class="menu sgray fade" id="menu">
-			<li><a href="{{ flash['web_root'] }}">New Media Portfolio 2012</a></li>
+		<ul class="menu sgray fade" id="menu">			
+			{% for breadcrumb in flash['breadcrumbs'] %}
+			<li class='breadcrumb'><a href="{{ flash['web_root'] }}{{ breadcrumb.url }}">{{ breadcrumb.name }}</a></li>
+			{% endfor %}
+			
 			<li class="floatr">
 			{% if flash['logged_in'] %}
 			<a href="{{ flash['web_root'] }}/logout">Log Out</a>
@@ -21,12 +24,6 @@
 			</li>
 		</ul>
 
-		<div class='breadcrumb-trail'>
-			{% for breadcrumb in flash['breadcrumbs'] %}
-			<span class='breadcrumb'><a href="{{ flash['web_root'] }}{{ breadcrumb.url }}">{{ breadcrumb.name }}</a></span>
-			>
-			{% endfor %}
-		</div>
 		{% block content %} {% endblock %}
 		</div>
 	</body>

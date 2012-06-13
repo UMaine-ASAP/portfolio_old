@@ -187,7 +187,7 @@ $app->flashNow('web_root', $GLOBALS['web_root']);
  *	Webroot
  */
 $app->get('/', $authcheck_student, function() use ($app) {
-	return redirect($GLOBALS['web_root']);	
+	return redirect($GLOBALS['web_root']);
 });
 
 
@@ -289,6 +289,10 @@ $app->get($GLOBALS['web_root'], $authcheck_student, function() use ($app) {
 			$projects[] = array("project_id" => $proj->id(), "title" => $t, "description" => $desc, "thumbnail" => $proj->thumbnail, "type" => $proj->type);
 		}
 	}
+			setBreadcrumb( array( 
+				array(	'name'=>"New Media Portfolio", 
+						'url'=>$GLOBALS['web_root'])
+				));
 		
 	return $app->render('view_portfolio.html', array('projects' => $projects));
 });
