@@ -49,7 +49,7 @@ class SectionAccessMap extends Model
 				break;
 
 			case 'section'
-				return return Model::factory('Section')->find_one($this->section_id);
+				return Model::factory('Section')->find_one($this->section_id);
 				break;
 
 			case 'group_id':
