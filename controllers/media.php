@@ -87,7 +87,7 @@ class MediaController
 			return false;
 		}
 
-		if (!is_null($type))		{ $media->type = $type; }
+		if (!is_null($type))		{ $media->mimetype = $type; }
 		if (!is_null($title))		{ $media->title = $title; }
 		if (!is_null($description))	{ $media->description = $description; }
 		if (!is_null($filename))	{ $media->filename = $filename; }

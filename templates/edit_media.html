@@ -64,18 +64,41 @@ $(function() {
 		<textarea class='medium' name="description" id="description" rows="5">{{ description }}</textarea>
 
 		<div class='spacer'></div>
+		
+	    {% if media_id == -1 %}
+	    
+	    <label>File (Optional)</label>
+	    	<input name='mode' type='hidden' value='add' />
+	    	
+	    	
+			<input name="file" type="file"/>
+	   		<div id="uploading">
+		    	<div id="progress" class="bar">
+		      		<div id="progressbar">&nbsp;</div>
+		      		<div id="percents"></div>
+			    </div>
+			</div>
+	    	
+	    {% else %}
+	    
+	    <label>Current File</label>
+	    	<div id="current_file" style="margin: 2px 0px 20px 10px; width: 200px; float: left;"><a href="{{ flash['web_root'] }}/media/{{ filename }}" target="_blank">{{ filename }}</a></div>
+	    	
+	   	<div class='spacer'></div>
+	    
+	    <label>Replace File (Optional)</label>
+			<input name="file" type="file"/>
+	   		<div id="uploading">
+		    	<div id="progress" class="bar">
+		      		<div id="progressbar">&nbsp;</div>
+		      		<div id="percents"></div>
+			    </div>
+			</div>	
+			
+			<input name='mode' type='hidden' value='edit' />    	
 
-		<label>File (Optional)</label>
+		{% endif %}
 
-
-
-    	    <input name="file" type="file"/>
-   		<div id="uploading">
-        	<div id="progress" class="bar">
-          		<div id="progressbar">&nbsp;</div>
-          		<div id="percents"></div>
-	        </div>
-    	</div>
 
 		<div class='spacer'></div>
 

@@ -1,14 +1,17 @@
 <?PHP
-$filename = time(). "." .end(explode( '.' , $_POST['file_name']));
+if(!is_null($_POST['file_name'])){
+	$filename = time(). "." .end(explode( '.' , $_POST['file_name']));
 
-rename($_POST['file_path'], "/var/www/html/dev_portfolio/media/" . $filename );
+	rename($_POST['file_path'], "/var/www/html/dev_portfolio/media/" . $filename );
 
 
-$_POST['file_name'] = $filename;
+	$_POST['file_name'] = $filename;
+}
 
 session_start();
-$_SESSION['uploadForm'] = $_POST;
 
+$_SESSION['uploadForm'] = $_POST;
+	
 header('Location: '. $_POST['upload_origin'] );
 
 ?>
