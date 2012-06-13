@@ -24,14 +24,15 @@ class ProjectMediaMap extends Model
 				return $this->media_id;
 				break;
 
-			case 'media':
-				return Model::factory('Media')->find_one($this->media_id);
-				break;
-
 			default:
 				return parent::__get($name);
 				break;
 		}
+	}
+
+	public function media()
+	{
+		return Model::factory('Media')->find_one($this->media_id);
 	}
 }
 
@@ -48,7 +49,7 @@ class SectionAccessMap extends Model
 				return $this->section_id;
 				break;
 
-			case 'section':
+			case 'section'
 				return Model::factory('Section')->find_one($this->section_id);
 				break;
 
