@@ -48,7 +48,7 @@ class SectionAccessMap extends Model
 				return $this->section_id;
 				break;
 
-			case 'section'
+			case 'section':
 				return Model::factory('Section')->find_one($this->section_id);
 				break;
 
