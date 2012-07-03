@@ -120,7 +120,7 @@ class AuthenticationController
 		
 		unset($_SESSION['UserID']);	
 		unset($_SESSION['LastAccess']);
-		unset($_SESSION['RemoteIP']);		
+		unset($_SESSION['RemoteIP']);
 
 		return true;
 	}

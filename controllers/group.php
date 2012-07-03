@@ -85,9 +85,16 @@ class GroupController
 			return false;
 		}
 
-		//TODO: Check for viewing permissions
-		// $group->permissions
-
+                if (!$userid = AuthenticationController::getCurrentUserID())
+                {
+                    return false;
+                }
+                
+                if (!$group->havePermissionOrHigher(READ))
+                {
+                    return false;
+                }
+                
 		return $group;
 	}
 
@@ -122,8 +129,10 @@ class GroupController
 			return false;
 		}
 
-		//TODO: Check for editing permissions
-		// $groupToUpdate->permissions
+                if (!$groupToUpdate->hasPermissionOrHigher(EDIT))
+                {
+                    return false;
+                }
 
 		if (!is_null($name))			{ $groupToUpdate->name = $name; }
 		if (!is_null($description))		{ $groupToUpdate->description = $description; }

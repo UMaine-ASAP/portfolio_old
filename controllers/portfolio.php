@@ -108,9 +108,16 @@ class PortfolioController
 		{
 			return false;
 		}
-
-		//TODO: check delete privileges here
-		// $port->permissions
+                
+                if (!$userID = AuthenticationController::getCurrentUserID())
+                {
+                    return false;
+                }
+                
+                if (!$port->havePermissionOrHigher(OWNER))
+                {
+                    return false;
+                }
 
 		return $port->delete();
 	}
