@@ -219,4 +219,51 @@ class UserController
 
 		return $user->save();
 	}
+        
+        /**
+         * Determines the privileges a given user has in relation to $target.
+         * @param UserModel $user
+         * @param Model $target
+         * @return False if the user has no permissions, otherwise an integer representing the permission level as defined in constant.php
+         */
+        public static function privilegesFor($user, $target)
+        {
+            //create a temporary array to hold the privileges we find
+            $temp = array();
+            
+            error_log("privs access table: " . $target::_access_table);
+            
+            //find every privilege that the user has in relation to $target and place them in an array
+            $ret = ORM::for_table($target::_access_table)
+                    ->table_alias('access')
+                    ->select('access.access_type')
+                    ->join('AUTH_Group_user_map', 'access.group_id = AUTH_group_user_map.group_id')
+                    ->where('access' . $target::_id_column, $target->id())
+                    ->find_many();
+            
+            foreach ($ret as $perm)
+            {
+                //store each access type in $temp
+                $temp[] = $perm->access_type;
+            }
+            
+            //if there are no privileges defined between the user and the target, we know that they have no access
+            if (count($temp) == 0)
+            {
+                return false;
+            }
+            
+            $maxPerm = SUBMIT; //if we're still here, we know that we have at least submit and potentially more
+            
+            //iterate over $temp and return the highest access level that the user has
+            foreach ($temp as $permission)
+            {
+                if ($permisson > $maxPerm)
+                {
+                    $maxPerm = $permission;
+                }
+            }
+            
+            return $maxPerm;
+        }
 }
