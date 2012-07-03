@@ -57,9 +57,5 @@ require_once 'middleware.php';
 require_once 'routing.php';
 
 
-
 // RUN THE THING
 $app->run();
-
-
-
