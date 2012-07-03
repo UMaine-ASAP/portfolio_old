@@ -33,7 +33,7 @@ class PortfolioController
 		//Currently, we don't check portfolio creation privileges (because that's not yet a thing)
 		//all we do is check to see that a user is in fact currently logged in
 		if ((!$port = Model::factory('Portfolio')->create()) ||
-			(!$user_id = AuthenticationController::get_current_user_id()))
+			(!$user_id = AuthenticationController::getCurrentUserID()))
 		{
 			return false;
 		}
@@ -76,7 +76,7 @@ class PortfolioController
 	 */
 	public static function editPortfolio($id, $title = NULL, $description = NULL, $private = NULL)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||	// Make sure calling User is logged in
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||	// Make sure calling User is logged in
 			(!$port = self::getPortfolio($id)) ||
 			(!$port->havePermissionOrHigher(EDIT)))	// Check for EDIT privileges
 		{
@@ -128,7 +128,7 @@ class PortfolioController
 	 */
 	public static function viewPortfolio($id)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
 			(!$port = self::getPortfolio($id)) ||
 			(!$port->havePermissionOrHigher(READ)))	// Check for READ privileges
 		{
@@ -162,7 +162,7 @@ class PortfolioController
 	public static function getOwnedPortfolios()
 	{
 		$return = array();
-		if ($user_id = AuthenticationController::get_current_user_id())
+		if ($user_id = AuthenticationController::getCurrentUserID())
 		{
 			$result = ORM::for_table('REPO_Portfolio_access_map')
 				->table_alias('access')
@@ -196,7 +196,7 @@ class PortfolioController
 	public static function getMemberPortfolios($count, $order_by, $pos)
 	{
 		//TODO: check privileges here
-		if (!$user_id = AuthenticationController::get_current_user_id())
+		if (!$user_id = AuthenticationController::getCurrentUserID())
 		{
 			return false;
 		}
@@ -222,7 +222,7 @@ class PortfolioController
 	 */
 	public static function getIncludedPortfolios($count, $order_by, $pos)
 	{
-		if (!$user_id = AuthenticationController::get_current_user_id())
+		if (!$user_id = AuthenticationController::getCurrentUserID())
 		{
 			return false;
 		}
@@ -346,7 +346,7 @@ class PortfolioController
 	 */
 	public static function addProjectToPortfolio($parent_id, $child_id)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
 			(!$parent = self::getPortfolio($parent_id)) ||
 			(!$parent->havePermissionOrHigher(WRITE)) ||	// User must have WRITE permission on parent
 			(!$project = ProjectController::viewProject($child_id)) ||	// Requires 'viewing' (or higher, assumed) permissions on the Project
@@ -373,7 +373,7 @@ class PortfolioController
 	 */
 	public static function removeChildFromPortfolio($parent_id, $child_id, $is_portfolio)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
 			(!$parent = self::getPortfolio($parent_id)) ||
 			(!$parent->havePermissionOrHigher(WRITE)) ||	// User must have WRITE permissions on parent
 			(!array_key_exists($child_id, $parent->children)))

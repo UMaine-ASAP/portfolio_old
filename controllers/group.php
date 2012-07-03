@@ -26,7 +26,7 @@ class GroupController
 	public static function createGroup($name, $description, $private)
 	{
 		//We don't currently check for creation privileges, just to make sure that the user is logged in
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
 			(!$newGroup = Model::factory('Group')->create()))
 		{
 			return false;
@@ -57,7 +57,7 @@ class GroupController
 	 */
 	public static function deleteGroup($id)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
 			(!$toDelete = GroupController::getGroup($id)))
 		{
 			return false;
@@ -117,7 +117,7 @@ class GroupController
 	public static function editGroup($id, $name = NULL, $description = NULL, $private = NULL, $owner_user_id = NULL)
 	{
 		if ((!$groupToUpdate = self::getGroup($id)) ||
-			(!$user_id = AuthenticationController::get_current_user_id()))
+			(!$user_id = AuthenticationController::getCurrentUserID()))
 		{
 			return false;
 		}
@@ -147,7 +147,7 @@ class GroupController
 	{
 		if ((!$group = self::getGroup($group_id)) ||
 			(!$user = UserController::getUser($user_id)) ||
-			($group->owner_user_id != AuthenticationController::get_current_user_id()))
+			($group->owner_user_id != AuthenticationController::getCurrentUserID()))
 		{
 			return false;
 		}
@@ -168,7 +168,7 @@ class GroupController
 	public static function removeUserFromGroup($group_id, $user_id)
 	{
 		if ((!$group = self::getGroup($group_id)) ||
-			($group->owner_user_id != AuthenticationController::get_current_user_id()))
+			($group->owner_user_id != AuthenticationController::getCurrentUserID()))
 		{
 			return false;
 		}

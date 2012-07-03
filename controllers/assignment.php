@@ -35,7 +35,7 @@ class AssignmentController
  	 */
 	public static function createAssignment($class_id, $title, $description, $requirements)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
 			(!$assignment = Model::factory('Assignment')->create()))
 		{
 			return false;
@@ -86,7 +86,7 @@ class AssignmentController
 	public static function viewAssignment($id)
 	{
 		if ((!$assignment = self::getAssignment($id)) ||
-			(!$user_id = AuthenticationController::get_current_user_id()))
+			(!$user_id = AuthenticationController::getCurrentUserID()))
 		{
 			return false;
 		}
@@ -120,7 +120,7 @@ class AssignmentController
 	 */
 	public static function editAssignment($id, $owner_user_id = NULL, $class_id = NULL, $title = NULL, $description = NULL, $requirements = NULL)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
 			(!$assignment = self::getAssignment($id)))
 		{
 			return false;
@@ -157,7 +157,7 @@ class AssignmentController
 	 */
 	public static function deleteAssignment($id)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) || 
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) || 
 			(!$assignment = self::getAssignment($id)))
 		{
 			return false;
@@ -180,7 +180,7 @@ class AssignmentController
 	 */
 	public static function unDeleteAssignment($id)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) || 
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) || 
 			(!$assignment = self::getAssignment($id)))
 		{
 			return false;
@@ -245,7 +245,7 @@ class AssignmentController
 	 */
 	public static function instantiateAssignment($assign_id, $section_id, $title = NULL, $description = NULL, $requirements = NULL, $due_date = NULL)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) || 
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) || 
 			(!$assignment = self::getAssignment($assign_id)) ||
 			(!$section = SectionController::getSection($section_id)) ||
 			(!$instance = Model::factory('AssignmentInstance')->create()))
@@ -387,7 +387,7 @@ class AssignmentController
 	 */
 	public static function submitWorkToAssignmentInstance($instance_id, $work_id, $work_is_portfolio)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
 			(!$instance = self::getAssignmentInstance($instance_id)) ||
 			(!($work_is_portfolio) && ($work = PortfolioController::viewPortfolio($work_id))) ||
 			(!(!$work_is_portfolio) && ($work = ProjectController::viewProject($work_id))) ||
@@ -434,7 +434,7 @@ class AssignmentController
 	 */
 	public static function getSubmittedChildren($id)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
 			(!$instance = self::getAssignmentInstance($id)) ||
 			(!$instance->havePermissionOrHigher(WRITE)))	// Calling User must have WRITE permission
 		{

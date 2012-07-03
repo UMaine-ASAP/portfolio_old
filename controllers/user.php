@@ -54,7 +54,7 @@ class UserController
 			return false;
 		}
 
-		if ($password = AuthenticationController::create_hash($pass))
+		if ($password = AuthenticationController::createHash($pass))
 		{
 			$user->pass = $password;
 		}
@@ -130,7 +130,7 @@ class UserController
 	{
 		//Checks to see if a user is logged in, and if the user we are editing is this User.
 		//(Only a User may edit themselves)
-		if ((!$currentUser = AuthenticationController::get_current_user_id()) ||
+		if ((!$currentUser = AuthenticationController::getCurrentUserID()) ||
 			($currentUser != $user_id) ||
 			(!$user = self::getUser($user_id)))
 		{
@@ -143,7 +143,7 @@ class UserController
 		}
 
 		if (!is_null($username))	{ $user->username = $username; }
-		if ((!is_null($pass)) && ($password = AuthenticationController::create_hash($pass)))
+		if ((!is_null($pass)) && ($password = AuthenticationController::createHash($pass)))
 		{
 			$user->pass = $password;
 		}
@@ -176,7 +176,7 @@ class UserController
 	 */
 	public static function deactivateUser($user_id)
 	{
-		if (!$currentUser = AuthenticationController::get_current_user_id())
+		if (!$currentUser = AuthenticationController::getCurrentUserID())
 		{
 			return false;
 		}
@@ -204,7 +204,7 @@ class UserController
 	 */
 	public static function reactivateUser($user_id)
 	{
-		if (!$currentUser = AuthenticationController::get_current_user_id())
+		if (!$currentUser = AuthenticationController::getCurrentUserID())
 		{
 			return false;
 		}

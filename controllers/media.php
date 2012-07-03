@@ -31,7 +31,7 @@ class MediaController
 	static function createMedia($type, $title, $description, $filename, $filesize, $md5, $ext)
 	{
 		// Check Media creation privileges (for now, User must only be logged in)
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
 			(!$media = Model::factory('Media')->create()))
 		{
 			return false;
@@ -80,7 +80,7 @@ class MediaController
 	 */
 	static function editMedia($id, $type = NULL, $title = NULL, $description = NULL, $filename = NULL, $filesize = NULL, $md5 = NULL, $ext = NULL)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
 			(!$media = self::getMedia($id)) ||
 			(!$media->havePermissionOrHigher(EDIT)))	// User must have EDIT privileges
 		{
@@ -110,7 +110,7 @@ class MediaController
 	 */
 	static function deleteMedia($id)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
 			(!$media = self::getMedia($id)) ||
 			(!$media->havePermissionOrHigher(OWNER)))
 		{
@@ -131,7 +131,7 @@ class MediaController
 	 */
 	static function viewMedia($id)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
 			(!$media = self::getMedia($id)) ||
 			(!$media->havePermissionOrHigher(READ)))	// Calling User must have READ permissions
 		{

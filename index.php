@@ -136,7 +136,7 @@ function permission_denied()
 $authcheck_student = function () use ($app)
 {	
 	//Redirect to login if not authenticated
-	if ( ! AuthenticationController::check_login() )
+	if ( ! AuthenticationController::checkLogin() )
 	{
 		$app->flashNow('logged_in', false);
 		redirect('/login');
@@ -169,7 +169,7 @@ $redirect_loggedInUser = function () use ($authcheck_student)
 {
 	//@TODO: We will want to get the user role and direct user depending on whether student or faculty ...
 
-	if ( AuthenticationController::check_login() )
+	if ( AuthenticationController::checkLogin() )
 	{	// User is already logged in
 		return redirect($GLOBALS['web_root']);
 	}
@@ -200,7 +200,7 @@ $app->get('/login', $redirect_loggedInUser, function() use ($app) {
 
 $app->post('/login', function() use ($app) {
 	if (isset($_POST['username']) && isset($_POST['password']) &&
-		AuthenticationController::attempt_login($_POST['username'], $_POST['password']))
+		AuthenticationController::attemptLogin($_POST['username'], $_POST['password']))
 	{	// Success!
 		return redirect($GLOBALS['web_root']);
 	}
@@ -216,7 +216,7 @@ $app->post('/login', function() use ($app) {
  *	Log Out
  */
 $app->get('/logout', $authcheck_student, function() use ($app) {
-	AuthenticationController::log_out();
+	AuthenticationController::logOut();
 	$app->flash('header', 'You have been successfully logged out.');
 	return redirect('/login');
 });
@@ -255,7 +255,7 @@ $app->post('/register', function() use ($app) {
 			else
 			{
 				// Login as new User
-				AuthenticationController::attempt_login($_POST['username'], $_POST['password']);
+				AuthenticationController::attemptLogin($_POST['username'], $_POST['password']);
 				// Create User's NMD portfolio
 				$port = PortfolioController::createPortfolio("New Media Freshman Portfolio 2012", "New Media Freshman Portfolio 2012", 1);
 				// Add permission for User to submit to NMD 2012 AssignmentInstance

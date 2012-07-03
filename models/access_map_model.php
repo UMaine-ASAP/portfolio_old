@@ -34,7 +34,7 @@ class AccessMapModel extends Model
 		switch ($name)
 		{
 		case 'permissions':
-			if (!$user_id = AuthenticationController::get_current_user_id())
+			if (!$user_id = AuthenticationController::getCurrentUserID())
 			{
 				return false;
 			}

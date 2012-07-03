@@ -26,7 +26,7 @@ class ProjectController
 	public static function createProject($title, $description, $thumbnail, $type)
 	{
 		// Check for creation privileges (for now, only that a User is logged in)
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
 			(!$project = Model::factory('Project')->create()))
 		{
 			echo "Fail";
@@ -62,7 +62,7 @@ class ProjectController
 	 */
 	public static function editProject($id, $title = NULL, $description = NULL, $thumbnail = NULL, $type = NULL)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
 			(!$project = self::getProject($id)) ||
 			(!$project->havePermissionOrHigher(EDIT)))	// Check for EDIT privileges
 		{
@@ -85,7 +85,7 @@ class ProjectController
 	 */
 	public static function deleteProject($id)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
 			(!$project = self::getProject($id)) ||
 			(!$project->havePermissionOrHigher(OWNER)))	// User musr have OWNER permissions on project
 		{
@@ -104,7 +104,7 @@ class ProjectController
 	 */
 	public static function viewProject($id)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
 			(!$project = self::getProject($id)) ||
 			(!$project->havePermissionOrHigher(READ)))	// User musr have READ permissions on project
 		{
@@ -138,7 +138,7 @@ class ProjectController
 	 */
 	public static function addMediaToProject($proj_id, $media_id)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
 			(!$project = self::getProject($proj_id)) ||
 			(!$project->havePermissionOrHigher(WRITE)) ||	// User must have WRITE permission on parent
 			(!$media = MediaController::viewMedia($media_id)) ||	// Requires 'viewing' (or higher, assumed) permissions on the Media
@@ -162,7 +162,7 @@ class ProjectController
 	 */
 	public static function removeChildFromPortfolio($parent_id, $child_id, $is_portfolio)
 	{
-		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
+		if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
 			(!$project = self::getProject($proj_id)) ||
 			(!$media = MediaController::getMedia($media_id)) ||
 			(!$media->havePermissionOrHigher(WRITE)) ||	// User must have WRITE permission on parent
