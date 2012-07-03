@@ -283,9 +283,15 @@ class PortfolioController
 		$parent = self::getPortfolio($parent_id);
 		$child = self::getPortfolio($child_id);
 
-		//TODO: check submission/ownership privileges here
-		// $parentPortfolio->permissions
-		// $childPortfolio->permissions
+                if (!$userID = AuthenticationController::getCurrentUserID())
+                {
+                    return false;
+                }
+                
+                if (!$parent->havePermissionOrHigher(SUBMIT) || !$child->havePermissionOrHigher(OWNER))
+                {
+                    return false;
+                }
 
 		// Check to make sure that both portfolios were found
 		if (!$parent || !$child)
@@ -415,8 +421,16 @@ class PortfolioController
 			return false;
 		}
 
-		//TODO: check ownership privileges here
-		// $portfolio->permissions
+                
+                if (!$userid = AuthenticationController::getCurrentUserID())
+                {
+                    return false;
+                }
+                
+                if (!$portfolio->havePermissionOrHigher(OWNER))
+                {
+                    return false;
+                }
 
 		return $portfolio->addPermissionForGroup($group_id, $permission);
 	}
@@ -444,8 +458,15 @@ class PortfolioController
 			return false;
 		}
 
-		//TODO: check ownership privileges here
-		// $portfolio->permissions
+                if (!$userID = AuthenticationController::getCurrentUserID())
+                {
+                    return false;
+                }
+                
+                if (!$portfolio->havePermissionOrHigher(OWNER))
+                {
+                    return false;
+                }
 		
 		return $portfolio->removePermissionForGroup($group_id, $permission);
 	}
