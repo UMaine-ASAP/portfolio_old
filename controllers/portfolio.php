@@ -508,11 +508,6 @@ class PortfolioController
             return false;
         }
 
-        if (!$userID = AuthenticationController::getCurrentUserID())
-        {
-            return false;
-        }
-
         if (!$portfolio->havePermissionOrHigher(OWNER))
         {
             return false;
