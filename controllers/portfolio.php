@@ -278,15 +278,43 @@ class PortfolioController
      * 	with their 'private' property set to false.
      *
      * 	@param	int		$count			The number of Portfolio objects desired (0 = return all such Portfolios).
-     * 	@param	int		$order_by		The field that the Portfolios should be ordered by (ex: date_descending),
-     * 									as specified in 'constant.php'.
+     * 	@param	int		$order_by		The field that the Portfolios should be ordered by (ex: title) in the SQL query
      * 	@param	int		$pos			The index of the first Portfolio to return in the set 'order_by' specifies.
      *
      * 	@return	array|bool				An array of Portfolio objects if successful, false otherwise.
      */
     public static function getPublicPortfolios($count, $order_by, $pos)
     {
-        return false;
+        //thanks to paris/idiorm, we have to retrive all of these at once
+        $ports = array();
+        
+        try
+        {
+            $dbh = new PDO("mysql:host=$HOST;dbname=$DATABASE", $USERNAME, $PASSWORD);
+            $data = array('order_by' => $order_by, 'count' => $count);
+            
+            $statement = $dbh->("SELECT TOP :count FROM REPO_Portfolios WHERE private=0 ORDER BY :order_by");
+            $statement->setFetchMode(PDO::FETCH_ASSOC);
+            $statement->execute($data);
+            
+            //inefficient: so that we can return ORM objects as expected
+            while ($row = $statement->fetch())
+            {
+                $ports[] = Model::factory('Portfolio')->find_one($row['port_id']);
+            }
+        }
+        catch (PDOException $ex)
+        {
+            error_log($ex);
+            return false;
+        }
+        
+        if (count($ports) === 0)
+        {
+            return false;
+        }
+        
+        return $ports;
     }
 
     /**
