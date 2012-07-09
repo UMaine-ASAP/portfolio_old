@@ -206,16 +206,25 @@ class PortfolioController
      */
     public static function getMemberPortfolios($count, $order_by, $pos)
     {
-        //TODO: check privileges here
-        //iterate over each portfolio in the system and determine the user's privileges w/regards to it
+        //check to see if the user is logged in
         if (!$user_id = AuthenticationController::getCurrentUserID())
         {
             return false;
         }
 
-        //use $user's privileges to determine the results
-
-        return false;
+        //iterate over each portfolio in the system and determine the user's privileges w/regards to it, adding the portfolio if they're included
+        $portfolios = ORM::for_table('REPO_Portfolios')->find_many();
+        $ret = array();
+        
+        foreach ($portfolios as $port)
+        {
+            if ($port->havePermissionOrHigher(SUBMIT))
+            {
+                ret[] = $port;
+            }
+        }
+        
+        return $port;
     }
 
     /**
@@ -233,23 +242,33 @@ class PortfolioController
      */
     public static function getIncludedPortfolios($count, $order_by, $pos)
     {
-        if (!$user_id = AuthenticationController::getCurrentUserID())
+        //check to see if the user is logged in
+        if (!$userid = AuthenticationController::getCurrentUserID())
         {
             return false;
         }
-        //TODO: check privileges here
-        $portfolios = ORM::for_table('REPO_Portfolios')->find_many();
-        $ret = array();
         
+        $user = Model::factory('User')->find_one($userid);
+        $userProjects = $user->projects;
+        
+        //assuming that the project has to be 
+        $portfolios = ORM::for_table('REPO_Portfolios')->find_many();
+        
+        //ret will hold the portfolios that the user is included in
+        $ret = array();
         foreach ($portfolios as $port)
         {
-            if ($port->havePermissionOrHigher(SUBMIT))
+            foreach ($userProjects as $proj)
             {
-                ret[] = $port;
+                if (in_array($proj, $port->children))
+                {
+                    $ret[] = $port;
+                    break; //we know we're in this portfolio, so we don't have to test the rest of the projects against it
+                }
             }
         }
         
-        return $port;
+        return $ret;
     }
 
     /**
