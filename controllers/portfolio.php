@@ -238,8 +238,18 @@ class PortfolioController
             return false;
         }
         //TODO: check privileges here
-
-        return false;
+        $portfolios = ORM::for_table('REPO_Portfolios')->find_many();
+        $ret = array();
+        
+        foreach ($portfolios as $port)
+        {
+            if ($port->havePermissionOrHigher(SUBMIT))
+            {
+                ret[] = $port;
+            }
+        }
+        
+        return $port;
     }
 
     /**
