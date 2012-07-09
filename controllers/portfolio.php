@@ -220,7 +220,8 @@ class PortfolioController
         {
             if ($port->havePermissionOrHigher(SUBMIT))
             {
-                ret[] = $port;
+                //for whatever reason $ret[] = $port doesn't work here
+                $ret[] = $port;
             }
         }
         
@@ -292,8 +293,8 @@ class PortfolioController
         {
             $dbh = new PDO("mysql:host=$HOST;dbname=$DATABASE", $USERNAME, $PASSWORD);
             $data = array('order_by' => $order_by, 'count' => $count);
-            
-            $statement = $dbh->("SELECT TOP :count FROM REPO_Portfolios WHERE private=0 ORDER BY :order_by");
+
+            $statement = $dbh->prepare("SELECT TOP :count FROM REPO_Portfolios WHERE private=0 ORDER BY :order_by");
             $statement->setFetchMode(PDO::FETCH_ASSOC);
             $statement->execute($data);
             
