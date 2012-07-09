@@ -79,7 +79,7 @@ class PortfolioController
         if ((!$user_id = AuthenticationController::getCurrentUserID()) || // Make sure calling User is logged in
                 (!$port = self::getPortfolio($id)) ||
                 (!$port->havePermissionOrHigher(EDIT)))
-        { // Check for EDIT privileges
+        {
             return false;
         }
 
@@ -145,7 +145,7 @@ class PortfolioController
         if ((!$user_id = AuthenticationController::getCurrentUserID()) ||
                 (!$port = self::getPortfolio($id)) ||
                 (!$port->havePermissionOrHigher(READ)))
-        { // Check for READ privileges
+        {
             return false;
         }
 
@@ -475,12 +475,6 @@ class PortfolioController
         if ((!$portfolio = self::getPortfolio($port_id)) ||
                 (!$group = GroupController::viewGroup($group_id)))
         { // Requires 'viewing' (or higher, assumed) permissions on the Group
-            return false;
-        }
-
-
-        if (!$userid = AuthenticationController::getCurrentUserID())
-        {
             return false;
         }
 
