@@ -24,9 +24,6 @@ INSERT INTO `REPO_Access_levels` (name, description) VALUES
 ('submit', 'User can only submit new material to resource for approval');
 
 -- USERS (NO MAJORS/MINORS)
-INSERT INTO `AUTH_Users` (username, pass, first, middle, last, email, email_priv, bio, type_id) VALUES 
-('fergie', 'password1', 'President', 'Paul', 'Ferguson', 'fergaliciousDef@maine.edu', 0, '', 1),
-('asap', 'asap4u', 'ASAP', '', 'Media Services', 'ASAP@maine.edu', 0, '', 1);
 
 -- GROUPS
 INSERT INTO `AUTH_Groups` (name, description, owner_user_id, private) VALUES 
