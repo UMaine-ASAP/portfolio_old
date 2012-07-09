@@ -12,13 +12,10 @@ require_once('models/class.php');
  */
 class ClassController
 {
-
-
 	public static function getClass($id)
 	{
 		return Model::factory('ClassModel')->find_one($id);
 	}
-
 }
 
 
