@@ -173,7 +173,7 @@ class AuthenticationController
 
         if ($hash = self::createHash($password))
         {
-            return UserController::editUser($userID, NULL, $password);
+            return UserController::editUser($userID, NULL, $hash);
         }
 
         return false;
