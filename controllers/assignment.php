@@ -217,7 +217,17 @@ class AssignmentController
      */
     public static function addCoownerToAssignment($assign_id, $user_id)
     {
+        if ((!$userID = AuthenticationController::getCurrentUserID() || !($assignment = self::getAssignment($assign_id))))
+        {
+            return false;
+        }
         
+        if (!$user = UserController::getUser($user_id))
+        {
+            return false;
+        }
+        
+        return $assignment->addPermissionForUser($user_id, OWNER);    
     }
 
     /**
@@ -232,7 +242,17 @@ class AssignmentController
      */
     public static function removeCoownerFromAssignment($assign_id, $user_id)
     {
+        if ((!$userID = AuthenticationController::getCurrentUserID() | !($assignment = self::getAssignment($assign_id))))
+        {
+            return false;
+        }
         
+        if (!$user = UserController::getUser($user_id) && !$user->havePermissionOrHigher(OWNER))
+        {
+            return false;
+        }
+        
+        return $assignment->removePermissionForUser($user_id, OWNER);
     }
 
     /*     * **********************************************************************************
