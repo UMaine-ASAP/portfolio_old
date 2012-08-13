@@ -21,11 +21,11 @@ class Section extends AccessMapModel
                         ->find_one();
     }
 
-    public function classes()
+    public function getClass()
     {
         return Model::factory('ClassModel')
                         ->where('class_id', $this->class_id)
-                        ->find_many();
+                        ->find_one();
     }
 
     public function instructor()

@@ -42,6 +42,12 @@ class ClassController
             return false;
         }
         
+        
+        if (is_null($number) || is_null($title))
+        {
+            error_log("Class number and title cannot be null");
+        }
+        
         $class->dept_id = $dept_id;
         $class->number = $number;
         $class->title = $title;
