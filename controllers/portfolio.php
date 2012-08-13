@@ -6,6 +6,7 @@ require_once('libraries/constant.php');
 require_once('models/portfolio.php');
 require_once('controllers/group.php');
 require_once('controllers/authentication.php');
+require_once('libraries/settings.php');
 
 /**
  * Controller handling all aspects of Portfolio objects within the system.
