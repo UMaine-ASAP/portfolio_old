@@ -77,6 +77,10 @@ class SectionController
             $section->addPermissionForUser($userID, OWNER);
             return $result;
         }
+        else
+        {
+            error_log("Probable database error when attempting to create section $section");
+        }
         
         return $result;
     }
@@ -96,11 +100,12 @@ class SectionController
      */
     public function editSection($sectionID, $sectionNumber, $daySched, $time, $instructorID, $semester, $year, $designator, $description)
     {
-        if (!$userID = AuthenticationController::getCurrentUserID() ||!$user = UserController::getUser($userID) || !$section = self::getSection($sectionID) || !$section->havePermissionOrHigher(EDIT) || UserController::getUser($instructorID))
+        if (!$userID = AuthenticationController::getCurrentUserID() || !$user = UserController::getUser($userID) || !$section = self::getSection($sectionID) || !$section->havePermissionOrHigher(EDIT) || UserController::getUser($instructorID))
         {
             return false;
         }
         
+        //check over each parameter; if it's null, we won't update it and will instead let it keep whatever value it had
         if (!is_null($sectionNumber)) $section->section_number = $sectionNuber;
         if (!is_null($daySched)) $section->day_sched = $daySched;
         if (!is_null($time)) $section->time = $time;
@@ -132,8 +137,21 @@ class SectionController
             //they do have permission
             $groupName = "Official group for " . $section->getClass()->title . "($sectionID)";
             
-            //create the group automatically and then return it to the calling method
-            return GroupController::createGroup($groupName, $groupName . " -- " . $section->instructor()->first . " " . $section->instructor()->last, false);
+            //create the group, then add the appropriate owners
+            $result =  GroupController::createGroup($groupName, $groupName . " -- " . $section->instructor()->first . " " . $section->instructor()->last, false);
+            
+            //check to make sure that the section's owner_user_id points to an active user
+            if (UserController::getUser($section->owner_user_id)->deactivated != 0)
+            {
+                //the owner_user_id of the section is not deactivated, so we'll add them as an owner
+                $result->addPermissionForUser($section->owner_user_id, OWNER);         
+            }
+            
+            //we'll always want the instructor of the session to have owner privs
+            $result->addPermissionForUser($section->instructor()->user_id, OWNER);
+            
+            //the group ORM object
+            return $result;
         }
         
         return false;
