@@ -114,4 +114,3 @@ class Project extends AccessMapModel
 	}
 }
 
-?>

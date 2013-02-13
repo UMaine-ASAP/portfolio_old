@@ -6,4 +6,3 @@ class Department extends Model
 	public static $_id_column = 'dept_id';
 }
 
-?>

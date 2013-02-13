@@ -87,4 +87,3 @@ class Media extends AccessMapModel
 	
 }
 
-?>
