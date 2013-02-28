@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+
+{% block page_title %}New Media Portfolio - Your Portfolio{% endblock %}
+
+{% block content %}
+
+		{% if hasDoneEvaluation %}
+			<h2 style='position: absolute; right: 0; '>Has Been Evaluated</h2>
+			<div id='themed' style='position: absolute; right: 0; margin-top: 45px;' >
+				<a class='button' href="{{ flash['web_root'] }}/portfolios/{{ project.id }}/view-evaluation" type="submit">View Evaluation</a>
+			</div>
+		{% else %}
+		<div id="themed"style ="position: absolute; right: 0;">
+			<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/portfolios/{{ project.id }}/evaluate">
+			<button class='right' type="submit">Evaluate Project</button>
+			</FORM>
+		</div>
+		{% endif %}
+
+	<header>{{ project.name }}</header>
+
+	<hr>
+
+	<p>{{ project.goal | raw }}</p>
+	
+	<p>{{ project.description | raw }}</p>
+
+
+{% endblock %}

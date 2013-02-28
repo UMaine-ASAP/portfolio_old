@@ -1,0 +1,56 @@
+{% extends 'layout.html' %}
+
+{% block page_title %}New Media Portfolio - All Portfolios{% endblock %}
+
+{% block content %}
+
+	<header>Evaluation Results</header>
+	
+	<hr>
+	
+
+	<div class='spacer'></div>
+
+	<div id="projectSpacer" style="margin-top:20px"></div>
+	<style>
+		table {
+			margin: 0 auto;
+		}
+		.student-name {
+			font-weight: bolder;
+			font-size: 15px;
+			text-align: left;
+		}
+		td {
+			text-align: center;
+			padding: 10px;
+		}
+		tr.even {
+			background-color: #AAA;
+		}
+	</style>
+	<p>
+	<table>
+		<theader>
+			<td><h2>Projects</h2></td>
+			{% for facultyEvaluation in results[0].facultyEvaluations %}
+			<td><h2>{{ facultyEvaluation.evaluator }}</h2></td>
+			{% endfor %}
+		</theader>
+	{% for student in results %}
+		<tr {% if loop.index%2==0 %}class='even'{% endif %}>
+			<td class='student-name'>
+				<a href="{{ flash['web_root'] }}/portfolios/{{ student.portfolio_id }}">{{ student.name }}</a>
+				</td>
+		{% for facultyEvaluation in student.facultyEvaluations %}
+			<td>{{ facultyEvaluation.grade }}</td>
+		{% endfor %}
+		</tr>	
+	{% endfor %}	
+	</table>
+	
+	<hr>
+
+	</p>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+
+{% block page_title %}New Media Portfolio - All Portfolios{% endblock %}
+
+{% block content %}
+
+	<div style='position: absolute; right: 0; '>
+<!--	<a class='button' href='{{ flash['web_root'] }}/portfolios/evaluation-results'>View Evaluation Results</a>	-->
+	</div>	
+
+	<header>New Media Portfolios</header>
+
+	<hr>
+
+	<div class='spacer'></div>
+
+	<div id="projectSpacer" style="margin-top:20px"></div>
+
+	<p>
+	{% for portfolio in portfolios %}
+		<div>
+			<a href="{{ flash['web_root'] }}/portfolios/{{ portfolio.id }}"><div class="title">{{ portfolio['name'] }}</div></a>
+			</br>
+			<div style='float: right; position: relative;'>
+				{% if portfolio.hasEvaluated %}
+				Evaluated
+				{% else %}
+				<div id="themed"style ="position: absolute; right: 0; margin-top: -50px;">
+					<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/portfolios/{{ portfolio.id }}/evaluate">
+						<button class='right' type="submit">Evaluate</button>
+					</FORM>
+				</div>
+
+				{% endif %}
+			</div>
+			<div style='clear: both;'></div>
+		</div>
+		<hr>
+	{% endfor %}
+	</p>
+
+{% endblock %}

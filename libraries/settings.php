@@ -1,7 +1,7 @@
 <?php
 
 	$HOST = "localhost";
-	$DATABASE = "MUD";
+	$DATABASE = "nmd-project-review";
 	$USERNAME = "root";
 	$PASSWORD = "";
 
