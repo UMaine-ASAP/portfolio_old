@@ -97,14 +97,93 @@ Nexus 10 ($400)
 		<p>The Presenter touch wall is a 65” Active 3D LED LCD HD multi-touch display supporting 32+ touch points. The device can be used as an interactive wall or in a horizontal position as an interactive table</p>'),
 
 		array('id'=>7, 'name'  => 'Proposal 8 Request - set up a fund of 10K to support new tools and technologies for New Media need at the IMRC ',
-		'goal'        => '',
+		'goal'        => '<ul>
+		<li>Goal #4 - Support student research and creativity and inventive application of new media thinking and applications.
+		By providing state of the art tools and technologies through the IMRC the needs of the students for research and creativity activities will be better supported. This will allow us to meet new and changing needs as they develop and as we set priorities in the new facilities.
+		</li>
+
+		<li>Goal #7 - Attract a stronger, more diverse, and more socially and professionally engaged student body to New Media.
+		Having state of the art tools and technologies will directly support / maintain a strong and attractive program for top level students
+		</li>
+		<li>Goal #8 - Increase student retention and satisfaction (with the program, its structure and opportunities in the program).
+		New media focused tools and technologies will support greater student satisfaction, more opportunities and should positively benefit students retention.
+		</li>
+		<li>Goal #10 - Increase exposure to, and training on, tools and technologies relevant for new media work/production (hands-on and virtual applied training).
+		Providing selected tools and technologies will support an increase the diversity and type of technology training and hands on learning available to students. This program will also us to respond to student needs and changing technologies which will in turn create new and divergent opportunities for students and  support developing hand on training and a better, more responsive engagement in the teaching and learning experiences of students.
+		</li>
+		</ul>',
 		'cost'        => '',
 		'description' => ''),
 
 		array('id'=>8, 'name'  => 'Proposal 9: Researcher in Residence Program for IMRC - Creative Technologists, Intermedia Artists and New Media Producers. ',
 		'goal'        => '',
-		'cost'        => '',
-		'description' => ''),
+		'cost'        => '$9500',
+		'description' => 
+
+		'<h3>Request:</h3>
+<p>Four thousand per year of Correll Funds to be used to support a Researcher in Residence Program in New Media at the University of Maine.</p>
+<h3>Synopsis:</h3>
+<p> Two scholars, researchers or creative producers will be brought in each year (one in NMD and one in IMD) to work in residence at the Innovative Media, Research and Commercialization Center. Selected through an international open call or direct invitations, these residencies will last between 6 and 12 weeks depending on the individual and the projects in which they are engaged. While at the IMRC each Fellow will be involved in many of the following: teach an intensive class and/or conduct workshops, give a public lecture on their research or creative production, work directly with students on their projects, hold open lab hours, and interact daily with students and faculty at the IMRC Center. The residency is intended to support a period of concentrated work and immersion in creative investigations, cutting-edge research, and production of visionary, experimental applications, projects and artworks. </p>
+<h3> Duration/ frequency: </h3>
+<p> The program’s term is varied but there are two yearly awardees one in the Spring and one in the Fall and the duration is for a period of between 8 and 12 weeks each. Researchers in Residence will be selected from an open call, based on the quality of the work or research being proposed, the availability of the necessary tools and skills to support the work, and the relation of the proposed project to the overarching research agenda and activities of the New Media Department, the IMRC Center, the Foster Student Innovation Center and/or the University of Maine. In specific one awardee will be supported by NMD and thus more specific to New Media ideas, tools and technologies and one will be supported by IMD and thus the selected researcher might work more broadly or diversely than New Media methods, tools and technologies.</p>
+<h3>Award: </h3>
+<p> RRP awardees are granted a $5,000 stipend, studio space, 24/7 access to the IMRC’s state of the art digital design, media production, prototyping and fabrication studios, a materials budget of $3,000, and some support for travel to the IMRC Center in Orono.</p>
+<h3>Candidates:</h3>
+
+<p>The ideal Research in Residence will both contribute to, and benefit from, the collective environment at the IMRC Center and the affiliated programs in New Media and Intermedia and will embrace the spirit of interdisciplinarity shared across the University of Maine. To promote collaboration and the sharing of diverse skill sets, these programs are grounded in and encourage interdisciplinary research in hybrid applications, innovative problem solving, and their utilization through the full range of research, development and commercialization. The aim of this program is threefold: to foster and support innovative Research in New Media, Intermedia and other creative fields at the University of Maine; to build on the University of Maine’s reputation as a center of excellence; and to bring together students and faculty working at the NMIRDC with expert external participants to create a collaborative and innovative research/creative environment.
+During the course of the residency RRP awardees are expected to participate in, and lead, public events including workshops, demonstrations of research in progress, panel discussions, and other such program and public presentations. In addition to these type of events RRP awardees will be expected to lead a one to two week intensive course for graduates students and advanced undergraduates (in Intermedia and New Media) on some aspect of advanced research, development or production related to their own work, interests and skill sets.
+Key Benefits of the Researchers in Residence Program and connections to New Media Departmental Correll funds goals:
+Although this proposed program can and does connect to all of the New Media Goals some are more deeply and specifically connected to the nature and aims of the Researcher in Residence Program, and these are:
+</p>
+
+<ul>
+<li>Goal #4 - Support student research and creativity and inventive application of new media thinking and applications.
+<p> By bring in researchers in New Media and related areas this will support and model research as an ongoing practice for students. Also the RR awardees will be interacting and work with students on a regular basis on the student’s own creative and research activities.</p>
+</li>
+<li> Goal #6 - Create a vibrant "culture" of teaching and learning that is exciting and energetic in its pursuit of new knowledge and engages students and faculty through both virtual and face-to-face experiences.
+<p> Having a strong group of visiting creative producers and researchers working in the IMRC Center for 8-12 weeks will ramp up an intensity of activity in the facility and thus help to establish a stronger culture of learning, creative applications and work.</p>
+</li>
+<li> Goal #7 - Attract a stronger, more diverse, and more socially and professionally engaged student body to New Media.
+<p> Having a strong program of visiting producers and researchers and the classes, workshops and lectures that they will present will create an attractive program for top level students and by the variety of the visiting Researchers in Residence it will help bring more diversity and professionally engagement to UMaine.</p>
+</li>
+<li> Goal #8 - Increase student retention and satisfaction (with the program, its structure and opportunities in the program).
+<p> Exciting and diverse programs with national and international level connections will support greater student satisfaction, more opportunities and should positively benefit students retention.</p>
+</li>
+<li> Goal #9 - Increase student and faculty exposure to new media artists, journalists, technologists, entrepreneurs, designers and producers.
+<p> This will directly do this by bring an increased variety of people to campus for students and faculty to interact with. This will also dovetail nicely with the stated mission of  making “UMaine New Media a world class center for blended theoretical and applied learning.”</p>
+</li>
+<li>Goal #10 - Increase exposure to, and training on, tools and technologies relevant for new media work/production (hands-on and virtial applied training).
+<p> The associated classes and workshops offered by the RR awardees will increase the diversity and type of technology training and hands on learning available to students and it will directly contribute to the mentorship opportunities for students and offering a deep engagement in the teaching and learning experiences of students.</p>
+</li>
+</ul>
+
+<h3>Other benefits of the RR Program</h3>
+<ul>
+<li> Increase new and innovative RD and C supported by the IMRC Center, New Media and Intermedia</li>
+<li> Bring in a rotating group of advanced practitioners as a means of keeping the new in the New Media initiatives at UMaine</li>
+<li> Build a cadre of leading research and creative producers with ties to UMaine.</li>
+<li> Establish a mentor system of leading edge researchers in New Media and Intermedia</li>
+<li> Originate new opportunities for students to build skills and broaden their knowledge of diverse research/creative initiatives</li>
+<li> Support current research in the state of Maine and bring in new initiatives in the fields of Art, New Media and Intermedia.</li>
+</ul>
+
+<h3> General budget breakdown (per residency, so x2 9500):</h3>
+<ul>
+<li>Stipend							5,000.</li>
+<li>Material Budget						3,000.</li>
+<li>Travel to and from Orono					1,000.</li>
+<li>Events and general support					   500.</li>
+<li>Total yearly cost: 19,000.00</li>
+</ul>
+
+<h3> Funding model/sources for prioritized NMD RR: </h3>
+<ul>
+<li>Teach intensive class (8-12 weeks)	 	   		   3500.</li>
+<li>Guest lecture stipend				 	   1000.</li>
+<li>CLADS match of 1000.00 					   1000.	</li>
+<li>NMD Correll Contribution				   	   4000.</li>
+<li>Total 								   9500.</li>
+</ul>'),
 
 		array('id'=>9, 'name'  => 'Proposal 10: Student Research Grants',
 		'goal'        => 'Correll Goal #4 (Support)',
@@ -116,78 +195,6 @@ Nexus 10 ($400)
 		'cost'        => '$5379',
 		'description' => 'We have had 2 classes thus far with dedicated iPad use, Bill\'s IMD class and Joline\'s NMD 443, and in addition various request for short term usage by courses like NMD 104. The Apple TV and Apple router connect the iPads to the overhead projector for viewing work development. The devices allow classes to work with authoring environments like iBooks Author, perform as cameras and video input devices, and also support programming-- widgets can be developed using HTML5 thus furthering dept base language competence, and marketable skills.')
 
-
-
-
-
-
-
-// // proposal 8
-//  Goal #4 - Support student research and creativity and inventive application of new media thinking and applications.
-// By providing state of the art tools and technologies through the IMRC the needs of the students for research and creativity activities will be better supported. This will allow us to meet new and changing needs as they develop and as we set priorities in the new facilities.
-// •	
-// Goal #7 - Attract a stronger, more diverse, and more socially and professionally engaged student body to New Media.
-// Having state of the art tools and technologies will directly support / maintain a strong and attractive program for top level students
-// •	
-// Goal #8 - Increase student retention and satisfaction (with the program, its structure and opportunities in the program).
-// New media focused tools and technologies will support greater student satisfaction, more opportunities and should positively benefit students retention.
-// •	
-// Goal #10 - Increase exposure to, and training on, tools and technologies relevant for new media work/production (hands-on and virtual applied training).
-// Providing selected tools and technologies will support an increase the diversity and type of technology training and hands on learning available to students. This program will also us to respond to student needs and changing technologies which will in turn create new and divergent opportunities for students and  support developing hand on training and a better, more responsive engagement in the teaching and learning experiences of students.
-
-
-
-// // Proposal 9
-// Request:
-// Four thousand per year of Correll Funds to be used to support a Researcher in Residence Program in New Media at the University of Maine.
-// Synopsis:
-// Two scholars, researchers or creative producers will be brought in each year (one in NMD and one in IMD) to work in residence at the Innovative Media, Research and Commercialization Center. Selected through an international open call or direct invitations, these residencies will last between 6 and 12 weeks depending on the individual and the projects in which they are engaged. While at the IMRC each Fellow will be involved in many of the following: teach an intensive class and/or conduct workshops, give a public lecture on their research or creative production, work directly with students on their projects, hold open lab hours, and interact daily with students and faculty at the IMRC Center. The residency is intended to support a period of concentrated work and immersion in creative investigations, cutting-edge research, and production of visionary, experimental applications, projects and artworks. 
-// Duration/ frequency: 
-// The program’s term is varied but there are two yearly awardees one in the Spring and one in the Fall and the duration is for a period of between 8 and 12 weeks each. Researchers in Residence will be selected from an open call, based on the quality of the work or research being proposed, the availability of the necessary tools and skills to support the work, and the relation of the proposed project to the overarching research agenda and activities of the New Media Department, the IMRC Center, the Foster Student Innovation Center and/or the University of Maine. In specific one awardee will be supported by NMD and thus more specific to New Media ideas, tools and technologies and one will be supported by IMD and thus the selected researcher might work more broadly or diversely than New Media methods, tools and technologies.
-// Award: 
-// RRP awardees are granted a $5,000 stipend, studio space, 24/7 access to the IMRC’s state of the art digital design, media production, prototyping and fabrication studios, a materials budget of $3,000, and some support for travel to the IMRC Center in Orono.
-// Candidates:
-// The ideal Research in Residence will both contribute to, and benefit from, the collective environment at the IMRC Center and the affiliated programs in New Media and Intermedia and will embrace the spirit of interdisciplinarity shared across the University of Maine. To promote collaboration and the sharing of diverse skill sets, these programs are grounded in and encourage interdisciplinary research in hybrid applications, innovative problem solving, and their utilization through the full range of research, development and commercialization. The aim of this program is threefold: to foster and support innovative Research in New Media, Intermedia and other creative fields at the University of Maine; to build on the University of Maine’s reputation as a center of excellence; and to bring together students and faculty working at the NMIRDC with expert external participants to create a collaborative and innovative research/creative environment.
-// During the course of the residency RRP awardees are expected to participate in, and lead, public events including workshops, demonstrations of research in progress, panel discussions, and other such program and public presentations. In addition to these type of events RRP awardees will be expected to lead a one to two week intensive course for graduates students and advanced undergraduates (in Intermedia and New Media) on some aspect of advanced research, development or production related to their own work, interests and skill sets.
-// Key Benefits of the Researchers in Residence Program and connections to New Media Departmental Correll funds goals:
-// Although this proposed program can and does connect to all of the New Media Goals some are more deeply and specifically connected to the nature and aims of the Researcher in Residence Program, and these are:
-
-//  Goal #4 - Support student research and creativity and inventive application of new media thinking and applications.
-// By bring in researchers in New Media and related areas this will support and model research as an ongoing practice for students. Also the RR awardees will be interacting and work with students on a regular basis on the student’s own creative and research activities.
-// Goal #6 - Create a vibrant "culture" of teaching and learning that is exciting and energetic in its pursuit of new knowledge and engages students and faculty through both virtual and face-to-face experiences.
-// Having a strong group of visiting creative producers and researchers working in the IMRC Center for 8-12 weeks will ramp up an intensity of activity in the facility and thus help to establish a stronger culture of learning, creative applications and work.
-// Goal #7 - Attract a stronger, more diverse, and more socially and professionally engaged student body to New Media.
-// Having a strong program of visiting producers and researchers and the classes, workshops and lectures that they will present will create an attractive program for top level students and by the variety of the visiting Researchers in Residence it will help bring more diversity and professionally engagement to UMaine.
-// Goal #8 - Increase student retention and satisfaction (with the program, its structure and opportunities in the program).
-// Exciting and diverse programs with national and international level connections will support greater student satisfaction, more opportunities and should positively benefit students retention.
-// Goal #9 - Increase student and faculty exposure to new media artists, journalists, technologists, entrepreneurs, designers and producers.
-// This will directly do this by bring an increased variety of people to campus for students and faculty to interact with. This will also dovetail nicely with the stated mission of  making “UMaine New Media a world class center for blended theoretical and applied learning.”
-// Goal #10 - Increase exposure to, and training on, tools and technologies relevant for new media work/production (hands-on and virtial applied training).
-// The associated classes and workshops offered by the RR awardees will increase the diversity and type of technology training and hands on learning available to students and it will directly contribute to the mentorship opportunities for students and offering a deep engagement in the teaching and learning experiences of students.
-
-
-// Other benefits of the RR Program
-// - Increase new and innovative RD and C supported by the IMRC Center, New Media and Intermedia
-// - Bring in a rotating group of advanced practitioners as a means of keeping the new in the New Media initiatives at UMaine
-// - Build a cadre of leading research and creative producers with ties to UMaine.
-// - Establish a mentor system of leading edge researchers in New Media and Intermedia
-//  - Originate new opportunities for students to build skills and broaden their knowledge of diverse research/creative initiatives
-// - Support current research in the state of Maine and bring in new initiatives in the fields of Art, New Media and Intermedia.
-
-
-// General budget breakdown (per residency, so x2 9500):
-// Stipend							5,000.
-// Material Budget						3,000.
-// Travel to and from Orono					1,000.
-// Events and general support					   500.
-// Total yearly cost: 19,000.00
-
-// Funding model/sources for prioritized NMD RR:
-// Teach intensive class (8-12 weeks)	 	   		   3500.
-// Guest lecture stipend				 	   1000.
-// CLADS match of 1000.00 					   1000.	
-// NMD Correll Contribution				   	   4000.
-// Total 								   9500.
 
 
 
