@@ -4,10 +4,12 @@
 
 {% block content %}
 
-	<div class="header">{{ title }}</div>
+	<header>{{ title }}</header>
 	
 	<hr>
 	
+	<p><a href="{{ link }}">{{link}}</a></p>
+
 	<p>{{ description }}</p>
 	
 <!-- Need to put the code below into a foreach loop as with the view_portfolio

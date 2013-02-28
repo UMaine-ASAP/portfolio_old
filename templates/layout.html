@@ -12,7 +12,13 @@
 
 		<ul class="menu sgray fade" id="menu">
 			<li><a href="{{ flash['web_root'] }}">New Media Portfolio 2012</a></li>
-			<li class="floatr"><a href="{{ flash['web_root'] }}/logout">Log Out</a></li>
+			<li class="floatr">
+			{% if flash['logged_in'] %}
+			<a href="{{ flash['web_root'] }}/logout">Log Out</a>
+			{% else %}
+			<a href="{{ flash['web_root'] }}/login">Login</a>
+			{% endif %}
+			</li>
 		</ul>
 
 		<div class='breadcrumb-trail'>

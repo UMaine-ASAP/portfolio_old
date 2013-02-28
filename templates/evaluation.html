@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+
+{% macro buildRadio(DefaultValues, name, labels) %}
+	{% for label in labels %}
+	<label>
+		<input 
+			type='radio' 
+			name='{{name}}' 
+			value='{{loop.index}}'
+			{% if DefaultValues[name] == loop.index %}
+			checked
+			{% endif %}
+			/>
+			{{label}}
+		</label>
+	{% endfor %}
+{% endmacro %}
+
+{% block page_title %}New Media Portfolio - Evaluation{% endblock %}
+
+{% block content %}
+
+	<header>Evaluation for {{ name }}</header>
+	
+	<hr>
+	
+	<div class='spacer'></div>
+
+	<div id="projectSpacer" style="margin-top:20px"></div>
+	<h2>{{ flash['message'] }}</h2>
+	<p>
+		<form class='evaluation' method='post' action='{{ flash['web_root'] }}{{ action_url }}'>
+		{% for component in components %}
+			<div class='component'>
+				{% if component.required %}
+					<span class='required'>*</span>
+				{% endif %}
+				<b>{{ loop.index }}.</b> {{ component.question }}
+			</div>
+			<div class='component-input'>
+
+				{% if component.type.name == 'radio' %}
+					{{ _self.buildRadio(flash['defaultValues'], component.id, component.options ) }}
+				{% elseif component.type.name == 'text' %}
+					<textarea name='{{component.id}}'>{{ flash['defaultValues'][component.id] }}</textarea>
+				{% endif %}
+			</div>
+
+		{% endfor %}
+		<div style='clear: both;'></div>
+
+		<div id="themed">
+		<button class='left reset' type="submit">Submit</button>
+		<div>
+		</form>
+	</p>
+
+{% endblock %}

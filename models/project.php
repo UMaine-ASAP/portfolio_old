@@ -36,6 +36,16 @@ class Project extends AccessMapModel
 				}
 				return $return;
 				break;
+			case 'owner':
+				//$result 
+				$groupIDs = $this->groupsWithPermission();//Model::factory()
+				//return key($groupIDs);
+				$groupID = key($groupIDs);
+
+				$group = groupController::viewGroup($groupID);
+				$id = $group->members[0];
+				return userController::getUser($id);
+				break;
 
 			default:
 				return parent::__get($name);
@@ -114,3 +124,4 @@ class Project extends AccessMapModel
 	}
 }
 
+?>

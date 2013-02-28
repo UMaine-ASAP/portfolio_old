@@ -4,46 +4,84 @@
 
 {% block content %}
 
-	<div class="header">
-		Your Portfolio
-		
-		<div id="themed" style ="right: 100px;">
-			<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/portfolio/submit">
-			<button class='right' type="submit">Submit Portfolio</button>
+	{% if flash['isFaculty'] %}
+		{% if hasDoneEvaluation %}
+			<h2 style='position: absolute; right: 0; '>Has Been Evaluated</h2>
+			<div id='themed' style='position: absolute; right: 0; margin-top: 45px;' >
+				<a class='button' href="{{ flash['web_root'] }}/portfolios/{{ flash['port']['id'] }}/view-evaluation" type="submit">View Evaluation</a>
+			</div>
+		{% else %}
+		<div id="themed"style ="position: absolute; right: 0;">
+			<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/portfolios/{{ flash['port']['id'] }}/evaluate">
+			<button class='right' type="submit">Evaluate Portfolio</button>
 			</FORM>
 		</div>
-		
+		{% endif %}
+
+	{% elseif not flash['portfolioIsSubmitted'] %}
+	<div id="themed"style ="position: absolute; right: 0;">
+		<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/portfolio/submit">
+		<button class='right' type="submit">Submit Portfolio</button>
+		</FORM>
 	</div>
-	
+	{% else %}
+	<div id="themed"style ="position: absolute; right: 0;">Portfolio submitted</div>
+	{% endif %}
+
+	<header>
+		{% if flash['isFaculty'] %}
+		{{ flash['port']['owner_name'] }}'s Portfolio
+		{% else %}
+		Your Portfolio
+		{% endif %}
+	</header>
+	{% if flash['message'] %}
+	<h2>{{ flash['message'] }}</h2>
+	{% endif %}
 	<hr>
 	
 
-	<div id="themed" style ="right: 100px;">
+	{% if flash['portfolioIsSubmitted'] is defined and not flash['portfolioIsSubmitted']%}
+	<div id="themed">
 		<FORM METHOD="LINK" ACTION="{{ flash['web_root'] }}/project/add">
-		<button class='right' type="submit">Add Project</button>
+		<button class='left reset' type="submit">Add Project</button>
 		</FORM>
 	</div>
+	{% endif %}
 	<div class='spacer'></div>
 
 	<div id="projectSpacer" style="margin-top:20px"></div>
 
 	<p>
 	{% for project in projects %}
-		<div class="projects">
+		<div class="project">
 
-			<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}"><div class="type">
+			<a href="{{ flash['web_root'] }}/
+				{% if flash['isFaculty'] %}
+				portfolios/{{ flash['port']['id'] }}/
+				{% endif %}
+				project/{{ project['project_id'] }}">
+				<div class="type">
 					{% if project['thumbnail'] != NULL %}
 					<img src="{{ flash['web_root'] }}/{{ project['thumbnail'] }}" border="0" width='100' height='100' alt="Thumb">
 					{% endif %}
-					</div></a>
-			<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}"><div class="title">{{ project['title'] }}</div></a>
+				</div>
+			</a>
+			<a href="{{ flash['web_root'] }}/
+				{% if flash['isFaculty'] %}
+				portfolios/{{ flash['port']['id'] }}/
+				{% endif %}
+				project/{{ project['project_id'] }}">
+				<div class="title">{{ project['title'] }}</div>
+			</a>
 			</br>
 			<div class="desc">{{ project['description'] }}</div>
-		
-			<div class"actions" style="float:right;margin-top:-55px;">
+			{% if flash['portfolioIsSubmitted'] is defined and not flash['portfolioIsSubmitted'] %}
+			<div class"actions" style="float:right;margin-top:-95px;margin-left:850px;">
 				<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}/edit"><img src="{{ flash['web_root'] }}/templates/images/icon_Edit.png" border="0" alt="Edit"></a></br>
 				<a href="{{ flash['web_root'] }}/project/{{ project['project_id'] }}/delete"><img src="{{ flash['web_root'] }}/templates/images/icon_Delete.png" border="0" alt="Delete"></a>
 			</div>
+			{% endif %}
 		</div>
 	{% endfor %}
 	</p>

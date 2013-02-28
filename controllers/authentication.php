@@ -19,7 +19,7 @@ class AuthenticationController
 	 *
 	 *		@return The logged in user's ID, or false if no user is logged in.
 	 */
-	static function get_current_user_id()
+	public static function get_current_user_id()
 	{
 		if (self::check_login())
 		{
@@ -30,13 +30,60 @@ class AuthenticationController
 	}
 
 	/**
+	 * Gets the User object of the User who is currently logged in. Since it calls check_login, it will log the user
+	 * out if their session has expired or their IP has changed during their current session.
+	 *
+	 *		@return The logged in user's User object, or false if no user is logged in.
+	 */
+	public static function get_current_user()
+	{
+		if (self::check_login())
+		{
+			$id = intval($_SESSION['UserID']);
+			return UserController::getUser($id);
+		}
+
+		return false;
+	}
+
+	/**
+	 * @return	bool	True if currently logged in user is a faculty member, false otherwise
+	 */
+	public static function currentUserIsFaculty()
+	{
+		if (self::get_current_user()->type->name == "Faculty")
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
+	 * @return	bool	True if currently logged in user is a student, false otherwise
+	 */
+	public static function currentUserIsStudent()
+	{
+		if (self::get_current_user()->type->name == "Undergraduates")
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	/**
 	 * Determines if a user is currently logged in. If so, it checks their session data and logs them out
 	 * if their session has expired or their IP has changed. It then updates their latest access time to
 	 * the current time() value
 	 *
 	 *	@return True if a user is currently logged in, false otherwise
 	 */
-	static function check_login()
+	public static function check_login()
 	{
 		if(isset($_SESSION['UserID']))
 		{
@@ -73,7 +120,7 @@ class AuthenticationController
 	 *
 	 *	@return False if the login was unsuccessful, true otherwise.
 	 */
-	static function attempt_login($username, $password)
+	public static function attempt_login($username, $password)
 	{
 		//sanity check -- if a user attempts to log in and they/another user is actually logged in, log them out first
 		if (self::is_logged_in())
@@ -112,7 +159,7 @@ class AuthenticationController
 	/**
 	 * Completely destroys the current session.
 	 */
-	static function destroy_session()
+	public static function destroy_session()
 	{
 		if (session_id() === '')
 		{
@@ -141,7 +188,7 @@ class AuthenticationController
 	 *		@param string $password The plaintext password to hash.
 	 *	@return The hashed password, or false if hashing failed.
 	 */
-	static function create_hash($password)
+	public static function create_hash($password)
 	{
 		$hasher = new PasswordHash(8, false);
 
@@ -169,7 +216,7 @@ class AuthenticationController
 	 *	@return True if the update was successful, false otherwise.
 	 *
 	 */
-	static function update_user_password($userID, $password)
+	public static function update_user_password($userID, $password)
 	{
 		// Check user has permissions to change password
 		if (!$user = self::get_current_user_id())
@@ -189,7 +236,7 @@ class AuthenticationController
 	 * Logs the current user out. Currently, it just destroys their session. In the future, it'll
 	 * probably have to take more factors into account.
 	 */
-	static function log_out()
+	public static function log_out()
 	{
 		self::destroy_session();
 	}
@@ -198,7 +245,7 @@ class AuthenticationController
 	 * Determines if a user is logged in.
 	 *	@return True if a user is currently logged in, false otherwise.
 	 */
-	static function is_logged_in()
+	public static function is_logged_in()
 	{
 		return self::check_login();
 	}

@@ -3,16 +3,36 @@
 {% block page_title %}New Media Portfolio - View Project{% endblock %}
 
 {% block content %}
-	<div class="header">
-		{{ title }}
-		<div id='themed' style='right:100px;' >
-			<a class='button right' href="{{ flash['web_root'] }}/project/{{ project_id }}/edit" type="submit">Edit Project</a>
-		</div>
+
+	{% if flash['isFaculty'] %}
+	{% if hasDoneEvaluation %}
+		<h2 style='position: absolute; right: 0;'>Has Been Evaluated</h2>
+	<div id='themed' style='position: absolute; right: 0; margin-top: 45px;' >
+		<a class='button' href="{{ flash['web_root'] }}/portfolios/{{ portfolio_id }}/project/{{ project_id }}/view-evaluation" type="submit">View Evaluation</a>
 	</div>
-	
+
+
+	{% else %}
+	<div id='themed' style='position: absolute; right: 0;' >
+		<a class='button' href="{{ flash['web_root'] }}/portfolios/{{ portfolio_id }}/project/{{ project_id }}/evaluate" type="submit">Evaluate Project</a>
+	</div>
+	{% endif %}
+	{% endif %}
+
+	<header>{{ title }}</header>
+	{% if flash['portfolioIsSubmitted'] is defined and not flash['portfolioIsSubmitted'] %}
+	<div id='themed' style='position: absolute; right: 0; margin-top: -30px;' >
+		<a class='button' href="{{ flash['web_root'] }}/project/{{ project_id }}/edit" type="submit">Edit Project</a>
+	</div>
+	{% endif %}
+
+	{% if flash['message'] %}
+	<h2>{{ flash['message'] }}</h2>
+	{% endif %}
+
 	<hr>
 	
-	<p>{{ description }}</p>
+	<p class='project-desc'>{{ description }}</p>
 
 	<div class='media_items'>
 	{% for media in media_items %}
@@ -22,7 +42,8 @@
 			<div class='media image'>
 				<div class="title">{{ media.title }}</div>
 				<img src="{{ flash['web_root'] }}/media/{{ media.filename }}"/>
-				<div class="desc">{{ media.description }}</div>
+				<div class="desc">{{ media.description }}</div><br>
+				{% if media.link %}<div class="url"><a href="{{ media.link }}">Attached Link</a></div> {% endif %}
 			</div>
 			{% elseif media.mimetype in ['audio/mp32'] %}
 			<!-- Audio -->
@@ -44,20 +65,24 @@
   				-->
 					Your browser does not support the video tag </video>
 					<a href="{{ flash['web_root'] }}/media/{{ media.filename }}">Download the file here</a>
-					<div class="desc">{{ media.description }}</div>
+					<div class="desc">{{ media.description }}</div><br>
+					{% if media.link %}<div class="url"><a href="{{ media.link }}">Attached Link</a></div> {% endif %}
 			</div>
 			{% elseif media.mimetype == '' %}
 			<!-- Text -->
 			<div class='media text'>
 				<div class="title">{{ media.title }}</div>
-				<p class="desc">{{ media.description }}</p>
+				<p class="desc">{{ media.description }}</p><br>
+				{% if media.link %}<div class="url"><a href="{{ media.link }}">Attached Link</a></div> {% endif %}
 			</div>
 			{% else %}
 			<!-- A generic file -->
 			<div class='media file'>
 				<div class="title">{{ media.title }}</div>
-				<div>File: <a href="{{ flash['web_root'] }}/media/{{ media.filename }}">{{ media.title }}</a></div>
-				<div class="desc">{{ media.description }}</div>
+				<div class='file'>File: <a href="{{ flash['web_root'] }}/media/{{ media.filename }}">{{ media.title }}</a></div>
+				<div class="desc">{{ media.description }}</div><br>
+				{% if media.link %}<div class="url"><a href="{{ media.link }}">Attached Link</a></div> {% endif %}
+
 			</div>
 			{% endif %}
 		</div>

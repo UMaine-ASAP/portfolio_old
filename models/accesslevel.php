@@ -8,4 +8,4 @@ class AccessLevel extends Model
 	public static $_id_column = "access_id";
 }
 
-
+?>

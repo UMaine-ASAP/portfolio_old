@@ -6,4 +6,4 @@ class ClassModel extends Model
 	public static $_id_column = 'class_id';
 }
 
-
+?>

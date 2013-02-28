@@ -32,13 +32,13 @@ $(function() {
 });
 </script>
 
-	<div class="header">
+	<header>
 		{% if media_id == -1 %}
 		Add Media
 		{% else %}
 		Edit Media
 		{% endif %}
-	</div>
+	</header>
 	
 	<hr>
 	
@@ -64,12 +64,14 @@ $(function() {
 		<textarea class='medium' name="description" id="description" rows="5">{{ description }}</textarea>
 
 		<div class='spacer'></div>
+		<label>Link</label>
+		<input class='medium' type="text" name="link" id="link" value="{{ link }}"/>
+		<div class='spacer'></div>
 
 		<label>File (Optional)</label>
+    		
 
-
-
-    	    <input name="file" type="file"/>
+    		    	    <input name="file" type="file"/>
    		<div id="uploading">
         	<div id="progress" class="bar">
           		<div id="progressbar">&nbsp;</div>

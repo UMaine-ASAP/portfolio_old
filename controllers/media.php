@@ -28,7 +28,7 @@ class MediaController
 	 *
 	 *	@return object|bool						The created Media object if successful, false otherwise.
 	 */
-	static function createMedia($type, $title, $description, $filename, $filesize, $md5, $ext)
+	static function createMedia($type, $title, $description, $filename, $filesize, $md5, $ext, $link)
 	{
 		// Check Media creation privileges (for now, User must only be logged in)
 		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
@@ -44,6 +44,7 @@ class MediaController
 		$media->filesize = $filesize;
 		$media->md5 = $md5;
 		$media->extension = $ext;
+		$media->link = $link;
 		$media->created = date("Y-m-d H:i:s");
 		if (!$media->save())
 		{
@@ -78,7 +79,7 @@ class MediaController
 	 *
 	 *	@return bool					True if the media was successfully edited, false otherwise
 	 */
-	static function editMedia($id, $type = NULL, $title = NULL, $description = NULL, $filename = NULL, $filesize = NULL, $md5 = NULL, $ext = NULL)
+	static function editMedia($id, $type = NULL, $title = NULL, $description = NULL, $filename = NULL, $filesize = NULL, $md5 = NULL, $ext = NULL, $link = NULL)
 	{
 		if ((!$user_id = AuthenticationController::get_current_user_id()) ||
 			(!$media = self::getMedia($id)) ||
@@ -87,11 +88,12 @@ class MediaController
 			return false;
 		}
 
-		if (!is_null($type))		{ $media->type = $type; }
+		if (!is_null($type))		{ $media->mimetype = $type; }
 		if (!is_null($title))		{ $media->title = $title; }
 		if (!is_null($description))	{ $media->description = $description; }
 		if (!is_null($filename))	{ $media->filename = $filename; }
 		if (!is_null($filesize))	{ $media->filesize = $filesize; }
+		if(!is_null($link))	{ $media->link = $link;}
 		if (!is_null($md5))			{ $media->md5 = $md5; }
 		if (!is_null($ext))			{ $media->extension = $ext; }
 		$media->edited = date("Y-m-d H:i:s");

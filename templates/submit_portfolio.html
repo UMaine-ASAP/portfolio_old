@@ -6,9 +6,9 @@
 
 {% block content %}
 
-	<div class="header">
+	<header>
 		Submit Portfolio?
-	</div>
+	</header>
 	
 	<hr>
 	
@@ -16,13 +16,15 @@
 	
 		<form id="form" name="form" method="post" action="{{ flash['web_root'] }}/portfolio/submit">
 		
-		<p style="text-align:center;">Are you sure you want to submit your portfolio?
-			</br>
-			(This action cannot be undone!)
-		</p>
+		<p>Are you sure you want to submit your portfolio?</p>
+		<br>
+		<p>(This action cannot be undone!)</p>
 
-		<button type="submit">Submit</button>
-		<a class='button' style="margin-left:1000px:" href='{{ flash['web_root'] }}/portfolio'>Cancel</a>
+		<a class='button reset' href='{{ flash['web_root'] }}/portfolio'>Cancel</a>
+		<button class="reset" type="submit">Submit</button>
+			
+		<div class="spacer"></div>
+
 		</form>
 
 	</div>

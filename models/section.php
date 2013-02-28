@@ -28,3 +28,5 @@ class Section extends AccessMapModel
 	}
 
 }
+
+?>
