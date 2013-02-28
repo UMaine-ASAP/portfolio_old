@@ -500,7 +500,7 @@ $app->get('/portfolios/evaluation-results', $authcheck_faculty, function() use (
 	$portfolios = $GLOBALS['projects'];
 
 	//TODO: This should be based on permissions for the portfolio, not just faculty users
-	$facultyMembers = array( array('name'=>'Mike', 'id'=>33),
+	$facultyMembers = array( array('name'=>'Mike', 'id'=>65),
 						array('name'=>'Bill', 'id'=>67),
 						array('name'=>'Owen', 'id'=>69),
 						array('name'=>'Jon', 'id'=>68),
@@ -517,7 +517,6 @@ $app->get('/portfolios/evaluation-results', $authcheck_faculty, function() use (
 		foreach( $facultyMembers as $faculty ) {
 			$evaluation = EvaluationAssignmentController::getEvaluationResults(1, $port_id, $faculty['id']);
 			$grade = null;
-			
 			// Get grade for pass/discuss/fail question on portfolio evaluation
 			if( $evaluation instanceOf Evaluation ) {
 				$scores = $evaluation->scores;
@@ -538,10 +537,10 @@ $app->get('/portfolios/evaluation-results', $authcheck_faculty, function() use (
 		$port = Model::factory('Portfolio')->find_one($port_id);
 
 		setBreadcrumb( array( 
-							array('name'=>"New Media Portfolios", 'url'=>'/portfolios')
+							array('name'=>"New Media Projects", 'url'=>'/portfolios')
 						));
 
-		$result[] = array('name'=>'project ' . $port_id, 'portfolio_id'=>$port_id, 'facultyEvaluations'=>$evaluations );
+		$result[] = array('name'=>'Project ' . ($port_id+1), 'portfolio_id'=>$port_id, 'facultyEvaluations'=>$evaluations );
 	}
 	
 	//Get results
@@ -584,13 +583,13 @@ $app->get('/portfolios/:port_id/evaluate', $authcheck_faculty, function($port_id
 	// Get student name
 
 	setBreadcrumb( array( 
-						array('name'=>"New Media Portfolios", 'url'=>'/portfolios'),
+						array('name'=>"New Media Projects", 'url'=>'/portfolios'),
 						array('name'=>'Project', 'url'=>'/portfolios/' . $port_id)
 					));
 
 
 	$action_url = "/portfolios/" . $port_id . '/evaluate';
-	return $app->render('evaluation.html', array('portfolioID'=>$port_id, 'components'=>$components, 'action_url'=>$action_url));
+	return $app->render('evaluation.html', array('portfolioID'=>$port_id, 'name'=>$project['name'], 'components'=>$components, 'action_url'=>$action_url));
 });
 
 
@@ -647,7 +646,7 @@ $app->get('/portfolios/:port_id/view-evaluation', $authcheck_faculty, function($
 	}
 
 	setBreadcrumb( array( 
-						array('name'=>"New Media Portfolios", 'url'=>'/portfolios'),
+						array('name'=>"New Media Projects", 'url'=>'/portfolios'),
 						array('name'=>'Project', 'url'=>'/portfolios/' . $port_id)
 					));
 
