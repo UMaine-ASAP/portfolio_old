@@ -501,7 +501,7 @@ $app->get('/portfolios', $authcheck_faculty, function() use ($app) {
  */
 $app->get('/portfolios/evaluation-results', $authcheck_faculty, function() use ($app) {
 	//Turn off initially
-	//return permission_denied();
+	return permission_denied();
 
 	$result = array();
 	$portfolios = $GLOBALS['projects'];
