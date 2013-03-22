@@ -9,7 +9,7 @@
 class Score extends Model
 {
 	public static $_table 		= "EVAL_Scores";
-	public static $_id_column 	= "id";
+	public static $_id_column 	= "score_id";
 
 
 	/**

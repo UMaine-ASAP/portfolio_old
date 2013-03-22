@@ -664,6 +664,32 @@ $app->get('/portfolios/:port_id/view-evaluation', $authcheck_faculty, function($
 			'components'=>$components));
 });
 
+/**
+ * Update previous evaluation
+ */
+$app->post('/portfolios/:port_id/view-evaluation', $authcheck_faculty, function($port_id) use ($app) {
+
+	$project = $GLOBALS['projects'][$port_id];
+
+	//Check if portfolio has already been evaluated
+	$uid = AuthenticationController::get_current_user_id();
+	
+	//Get Evaluation
+	$evaluation = EvaluationAssignmentController::getEvaluationResults(1, $port_id, $uid);	
+
+
+	// update scores
+	$scores = $evaluation->scores;
+	foreach ($scores as $score) {
+		$score->value = $_POST[$score->component_id];
+		$score->save();
+	}
+
+	$app->flash('message', 'Evaluation updated.');
+	redirect("/portfolios/" . $port_id);	
+
+});
+
 // RUN THE THING
 $app->run();
 
